@@ -1458,6 +1458,7 @@ export type Database = {
           notice_days: number
           posting_deadline_hours: number
           public_comment_enabled: boolean
+          records_response_days: number
           tagline: string | null
           updated_at: string
         }
@@ -1468,6 +1469,7 @@ export type Database = {
           notice_days?: number
           posting_deadline_hours?: number
           public_comment_enabled?: boolean
+          records_response_days?: number
           tagline?: string | null
           updated_at?: string
         }
@@ -1478,6 +1480,7 @@ export type Database = {
           notice_days?: number
           posting_deadline_hours?: number
           public_comment_enabled?: boolean
+          records_response_days?: number
           tagline?: string | null
           updated_at?: string
         }
@@ -1885,6 +1888,19 @@ export type Database = {
         Returns: boolean
       }
       is_staff: { Args: { _user_id: string }; Returns: boolean }
+      lookup_records_request: {
+        Args: { _tracking_code: string }
+        Returns: {
+          closed_at: string
+          description: string
+          due_at: string
+          received_at: string
+          requester_name: string
+          response_note: string
+          status: Database["public"]["Enums"]["request_status"]
+          tracking_code: string
+        }[]
+      }
     }
     Enums: {
       app_role:
