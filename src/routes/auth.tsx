@@ -96,7 +96,7 @@ function AuthPage() {
   }
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-dvh">
       <div className="hidden flex-1 flex-col justify-between bg-primary p-12 text-primary-foreground lg:flex">
         <Link to="/" className="flex items-center gap-3">
           <Landmark className="h-7 w-7 text-brass" strokeWidth={1.5} />
