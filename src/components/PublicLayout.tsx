@@ -27,11 +27,17 @@ export function PublicLayout({ children }: { children: ReactNode }) {
   const { isStaff } = useSession();
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div className="flex min-h-dvh flex-col bg-background">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-sm focus:bg-card focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-foreground focus:outline-none focus:ring-2 focus:ring-seal"
+      >
+        Skip to main content
+      </a>
       <header className="border-b border-rule bg-primary text-primary-foreground">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-8 gap-y-3 px-5 py-4">
           <Link to="/" className="flex items-center gap-3">
-            <Landmark className="h-7 w-7 text-brass" strokeWidth={1.5} />
+            <Landmark className="h-7 w-7 text-brass" strokeWidth={1.5} aria-hidden="true" />
             <span className="leading-tight">
               <span className="block font-display text-lg font-bold">
                 {settings?.municipality_name ?? "CivicLedger"}
@@ -41,7 +47,7 @@ export function PublicLayout({ children }: { children: ReactNode }) {
               </span>
             </span>
           </Link>
-          <nav className="ml-auto flex flex-wrap items-center gap-1 text-sm">
+          <nav aria-label="Primary" className="ml-auto flex flex-wrap items-center gap-1 text-sm">
             {NAV.map((n) => (
               <Link
                 key={n.to}
@@ -61,9 +67,11 @@ export function PublicLayout({ children }: { children: ReactNode }) {
         </div>
       </header>
 
-      <main className="flex-1">{children}</main>
+      <main id="main-content" tabIndex={-1} className="flex-1 focus:outline-none">
+        {children}
+      </main>
 
-      <footer className="mt-16 border-t border-rule bg-secondary">
+      <footer aria-label="Site information" className="mt-16 border-t border-rule bg-secondary">
         <div className="mx-auto flex max-w-6xl flex-col gap-2 px-5 py-8 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           <p>
             {settings?.municipality_name ?? "CivicLedger"} — official legislative record.
@@ -83,7 +91,9 @@ export function PublicLayout({ children }: { children: ReactNode }) {
               Self-hosting guide
             </Link>
 
-            <span>Public records portal</span>
+            <Link to="/accessibility" className="hover:text-seal hover:underline">
+              Accessibility
+            </Link>
           </p>
         </div>
       </footer>
