@@ -72,6 +72,11 @@ class Doc {
     this.y += n;
   }
 
+  pageBreak() {
+    this.pdf.addPage();
+    this.y = MARGIN;
+  }
+
   rule(weight = 0.75) {
     this.ensure(12);
     this.pdf.setLineWidth(weight);
@@ -221,8 +226,7 @@ export function buildAgendaPacket(meta: DocMeta, items: PacketItem[]): jsPDF {
 
   const withDetail = items.filter((i) => i.legislation);
   if (withDetail.length > 0) {
-    doc.pdf.addPage();
-    // reset cursor by starting a fresh heading on the new page
+    doc.pageBreak();
     doc.heading("Supporting Materials");
     for (const it of withDetail) {
       const l = it.legislation!;
