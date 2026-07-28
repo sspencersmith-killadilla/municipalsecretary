@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { StaffShell, StaffHeader } from "@/components/StaffShell";
 import { formatDateTime } from "@/lib/format";
 import { computeTally, quorumRequired, type VoteChoice, type VoteRule } from "@/lib/votes";
+import { downloadMinutes } from "@/lib/documents";
 
 export const Route = createFileRoute("/_authenticated/staff/console/$meetingId")({
   head: () => ({
@@ -296,6 +297,12 @@ function LiveConsole() {
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const exportMinutes = useMutation({
+    mutationFn: () => downloadMinutes(meetingId),
+    onSuccess: (fileName) => toast.success(`Downloaded ${fileName}`),
+    onError: (e: Error) => toast.error(e.message),
+  });
+
   function generateMinutes() {
     const lines: string[] = [];
     lines.push(`${meeting.data?.title ?? "Meeting"} — ${formatDateTime(meeting.data?.starts_at)}`);
@@ -539,12 +546,21 @@ function LiveConsole() {
         <aside className="rounded-sm border border-border bg-card p-5">
           <div className="flex items-center justify-between gap-2">
             <h2 className="font-display text-base font-bold">Minutes</h2>
-            <button
-              onClick={generateMinutes}
-              className="rounded-sm border border-input px-2 py-1 text-xs font-semibold"
-            >
-              Generate
-            </button>
+            <div className="flex gap-1.5">
+              <button
+                onClick={generateMinutes}
+                className="rounded-sm border border-input px-2 py-1 text-xs font-semibold"
+              >
+                Generate
+              </button>
+              <button
+                onClick={() => exportMinutes.mutate()}
+                disabled={exportMinutes.isPending}
+                className="rounded-sm border border-input px-2 py-1 text-xs font-semibold disabled:opacity-50"
+              >
+                PDF
+              </button>
+            </div>
           </div>
           <textarea
             value={minutesDraft}
