@@ -192,7 +192,7 @@ export function ApprovedComments({ meetingId }: { meetingId: string }) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("public_comments")
-        .select("id,full_name,organization,position,comment_type,body,created_at,agenda_item_id")
+        .select("id,full_name,position,comment_type,body,created_at,agenda_item_id")
         .eq("meeting_id", meetingId)
         .eq("status", "approved")
         .order("created_at");
@@ -210,7 +210,7 @@ export function ApprovedComments({ meetingId }: { meetingId: string }) {
         <li key={c.id} className="paper rounded-sm p-4">
           <p className="text-sm font-medium text-foreground">
             {c.full_name}
-            {c.organization ? ` — ${c.organization}` : ""}
+            
           </p>
           <p className="docnum text-xs uppercase text-muted-foreground">
             {c.position} · {c.comment_type === "speak" ? "wished to speak" : "written"}
