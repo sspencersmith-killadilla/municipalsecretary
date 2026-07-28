@@ -95,27 +95,16 @@ function RecordsRequests() {
       if (!form.requester_name.trim() || !form.description.trim()) {
         throw new Error("Name and description of records are required.");
       }
-      const days = settings.data?.records_response_days ?? 5;
-      const due = new Date();
-      let added = 0;
-      while (added < days) {
-        due.setDate(due.getDate() + 1);
-        const d = due.getDay();
-        if (d !== 0 && d !== 6) added += 1;
-      }
-      const { data, error } = await supabase
-        .from("records_requests")
-        .insert({
-          requester_name: form.requester_name.trim(),
-          requester_email: form.requester_email.trim() || null,
-          requester_phone: form.requester_phone.trim() || null,
-          description: form.description.trim(),
-          due_at: due.toISOString(),
-        })
-        .select("tracking_code,due_at")
-        .single();
+      const { data, error } = await supabase.rpc("file_records_request", {
+        _requester_name: form.requester_name.trim(),
+        _description: form.description.trim(),
+        _requester_email: form.requester_email.trim() || undefined,
+        _requester_phone: form.requester_phone.trim() || undefined,
+      });
       if (error) throw error;
-      return data;
+      const row = (data ?? [])[0];
+      if (!row) throw new Error("Request could not be filed.");
+      return row;
     },
     onSuccess: (data) => {
       setFiled(data);
