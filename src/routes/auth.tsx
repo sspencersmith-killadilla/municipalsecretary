@@ -125,11 +125,11 @@ function AuthPage() {
             <dl className="mt-2 space-y-0.5 text-xs">
               <div className="flex gap-2">
                 <dt className="w-16 text-muted-foreground">Email</dt>
-                <dd className="docnum text-foreground">{DEMO_ADMIN_EMAIL}</dd>
+                <dd className="docnum normal-case text-foreground">{DEMO_ADMIN_EMAIL}</dd>
               </div>
               <div className="flex gap-2">
                 <dt className="w-16 text-muted-foreground">Password</dt>
-                <dd className="docnum text-foreground">{DEMO_ADMIN_PASSWORD}</dd>
+                <dd className="docnum normal-case text-foreground">{DEMO_ADMIN_PASSWORD}</dd>
               </div>
             </dl>
             <button
