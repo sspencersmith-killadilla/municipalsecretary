@@ -324,6 +324,44 @@ export type Database = {
           },
         ]
       }
+      document_exports: {
+        Row: {
+          created_at: string
+          doc_type: string
+          file_name: string
+          generated_by: string | null
+          id: string
+          meeting_id: string
+          version: number
+        }
+        Insert: {
+          created_at?: string
+          doc_type: string
+          file_name: string
+          generated_by?: string | null
+          id?: string
+          meeting_id: string
+          version: number
+        }
+        Update: {
+          created_at?: string
+          doc_type?: string
+          file_name?: string
+          generated_by?: string | null
+          id?: string
+          meeting_id?: string
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "document_exports_meeting_id_fkey"
+            columns: ["meeting_id"]
+            isOneToOne: false
+            referencedRelation: "meetings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       item_attachments: {
         Row: {
           content_type: string | null
