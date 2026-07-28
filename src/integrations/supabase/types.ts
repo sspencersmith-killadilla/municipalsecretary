@@ -1880,6 +1880,18 @@ export type Database = {
         Args: { _body_id: string; _user_id: string }
         Returns: boolean
       }
+      file_records_request: {
+        Args: {
+          _description: string
+          _requester_email?: string
+          _requester_name: string
+          _requester_phone?: string
+        }
+        Returns: {
+          due_at: string
+          tracking_code: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
