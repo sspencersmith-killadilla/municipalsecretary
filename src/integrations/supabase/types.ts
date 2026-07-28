@@ -270,6 +270,44 @@ export type Database = {
         }
         Relationships: []
       }
+      body_permissions: {
+        Row: {
+          body_id: string
+          can_submit: boolean
+          created_at: string
+          id: string
+          note: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          body_id: string
+          can_submit?: boolean
+          created_at?: string
+          id?: string
+          note?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          body_id?: string
+          can_submit?: boolean
+          created_at?: string
+          id?: string
+          note?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "body_permissions_body_id_fkey"
+            columns: ["body_id"]
+            isOneToOne: false
+            referencedRelation: "bodies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       body_seats: {
         Row: {
           body_id: string
@@ -1190,6 +1228,10 @@ export type Database = {
     Functions: {
       assign_item_number: { Args: { _item_id: string }; Returns: string }
       can_manage: { Args: { _user_id: string }; Returns: boolean }
+      can_submit_to_body: {
+        Args: { _body_id: string; _user_id: string }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

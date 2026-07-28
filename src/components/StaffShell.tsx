@@ -2,6 +2,7 @@ import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   FileText,
+  FilePlus2,
   CalendarDays,
   CheckSquare,
   Gavel,
@@ -17,6 +18,7 @@ import { useSettings } from "@/components/PublicLayout";
 
 const NAV = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { to: "/staff/submit", label: "Submit an Item", icon: FilePlus2 },
   { to: "/staff/legislation", label: "Legislative Files", icon: FileText },
   { to: "/staff/approvals", label: "My Approvals", icon: CheckSquare },
   { to: "/staff/meetings", label: "Meetings & Agendas", icon: CalendarDays },
