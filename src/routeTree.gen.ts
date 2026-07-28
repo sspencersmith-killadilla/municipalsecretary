@@ -24,6 +24,7 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as ApiPublicRssDotxmlRouteImport } from './routes/api/public/rss[.]xml'
 import { Route as ApiPublicCalendarDoticsRouteImport } from './routes/api/public/calendar[.]ics'
 import { Route as AuthenticatedStaffSubmitRouteImport } from './routes/_authenticated/staff/submit'
+import { Route as AuthenticatedStaffRecordsRouteImport } from './routes/_authenticated/staff/records'
 import { Route as AuthenticatedStaffCommentsRouteImport } from './routes/_authenticated/staff/comments'
 import { Route as AuthenticatedStaffApprovalsRouteImport } from './routes/_authenticated/staff/approvals'
 import { Route as AuthenticatedStaffAdminRouteImport } from './routes/_authenticated/staff/admin'
@@ -109,6 +110,12 @@ const AuthenticatedStaffSubmitRoute =
     path: '/staff/submit',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedStaffRecordsRoute =
+  AuthenticatedStaffRecordsRouteImport.update({
+    id: '/staff/records',
+    path: '/staff/records',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedStaffCommentsRoute =
   AuthenticatedStaffCommentsRouteImport.update({
     id: '/staff/comments',
@@ -178,6 +185,7 @@ export interface FileRoutesByFullPath {
   '/staff/admin': typeof AuthenticatedStaffAdminRoute
   '/staff/approvals': typeof AuthenticatedStaffApprovalsRoute
   '/staff/comments': typeof AuthenticatedStaffCommentsRoute
+  '/staff/records': typeof AuthenticatedStaffRecordsRoute
   '/staff/submit': typeof AuthenticatedStaffSubmitRoute
   '/api/public/calendar.ics': typeof ApiPublicCalendarDoticsRoute
   '/api/public/rss.xml': typeof ApiPublicRssDotxmlRoute
@@ -203,6 +211,7 @@ export interface FileRoutesByTo {
   '/staff/admin': typeof AuthenticatedStaffAdminRoute
   '/staff/approvals': typeof AuthenticatedStaffApprovalsRoute
   '/staff/comments': typeof AuthenticatedStaffCommentsRoute
+  '/staff/records': typeof AuthenticatedStaffRecordsRoute
   '/staff/submit': typeof AuthenticatedStaffSubmitRoute
   '/api/public/calendar.ics': typeof ApiPublicCalendarDoticsRoute
   '/api/public/rss.xml': typeof ApiPublicRssDotxmlRoute
@@ -230,6 +239,7 @@ export interface FileRoutesById {
   '/_authenticated/staff/admin': typeof AuthenticatedStaffAdminRoute
   '/_authenticated/staff/approvals': typeof AuthenticatedStaffApprovalsRoute
   '/_authenticated/staff/comments': typeof AuthenticatedStaffCommentsRoute
+  '/_authenticated/staff/records': typeof AuthenticatedStaffRecordsRoute
   '/_authenticated/staff/submit': typeof AuthenticatedStaffSubmitRoute
   '/api/public/calendar.ics': typeof ApiPublicCalendarDoticsRoute
   '/api/public/rss.xml': typeof ApiPublicRssDotxmlRoute
@@ -257,6 +267,7 @@ export interface FileRouteTypes {
     | '/staff/admin'
     | '/staff/approvals'
     | '/staff/comments'
+    | '/staff/records'
     | '/staff/submit'
     | '/api/public/calendar.ics'
     | '/api/public/rss.xml'
@@ -282,6 +293,7 @@ export interface FileRouteTypes {
     | '/staff/admin'
     | '/staff/approvals'
     | '/staff/comments'
+    | '/staff/records'
     | '/staff/submit'
     | '/api/public/calendar.ics'
     | '/api/public/rss.xml'
@@ -308,6 +320,7 @@ export interface FileRouteTypes {
     | '/_authenticated/staff/admin'
     | '/_authenticated/staff/approvals'
     | '/_authenticated/staff/comments'
+    | '/_authenticated/staff/records'
     | '/_authenticated/staff/submit'
     | '/api/public/calendar.ics'
     | '/api/public/rss.xml'
@@ -442,6 +455,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedStaffSubmitRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/staff/records': {
+      id: '/_authenticated/staff/records'
+      path: '/staff/records'
+      fullPath: '/staff/records'
+      preLoaderRoute: typeof AuthenticatedStaffRecordsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/staff/comments': {
       id: '/_authenticated/staff/comments'
       path: '/staff/comments'
@@ -513,6 +533,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedStaffAdminRoute: typeof AuthenticatedStaffAdminRoute
   AuthenticatedStaffApprovalsRoute: typeof AuthenticatedStaffApprovalsRoute
   AuthenticatedStaffCommentsRoute: typeof AuthenticatedStaffCommentsRoute
+  AuthenticatedStaffRecordsRoute: typeof AuthenticatedStaffRecordsRoute
   AuthenticatedStaffSubmitRoute: typeof AuthenticatedStaffSubmitRoute
   AuthenticatedStaffConsoleMeetingIdRoute: typeof AuthenticatedStaffConsoleMeetingIdRoute
   AuthenticatedStaffLegislationItemIdRoute: typeof AuthenticatedStaffLegislationItemIdRoute
@@ -527,6 +548,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedStaffAdminRoute: AuthenticatedStaffAdminRoute,
   AuthenticatedStaffApprovalsRoute: AuthenticatedStaffApprovalsRoute,
   AuthenticatedStaffCommentsRoute: AuthenticatedStaffCommentsRoute,
+  AuthenticatedStaffRecordsRoute: AuthenticatedStaffRecordsRoute,
   AuthenticatedStaffSubmitRoute: AuthenticatedStaffSubmitRoute,
   AuthenticatedStaffConsoleMeetingIdRoute:
     AuthenticatedStaffConsoleMeetingIdRoute,
