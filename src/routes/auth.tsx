@@ -184,7 +184,8 @@ function AuthPage() {
             ← Back to the public portal
           </Link>
         </div>
-      </div>
+      </main>
+
     </div>
   );
 }
