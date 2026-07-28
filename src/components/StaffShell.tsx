@@ -13,6 +13,8 @@ import {
   MessageSquare,
   Archive,
   ScrollText,
+  DatabaseZap,
+  BookOpen,
   ShieldCheck,
 } from "lucide-react";
 import type { ReactNode } from "react";
@@ -31,7 +33,9 @@ const NAV = [
   { to: "/staff/records", label: "Records & FOIA", icon: Archive },
   { to: "/staff/audit", label: "Audit Trail", icon: ScrollText },
   { to: "/staff/security", label: "Account Security", icon: ShieldCheck },
+  { to: "/staff/import", label: "Data Migration", icon: DatabaseZap },
   { to: "/staff/admin", label: "Administration", icon: Settings2 },
+  { to: "/docs/clerk-handbook", label: "Clerk Handbook", icon: BookOpen },
 ] as const;
 
 export function StaffShell({ children }: { children: ReactNode }) {

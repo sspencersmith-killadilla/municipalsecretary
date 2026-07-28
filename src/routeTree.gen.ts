@@ -21,6 +21,7 @@ import { Route as BodiesIndexRouteImport } from './routes/bodies/index'
 import { Route as MeetingsMeetingIdRouteImport } from './routes/meetings/$meetingId'
 import { Route as LegislationItemIdRouteImport } from './routes/legislation/$itemId'
 import { Route as DocsSelfHostingRouteImport } from './routes/docs/self-hosting'
+import { Route as DocsClerkHandbookRouteImport } from './routes/docs/clerk-handbook'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as MeetingsTextMeetingIdRouteImport } from './routes/meetings/text.$meetingId'
 import { Route as ApiPublicRssDotxmlRouteImport } from './routes/api/public/rss[.]xml'
@@ -97,6 +98,11 @@ const LegislationItemIdRoute = LegislationItemIdRouteImport.update({
 const DocsSelfHostingRoute = DocsSelfHostingRouteImport.update({
   id: '/docs/self-hosting',
   path: '/docs/self-hosting',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsClerkHandbookRoute = DocsClerkHandbookRouteImport.update({
+  id: '/docs/clerk-handbook',
+  path: '/docs/clerk-handbook',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
@@ -209,6 +215,7 @@ export interface FileRoutesByFullPath {
   '/records-requests': typeof RecordsRequestsRoute
   '/subscribe': typeof SubscribeRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/docs/clerk-handbook': typeof DocsClerkHandbookRoute
   '/docs/self-hosting': typeof DocsSelfHostingRoute
   '/legislation/$itemId': typeof LegislationItemIdRoute
   '/meetings/$meetingId': typeof MeetingsMeetingIdRoute
@@ -240,6 +247,7 @@ export interface FileRoutesByTo {
   '/records-requests': typeof RecordsRequestsRoute
   '/subscribe': typeof SubscribeRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/docs/clerk-handbook': typeof DocsClerkHandbookRoute
   '/docs/self-hosting': typeof DocsSelfHostingRoute
   '/legislation/$itemId': typeof LegislationItemIdRoute
   '/meetings/$meetingId': typeof MeetingsMeetingIdRoute
@@ -273,6 +281,7 @@ export interface FileRoutesById {
   '/records-requests': typeof RecordsRequestsRoute
   '/subscribe': typeof SubscribeRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/docs/clerk-handbook': typeof DocsClerkHandbookRoute
   '/docs/self-hosting': typeof DocsSelfHostingRoute
   '/legislation/$itemId': typeof LegislationItemIdRoute
   '/meetings/$meetingId': typeof MeetingsMeetingIdRoute
@@ -306,6 +315,7 @@ export interface FileRouteTypes {
     | '/records-requests'
     | '/subscribe'
     | '/dashboard'
+    | '/docs/clerk-handbook'
     | '/docs/self-hosting'
     | '/legislation/$itemId'
     | '/meetings/$meetingId'
@@ -337,6 +347,7 @@ export interface FileRouteTypes {
     | '/records-requests'
     | '/subscribe'
     | '/dashboard'
+    | '/docs/clerk-handbook'
     | '/docs/self-hosting'
     | '/legislation/$itemId'
     | '/meetings/$meetingId'
@@ -369,6 +380,7 @@ export interface FileRouteTypes {
     | '/records-requests'
     | '/subscribe'
     | '/_authenticated/dashboard'
+    | '/docs/clerk-handbook'
     | '/docs/self-hosting'
     | '/legislation/$itemId'
     | '/meetings/$meetingId'
@@ -401,6 +413,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   RecordsRequestsRoute: typeof RecordsRequestsRoute
   SubscribeRoute: typeof SubscribeRoute
+  DocsClerkHandbookRoute: typeof DocsClerkHandbookRoute
   DocsSelfHostingRoute: typeof DocsSelfHostingRoute
   LegislationItemIdRoute: typeof LegislationItemIdRoute
   MeetingsMeetingIdRoute: typeof MeetingsMeetingIdRoute
@@ -496,6 +509,13 @@ declare module '@tanstack/react-router' {
       path: '/docs/self-hosting'
       fullPath: '/docs/self-hosting'
       preLoaderRoute: typeof DocsSelfHostingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/clerk-handbook': {
+      id: '/docs/clerk-handbook'
+      path: '/docs/clerk-handbook'
+      fullPath: '/docs/clerk-handbook'
+      preLoaderRoute: typeof DocsClerkHandbookRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/dashboard': {
@@ -677,6 +697,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   RecordsRequestsRoute: RecordsRequestsRoute,
   SubscribeRoute: SubscribeRoute,
+  DocsClerkHandbookRoute: DocsClerkHandbookRoute,
   DocsSelfHostingRoute: DocsSelfHostingRoute,
   LegislationItemIdRoute: LegislationItemIdRoute,
   MeetingsMeetingIdRoute: MeetingsMeetingIdRoute,
