@@ -97,9 +97,9 @@ function AuthPage() {
 
   return (
     <div className="flex min-h-dvh">
-      <div className="hidden flex-1 flex-col justify-between bg-primary p-12 text-primary-foreground lg:flex">
+      <aside aria-label="About the staff portal" className="hidden flex-1 flex-col justify-between bg-primary p-12 text-primary-foreground lg:flex">
         <Link to="/" className="flex items-center gap-3">
-          <Landmark className="h-7 w-7 text-brass" strokeWidth={1.5} />
+          <Landmark className="h-7 w-7 text-brass" strokeWidth={1.5} aria-hidden="true" />
           <span className="font-display text-lg font-bold">CivicLedger</span>
         </Link>
         <div className="max-w-md">
@@ -112,10 +112,10 @@ function AuthPage() {
             administration portal.
           </p>
         </div>
-        <p className="text-xs text-primary-foreground/50">Authorized personnel only.</p>
-      </div>
+        <p className="text-xs text-primary-foreground/75">Authorized personnel only.</p>
+      </aside>
 
-      <div className="flex flex-1 items-center justify-center bg-background px-5 py-12">
+      <main className="flex flex-1 items-center justify-center bg-background px-5 py-12">
         <div className="w-full max-w-sm">
           <p className="eyebrow">{mode === "signin" ? "Sign in" : "Create account"}</p>
           <h1 className="mt-2 font-display text-2xl font-bold text-foreground">Staff portal</h1>
