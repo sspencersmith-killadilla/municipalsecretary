@@ -88,7 +88,7 @@ function AuditTrail() {
     <StaffShell>
       <StaffHeader
         title="Audit trail"
-        subtitle="Append-only record of system activity. Entries cannot be edited or deleted."
+        description="Append-only record of system activity. Entries cannot be edited or deleted."
       />
 
       <div className="mt-5 flex flex-wrap gap-2">
