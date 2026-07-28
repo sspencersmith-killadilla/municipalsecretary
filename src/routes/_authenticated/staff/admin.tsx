@@ -624,7 +624,7 @@ function NumberingPanel() {
         </p>
         <div className="flex flex-wrap gap-2">
           <select
-            aria-label="Board access selection"
+            aria-label="Select item type for numbering rule"
             value={newType}
             onChange={(e) => setNewType(e.target.value)}
             className="min-w-60 flex-1 rounded-sm border border-input bg-background px-2.5 py-2 text-sm"
