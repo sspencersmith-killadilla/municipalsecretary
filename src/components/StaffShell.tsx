@@ -10,6 +10,7 @@ import {
   LayoutDashboard,
   LogOut,
   Landmark,
+  MessageSquare,
 } from "lucide-react";
 import type { ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -23,6 +24,7 @@ const NAV = [
   { to: "/staff/approvals", label: "My Approvals", icon: CheckSquare },
   { to: "/staff/meetings", label: "Meetings & Agendas", icon: CalendarDays },
   { to: "/staff/console", label: "Meeting Console", icon: Gavel },
+  { to: "/staff/comments", label: "Public Comment", icon: MessageSquare },
   { to: "/staff/admin", label: "Administration", icon: Settings2 },
 ] as const;
 
