@@ -1,0 +1,1 @@
+CREATE POLICY "Staff read all comments" ON public.public_comments FOR SELECT TO authenticated USING (public.is_staff(auth.uid()));
