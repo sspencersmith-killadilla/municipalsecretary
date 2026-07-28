@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { formatHash } from "@/lib/integrity";
 import { supabase } from "@/integrations/supabase/client";
 import { PublicLayout, StatusPill } from "@/components/PublicLayout";
 import { PublicCommentForm, ApprovedComments } from "@/components/PublicCommentForm";
@@ -84,7 +85,7 @@ function MeetingDetail() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("minutes")
-        .select("content,finalized,finalized_at")
+        .select("content,finalized,finalized_at,certified_at,certification_note,integrity_hash")
         .eq("meeting_id", meetingId)
         .eq("finalized", true)
         .maybeSingle();
@@ -184,7 +185,17 @@ function MeetingDetail() {
       <div className="mx-auto grid max-w-5xl gap-10 px-5 py-12 lg:grid-cols-[1fr_260px]">
         <div className="space-y-10">
           <section>
-            <h2 className="border-b border-rule pb-2 font-display text-xl font-bold">Agenda</h2>
+            <div className="flex flex-wrap items-end justify-between gap-3 border-b border-rule pb-2">
+              <h2 className="font-display text-xl font-bold">Agenda</h2>
+              <Link
+                to="/meetings/text/$meetingId"
+                params={{ meetingId }}
+                className="docnum text-xs text-seal underline"
+              >
+                Text version (accessible)
+              </Link>
+            </div>
+
             {sections.length === 0 ? (
               <p className="py-6 text-sm text-muted-foreground">Agenda has not been posted.</p>
             ) : (
@@ -290,6 +301,25 @@ function MeetingDetail() {
               <div className="prose-record whitespace-pre-wrap pt-5 text-sm leading-relaxed text-foreground">
                 {minutes.data.content}
               </div>
+              {minutes.data.integrity_hash ? (
+                <div className="mt-5 rounded-sm border border-rule bg-muted/30 p-4">
+                  <h3 className="eyebrow">Certification &amp; integrity seal</h3>
+                  <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                    {minutes.data.certification_note ??
+                      "Certified as a true and correct record of the proceedings."}
+                    {minutes.data.certified_at
+                      ? ` Certified ${formatDateTime(minutes.data.certified_at)}.`
+                      : ""}
+                  </p>
+                  <p className="docnum mt-2 break-all text-[0.65rem] normal-case text-foreground">
+                    SHA-256 {formatHash(minutes.data.integrity_hash)}
+                  </p>
+                  <p className="mt-1 text-[0.65rem] text-muted-foreground">
+                    Re-computing the SHA-256 digest of the minutes text above must reproduce this
+                    value; any alteration of the record changes the seal.
+                  </p>
+                </div>
+              ) : null}
             </section>
           ) : null}
 

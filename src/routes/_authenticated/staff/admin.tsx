@@ -342,6 +342,7 @@ function BodySeats({ bodyId }: { bodyId: string }) {
               {s.title ?? s.seat_label}
             </span>
             <select
+              aria-label="Assign member to seat"
               value={s.member_id ?? ""}
               onChange={(e) => assign.mutate({ seatId: s.id, memberId: e.target.value || null })}
               className="min-w-48 flex-1 rounded-sm border border-input bg-background px-2.5 py-1.5 text-sm"
@@ -623,6 +624,7 @@ function NumberingPanel() {
         </p>
         <div className="flex flex-wrap gap-2">
           <select
+            aria-label="Select item type for numbering rule"
             value={newType}
             onChange={(e) => setNewType(e.target.value)}
             className="min-w-60 flex-1 rounded-sm border border-input bg-background px-2.5 py-2 text-sm"

@@ -12,6 +12,10 @@ import {
   Landmark,
   MessageSquare,
   Archive,
+  ScrollText,
+  DatabaseZap,
+  BookOpen,
+  ShieldCheck,
 } from "lucide-react";
 import type { ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -27,7 +31,11 @@ const NAV = [
   { to: "/staff/console", label: "Meeting Console", icon: Gavel },
   { to: "/staff/comments", label: "Public Comment", icon: MessageSquare },
   { to: "/staff/records", label: "Records & FOIA", icon: Archive },
+  { to: "/staff/audit", label: "Audit Trail", icon: ScrollText },
+  { to: "/staff/security", label: "Account Security", icon: ShieldCheck },
+  { to: "/staff/import", label: "Data Migration", icon: DatabaseZap },
   { to: "/staff/admin", label: "Administration", icon: Settings2 },
+  { to: "/docs/clerk-handbook", label: "Clerk Handbook", icon: BookOpen },
 ] as const;
 
 export function StaffShell({ children }: { children: ReactNode }) {
@@ -45,8 +53,8 @@ export function StaffShell({ children }: { children: ReactNode }) {
   }
 
   return (
-    <div className="flex min-h-screen bg-background">
-      <aside className="hidden w-64 shrink-0 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground lg:flex">
+    <div className="flex min-h-dvh bg-background">
+      <aside aria-label="Staff navigation" className="hidden w-64 shrink-0 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground lg:flex">
         <Link to="/" className="flex items-center gap-2.5 border-b border-sidebar-border px-5 py-5">
           <Landmark className="h-6 w-6 text-sidebar-primary" strokeWidth={1.5} />
           <span className="leading-tight">
@@ -58,7 +66,7 @@ export function StaffShell({ children }: { children: ReactNode }) {
             </span>
           </span>
         </Link>
-        <nav className="flex-1 space-y-0.5 p-3">
+        <nav aria-label="Staff sections" className="flex-1 space-y-0.5 p-3">
           {NAV.map((n) => {
             const active = pathname === n.to || pathname.startsWith(n.to + "/");
             return (
@@ -106,7 +114,9 @@ export function StaffShell({ children }: { children: ReactNode }) {
             Sign out
           </button>
         </div>
-        <main className="min-w-0 flex-1">{children}</main>
+        <main id="main-content" tabIndex={-1} className="min-w-0 flex-1 focus:outline-none">
+          {children}
+        </main>
       </div>
     </div>
   );

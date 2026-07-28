@@ -83,7 +83,7 @@
   --destructive-foreground: oklch(0.98 0.008 85);
   --seal: oklch(0.43 0.145 25);
   --seal-foreground: oklch(0.98 0.008 85);
-  --brass: oklch(0.66 0.09 78);
+  --brass: oklch(0.8 0.09 78);
   --success: oklch(0.46 0.09 155);
   --success-foreground: oklch(0.98 0.008 85);
   --warning: oklch(0.63 0.12 70);
