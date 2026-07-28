@@ -70,9 +70,16 @@ export function PublicLayout({ children }: { children: ReactNode }) {
             {settings?.contact_email ? ` Clerk: ${settings.contact_email}` : ""}
           </p>
           <p className="docnum flex items-center gap-4">
+            <Link to="/subscribe" className="hover:text-seal hover:underline">
+              Subscribe
+            </Link>
+            <a href="/api/public/rss.xml" className="hover:text-seal hover:underline">
+              RSS
+            </a>
             <Link to="/docs/self-hosting" className="hover:text-seal hover:underline">
               Self-hosting guide
             </Link>
+
             <span>Public records portal</span>
           </p>
         </div>
