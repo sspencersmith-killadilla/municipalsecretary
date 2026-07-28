@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { PublicLayout, StatusPill } from "@/components/PublicLayout";
+import { PublicCommentForm, ApprovedComments } from "@/components/PublicCommentForm";
 import { formatDateTime, MEETING_STATUS_LABELS, statusTone } from "@/lib/format";
 
 export const Route = createFileRoute("/meetings/$meetingId")({
@@ -92,8 +93,50 @@ function MeetingDetail() {
     },
   });
 
+  const notices = useQuery({
+    queryKey: ["public", "notices", meetingId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("meeting_notices")
+        .select("id,notice_kind,version,posted_at,posted_locations,content")
+        .eq("meeting_id", meetingId)
+        .order("version", { ascending: false });
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  const media = useQuery({
+    queryKey: ["public", "media", meetingId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("meeting_media")
+        .select("id,label,url,media_type,captions_available")
+        .eq("meeting_id", meetingId)
+        .order("created_at");
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
   const m = meeting.data;
   const sections = groupSections(agenda.data ?? []);
+  const closedSession = useQuery({
+    queryKey: ["public", "closed-session", meetingId],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("closed_minutes")
+        .select("citation,public_action_taken")
+        .eq("meeting_id", meetingId)
+        .maybeSingle();
+      return data;
+    },
+  });
+
+  const commentItems = (agenda.data ?? [])
+    .filter((a) => a.item_id)
+    .map((a) => ({ id: a.id, title: a.title, display_number: a.display_number }));
+
 
   return (
     <PublicLayout>
@@ -116,9 +159,27 @@ function MeetingDetail() {
                 tone={statusTone(m.status)}
               />
             ) : null}
+            {m?.meeting_kind && m.meeting_kind !== "regular" ? (
+              <StatusPill label={`${m.meeting_kind} meeting`} tone="warn" />
+            ) : null}
           </div>
+          {m?.cancelled_at ? (
+            <p
+              role="alert"
+              className="mt-4 rounded-sm border border-destructive/60 bg-destructive/10 px-4 py-3 text-sm text-foreground"
+            >
+              <strong>This meeting was cancelled</strong> on {formatDateTime(m.cancelled_at)}.
+              {m.cancellation_reason ? ` ${m.cancellation_reason}` : ""}
+            </p>
+          ) : null}
+          {m?.meeting_kind === "emergency" && m?.emergency_justification ? (
+            <p className="mt-4 rounded-sm border border-border bg-secondary px-4 py-3 text-sm">
+              <strong>Emergency justification:</strong> {m.emergency_justification}
+            </p>
+          ) : null}
         </div>
       </div>
+
 
       <div className="mx-auto grid max-w-5xl gap-10 px-5 py-12 lg:grid-cols-[1fr_260px]">
         <div className="space-y-10">
@@ -204,6 +265,23 @@ function MeetingDetail() {
             </section>
           )}
 
+          {closed.data?.public_action_taken ? (
+            <section>
+              <h2 className="border-b border-rule pb-2 font-display text-xl font-bold">
+                Executive session
+              </h2>
+              <p className="pt-5 text-sm leading-relaxed">
+                {closed.data.citation ? (
+                  <span className="docnum block text-xs uppercase text-muted-foreground">
+                    Authority: {closed.data.citation}
+                  </span>
+                ) : null}
+                {closed.data.public_action_taken}
+              </p>
+            </section>
+          ) : null}
+
+
           {minutes.data ? (
             <section>
               <h2 className="border-b border-rule pb-2 font-display text-xl font-bold">
@@ -214,7 +292,23 @@ function MeetingDetail() {
               </div>
             </section>
           ) : null}
+
+          <section id="public-comment">
+            <h2 className="border-b border-rule pb-2 font-display text-xl font-bold">
+              Public comment
+            </h2>
+            <div className="space-y-5 pt-5">
+              <PublicCommentForm
+                meetingId={meetingId}
+                agendaItems={commentItems}
+                open={m?.public_comment_open ?? true}
+                deadline={m?.comment_deadline ?? null}
+              />
+              <ApprovedComments meetingId={meetingId} />
+            </div>
+          </section>
         </div>
+
 
         <aside className="space-y-6">
           <div className="paper rounded-sm p-5">

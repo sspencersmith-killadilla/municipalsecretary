@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SubscribeRouteImport } from './routes/subscribe'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
@@ -19,7 +20,10 @@ import { Route as MeetingsMeetingIdRouteImport } from './routes/meetings/$meetin
 import { Route as LegislationItemIdRouteImport } from './routes/legislation/$itemId'
 import { Route as DocsSelfHostingRouteImport } from './routes/docs/self-hosting'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as ApiPublicRssDotxmlRouteImport } from './routes/api/public/rss[.]xml'
+import { Route as ApiPublicCalendarDoticsRouteImport } from './routes/api/public/calendar[.]ics'
 import { Route as AuthenticatedStaffSubmitRouteImport } from './routes/_authenticated/staff/submit'
+import { Route as AuthenticatedStaffCommentsRouteImport } from './routes/_authenticated/staff/comments'
 import { Route as AuthenticatedStaffApprovalsRouteImport } from './routes/_authenticated/staff/approvals'
 import { Route as AuthenticatedStaffAdminRouteImport } from './routes/_authenticated/staff/admin'
 import { Route as AuthenticatedStaffMeetingsIndexRouteImport } from './routes/_authenticated/staff/meetings/index'
@@ -29,6 +33,11 @@ import { Route as AuthenticatedStaffMeetingsMeetingIdRouteImport } from './route
 import { Route as AuthenticatedStaffLegislationItemIdRouteImport } from './routes/_authenticated/staff/legislation/$itemId'
 import { Route as AuthenticatedStaffConsoleMeetingIdRouteImport } from './routes/_authenticated/staff/console/$meetingId'
 
+const SubscribeRoute = SubscribeRouteImport.update({
+  id: '/subscribe',
+  path: '/subscribe',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
@@ -78,10 +87,26 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const ApiPublicRssDotxmlRoute = ApiPublicRssDotxmlRouteImport.update({
+  id: '/api/public/rss.xml',
+  path: '/api/public/rss.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicCalendarDoticsRoute = ApiPublicCalendarDoticsRouteImport.update({
+  id: '/api/public/calendar.ics',
+  path: '/api/public/calendar.ics',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedStaffSubmitRoute =
   AuthenticatedStaffSubmitRouteImport.update({
     id: '/staff/submit',
     path: '/staff/submit',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedStaffCommentsRoute =
+  AuthenticatedStaffCommentsRouteImport.update({
+    id: '/staff/comments',
+    path: '/staff/comments',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedStaffApprovalsRoute =
@@ -135,6 +160,7 @@ const AuthenticatedStaffConsoleMeetingIdRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/subscribe': typeof SubscribeRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/docs/self-hosting': typeof DocsSelfHostingRoute
   '/legislation/$itemId': typeof LegislationItemIdRoute
@@ -144,7 +170,10 @@ export interface FileRoutesByFullPath {
   '/meetings/': typeof MeetingsIndexRoute
   '/staff/admin': typeof AuthenticatedStaffAdminRoute
   '/staff/approvals': typeof AuthenticatedStaffApprovalsRoute
+  '/staff/comments': typeof AuthenticatedStaffCommentsRoute
   '/staff/submit': typeof AuthenticatedStaffSubmitRoute
+  '/api/public/calendar.ics': typeof ApiPublicCalendarDoticsRoute
+  '/api/public/rss.xml': typeof ApiPublicRssDotxmlRoute
   '/staff/console/$meetingId': typeof AuthenticatedStaffConsoleMeetingIdRoute
   '/staff/legislation/$itemId': typeof AuthenticatedStaffLegislationItemIdRoute
   '/staff/meetings/$meetingId': typeof AuthenticatedStaffMeetingsMeetingIdRoute
@@ -155,6 +184,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/subscribe': typeof SubscribeRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/docs/self-hosting': typeof DocsSelfHostingRoute
   '/legislation/$itemId': typeof LegislationItemIdRoute
@@ -164,7 +194,10 @@ export interface FileRoutesByTo {
   '/meetings': typeof MeetingsIndexRoute
   '/staff/admin': typeof AuthenticatedStaffAdminRoute
   '/staff/approvals': typeof AuthenticatedStaffApprovalsRoute
+  '/staff/comments': typeof AuthenticatedStaffCommentsRoute
   '/staff/submit': typeof AuthenticatedStaffSubmitRoute
+  '/api/public/calendar.ics': typeof ApiPublicCalendarDoticsRoute
+  '/api/public/rss.xml': typeof ApiPublicRssDotxmlRoute
   '/staff/console/$meetingId': typeof AuthenticatedStaffConsoleMeetingIdRoute
   '/staff/legislation/$itemId': typeof AuthenticatedStaffLegislationItemIdRoute
   '/staff/meetings/$meetingId': typeof AuthenticatedStaffMeetingsMeetingIdRoute
@@ -177,6 +210,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/subscribe': typeof SubscribeRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/docs/self-hosting': typeof DocsSelfHostingRoute
   '/legislation/$itemId': typeof LegislationItemIdRoute
@@ -186,7 +220,10 @@ export interface FileRoutesById {
   '/meetings/': typeof MeetingsIndexRoute
   '/_authenticated/staff/admin': typeof AuthenticatedStaffAdminRoute
   '/_authenticated/staff/approvals': typeof AuthenticatedStaffApprovalsRoute
+  '/_authenticated/staff/comments': typeof AuthenticatedStaffCommentsRoute
   '/_authenticated/staff/submit': typeof AuthenticatedStaffSubmitRoute
+  '/api/public/calendar.ics': typeof ApiPublicCalendarDoticsRoute
+  '/api/public/rss.xml': typeof ApiPublicRssDotxmlRoute
   '/_authenticated/staff/console/$meetingId': typeof AuthenticatedStaffConsoleMeetingIdRoute
   '/_authenticated/staff/legislation/$itemId': typeof AuthenticatedStaffLegislationItemIdRoute
   '/_authenticated/staff/meetings/$meetingId': typeof AuthenticatedStaffMeetingsMeetingIdRoute
@@ -199,6 +236,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/subscribe'
     | '/dashboard'
     | '/docs/self-hosting'
     | '/legislation/$itemId'
@@ -208,7 +246,10 @@ export interface FileRouteTypes {
     | '/meetings/'
     | '/staff/admin'
     | '/staff/approvals'
+    | '/staff/comments'
     | '/staff/submit'
+    | '/api/public/calendar.ics'
+    | '/api/public/rss.xml'
     | '/staff/console/$meetingId'
     | '/staff/legislation/$itemId'
     | '/staff/meetings/$meetingId'
@@ -219,6 +260,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/subscribe'
     | '/dashboard'
     | '/docs/self-hosting'
     | '/legislation/$itemId'
@@ -228,7 +270,10 @@ export interface FileRouteTypes {
     | '/meetings'
     | '/staff/admin'
     | '/staff/approvals'
+    | '/staff/comments'
     | '/staff/submit'
+    | '/api/public/calendar.ics'
+    | '/api/public/rss.xml'
     | '/staff/console/$meetingId'
     | '/staff/legislation/$itemId'
     | '/staff/meetings/$meetingId'
@@ -240,6 +285,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/subscribe'
     | '/_authenticated/dashboard'
     | '/docs/self-hosting'
     | '/legislation/$itemId'
@@ -249,7 +295,10 @@ export interface FileRouteTypes {
     | '/meetings/'
     | '/_authenticated/staff/admin'
     | '/_authenticated/staff/approvals'
+    | '/_authenticated/staff/comments'
     | '/_authenticated/staff/submit'
+    | '/api/public/calendar.ics'
+    | '/api/public/rss.xml'
     | '/_authenticated/staff/console/$meetingId'
     | '/_authenticated/staff/legislation/$itemId'
     | '/_authenticated/staff/meetings/$meetingId'
@@ -262,16 +311,26 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  SubscribeRoute: typeof SubscribeRoute
   DocsSelfHostingRoute: typeof DocsSelfHostingRoute
   LegislationItemIdRoute: typeof LegislationItemIdRoute
   MeetingsMeetingIdRoute: typeof MeetingsMeetingIdRoute
   BodiesIndexRoute: typeof BodiesIndexRoute
   LegislationIndexRoute: typeof LegislationIndexRoute
   MeetingsIndexRoute: typeof MeetingsIndexRoute
+  ApiPublicCalendarDoticsRoute: typeof ApiPublicCalendarDoticsRoute
+  ApiPublicRssDotxmlRoute: typeof ApiPublicRssDotxmlRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/subscribe': {
+      id: '/subscribe'
+      path: '/subscribe'
+      fullPath: '/subscribe'
+      preLoaderRoute: typeof SubscribeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth': {
       id: '/auth'
       path: '/auth'
@@ -342,11 +401,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/public/rss.xml': {
+      id: '/api/public/rss.xml'
+      path: '/api/public/rss.xml'
+      fullPath: '/api/public/rss.xml'
+      preLoaderRoute: typeof ApiPublicRssDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/calendar.ics': {
+      id: '/api/public/calendar.ics'
+      path: '/api/public/calendar.ics'
+      fullPath: '/api/public/calendar.ics'
+      preLoaderRoute: typeof ApiPublicCalendarDoticsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/staff/submit': {
       id: '/_authenticated/staff/submit'
       path: '/staff/submit'
       fullPath: '/staff/submit'
       preLoaderRoute: typeof AuthenticatedStaffSubmitRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/staff/comments': {
+      id: '/_authenticated/staff/comments'
+      path: '/staff/comments'
+      fullPath: '/staff/comments'
+      preLoaderRoute: typeof AuthenticatedStaffCommentsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/staff/approvals': {
@@ -412,6 +492,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedStaffAdminRoute: typeof AuthenticatedStaffAdminRoute
   AuthenticatedStaffApprovalsRoute: typeof AuthenticatedStaffApprovalsRoute
+  AuthenticatedStaffCommentsRoute: typeof AuthenticatedStaffCommentsRoute
   AuthenticatedStaffSubmitRoute: typeof AuthenticatedStaffSubmitRoute
   AuthenticatedStaffConsoleMeetingIdRoute: typeof AuthenticatedStaffConsoleMeetingIdRoute
   AuthenticatedStaffLegislationItemIdRoute: typeof AuthenticatedStaffLegislationItemIdRoute
@@ -425,6 +506,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedStaffAdminRoute: AuthenticatedStaffAdminRoute,
   AuthenticatedStaffApprovalsRoute: AuthenticatedStaffApprovalsRoute,
+  AuthenticatedStaffCommentsRoute: AuthenticatedStaffCommentsRoute,
   AuthenticatedStaffSubmitRoute: AuthenticatedStaffSubmitRoute,
   AuthenticatedStaffConsoleMeetingIdRoute:
     AuthenticatedStaffConsoleMeetingIdRoute,
@@ -445,12 +527,15 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  SubscribeRoute: SubscribeRoute,
   DocsSelfHostingRoute: DocsSelfHostingRoute,
   LegislationItemIdRoute: LegislationItemIdRoute,
   MeetingsMeetingIdRoute: MeetingsMeetingIdRoute,
   BodiesIndexRoute: BodiesIndexRoute,
   LegislationIndexRoute: LegislationIndexRoute,
   MeetingsIndexRoute: MeetingsIndexRoute,
+  ApiPublicCalendarDoticsRoute: ApiPublicCalendarDoticsRoute,
+  ApiPublicRssDotxmlRoute: ApiPublicRssDotxmlRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

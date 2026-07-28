@@ -8,6 +8,10 @@ import { StaffShell, StaffHeader } from "@/components/StaffShell";
 import { StatusPill } from "@/components/PublicLayout";
 import { formatDateTime, MEETING_STATUS_LABELS, statusTone } from "@/lib/format";
 import { downloadAgendaPacket } from "@/lib/documents";
+import { NoticePanel } from "@/components/staff/NoticePanel";
+import { MeetingComplianceSettings } from "@/components/staff/MeetingComplianceSettings";
+import { ClosedSessionPanel } from "@/components/staff/ClosedSessionPanel";
+
 
 export const Route = createFileRoute("/_authenticated/staff/meetings/$meetingId")({
   head: () => ({
@@ -388,6 +392,20 @@ function AgendaBuilder() {
           </section>
         </aside>
       </div>
+
+      {meeting.data ? (
+        <div className="grid gap-6 px-6 pb-10 lg:grid-cols-2">
+          <NoticePanel
+            meeting={meeting.data as never}
+            agenda={rows.map((r) => ({ display_number: r.display_number, title: r.title }))}
+          />
+          <div className="space-y-6">
+            <MeetingComplianceSettings meeting={meeting.data as never} />
+            <ClosedSessionPanel meetingId={meetingId} />
+          </div>
+        </div>
+      ) : null}
     </StaffShell>
   );
 }
+

@@ -4,12 +4,16 @@ import {
   buildAgendaPacket,
   buildFileName,
   buildMinutes,
+  buildNoticeCertificate,
   type DocMeta,
+  type ExportDocType,
   type MinutesMotion,
+  type NoticeRecord,
   type PacketItem,
 } from "@/lib/pdf";
 
-type DocType = "agenda_packet" | "minutes";
+type DocType = ExportDocType;
+
 
 async function nextVersion(meetingId: string, docType: DocType) {
   const { data, error } = await supabase
@@ -224,4 +228,56 @@ export async function downloadMinutes(meetingId: string) {
   pdf.save(fileName);
   await record(meetingId, "minutes", version, fileName);
   return fileName;
+}
+
+/* ---------------------------------------------- proof-of-posting certificate */
+
+/** Generate, version, log and download the certificate of posting for a meeting. */
+export async function downloadPostingCertificate(meetingId: string) {
+  const base = await loadCore(meetingId);
+  const { data: rows, error } = await supabase
+    .from("meeting_notices")
+    .select("*")
+    .eq("meeting_id", meetingId)
+    .order("posted_at");
+  if (error) throw error;
+  if (!rows || rows.length === 0) throw new Error("No notices have been posted for this meeting.");
+
+  const notices: NoticeRecord[] = rows.map((n) => ({
+    kind: n.kind as string,
+    version: n.version,
+    content: n.content,
+    postingLocations: (n.posting_locations as string[]) ?? [],
+    postedAt: n.posted_at,
+    postedByName: n.posted_by_name,
+    deadlineAt: n.deadline_at,
+    compliant: n.compliant,
+    complianceNote: n.compliance_note,
+  }));
+
+  const version = await nextVersion(meetingId, "posting_certificate");
+  const fileName = buildFileName({
+    startsAt: base.meeting.starts_at,
+    bodyName: base.body?.name ?? "body",
+    docType: "posting_certificate",
+    version,
+  });
+  const pdf = buildNoticeCertificate(
+    meta(base, "Certificate of Posting", version, fileName),
+    notices,
+  );
+  pdf.save(fileName);
+  await record(meetingId, "posting_certificate", version, fileName);
+  return fileName;
+}
+
+/* ------------------------------------------------------------ integrity hash */
+
+/** SHA-256 of the finalized minutes text — printed so a copy can be verified. */
+export async function minutesIntegrityHash(content: string) {
+  const bytes = new TextEncoder().encode(content);
+  const digest = await crypto.subtle.digest("SHA-256", bytes);
+  return Array.from(new Uint8Array(digest))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
 }
