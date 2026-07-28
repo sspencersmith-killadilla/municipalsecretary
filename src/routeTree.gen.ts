@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SubscribeRouteImport } from './routes/subscribe'
+import { Route as RecordsRequestsRouteImport } from './routes/records-requests'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
@@ -36,6 +37,11 @@ import { Route as AuthenticatedStaffConsoleMeetingIdRouteImport } from './routes
 const SubscribeRoute = SubscribeRouteImport.update({
   id: '/subscribe',
   path: '/subscribe',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RecordsRequestsRoute = RecordsRequestsRouteImport.update({
+  id: '/records-requests',
+  path: '/records-requests',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -160,6 +166,7 @@ const AuthenticatedStaffConsoleMeetingIdRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/records-requests': typeof RecordsRequestsRoute
   '/subscribe': typeof SubscribeRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/docs/self-hosting': typeof DocsSelfHostingRoute
@@ -184,6 +191,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/records-requests': typeof RecordsRequestsRoute
   '/subscribe': typeof SubscribeRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/docs/self-hosting': typeof DocsSelfHostingRoute
@@ -210,6 +218,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/records-requests': typeof RecordsRequestsRoute
   '/subscribe': typeof SubscribeRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/docs/self-hosting': typeof DocsSelfHostingRoute
@@ -236,6 +245,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/records-requests'
     | '/subscribe'
     | '/dashboard'
     | '/docs/self-hosting'
@@ -260,6 +270,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/records-requests'
     | '/subscribe'
     | '/dashboard'
     | '/docs/self-hosting'
@@ -285,6 +296,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/records-requests'
     | '/subscribe'
     | '/_authenticated/dashboard'
     | '/docs/self-hosting'
@@ -311,6 +323,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  RecordsRequestsRoute: typeof RecordsRequestsRoute
   SubscribeRoute: typeof SubscribeRoute
   DocsSelfHostingRoute: typeof DocsSelfHostingRoute
   LegislationItemIdRoute: typeof LegislationItemIdRoute
@@ -329,6 +342,13 @@ declare module '@tanstack/react-router' {
       path: '/subscribe'
       fullPath: '/subscribe'
       preLoaderRoute: typeof SubscribeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/records-requests': {
+      id: '/records-requests'
+      path: '/records-requests'
+      fullPath: '/records-requests'
+      preLoaderRoute: typeof RecordsRequestsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -527,6 +547,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  RecordsRequestsRoute: RecordsRequestsRoute,
   SubscribeRoute: SubscribeRoute,
   DocsSelfHostingRoute: DocsSelfHostingRoute,
   LegislationItemIdRoute: LegislationItemIdRoute,
