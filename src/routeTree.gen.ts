@@ -19,6 +19,7 @@ import { Route as MeetingsMeetingIdRouteImport } from './routes/meetings/$meetin
 import { Route as LegislationItemIdRouteImport } from './routes/legislation/$itemId'
 import { Route as DocsSelfHostingRouteImport } from './routes/docs/self-hosting'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedStaffSubmitRouteImport } from './routes/_authenticated/staff/submit'
 import { Route as AuthenticatedStaffApprovalsRouteImport } from './routes/_authenticated/staff/approvals'
 import { Route as AuthenticatedStaffAdminRouteImport } from './routes/_authenticated/staff/admin'
 import { Route as AuthenticatedStaffMeetingsIndexRouteImport } from './routes/_authenticated/staff/meetings/index'
@@ -77,6 +78,12 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedStaffSubmitRoute =
+  AuthenticatedStaffSubmitRouteImport.update({
+    id: '/staff/submit',
+    path: '/staff/submit',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedStaffApprovalsRoute =
   AuthenticatedStaffApprovalsRouteImport.update({
     id: '/staff/approvals',
@@ -137,6 +144,7 @@ export interface FileRoutesByFullPath {
   '/meetings/': typeof MeetingsIndexRoute
   '/staff/admin': typeof AuthenticatedStaffAdminRoute
   '/staff/approvals': typeof AuthenticatedStaffApprovalsRoute
+  '/staff/submit': typeof AuthenticatedStaffSubmitRoute
   '/staff/console/$meetingId': typeof AuthenticatedStaffConsoleMeetingIdRoute
   '/staff/legislation/$itemId': typeof AuthenticatedStaffLegislationItemIdRoute
   '/staff/meetings/$meetingId': typeof AuthenticatedStaffMeetingsMeetingIdRoute
@@ -156,6 +164,7 @@ export interface FileRoutesByTo {
   '/meetings': typeof MeetingsIndexRoute
   '/staff/admin': typeof AuthenticatedStaffAdminRoute
   '/staff/approvals': typeof AuthenticatedStaffApprovalsRoute
+  '/staff/submit': typeof AuthenticatedStaffSubmitRoute
   '/staff/console/$meetingId': typeof AuthenticatedStaffConsoleMeetingIdRoute
   '/staff/legislation/$itemId': typeof AuthenticatedStaffLegislationItemIdRoute
   '/staff/meetings/$meetingId': typeof AuthenticatedStaffMeetingsMeetingIdRoute
@@ -177,6 +186,7 @@ export interface FileRoutesById {
   '/meetings/': typeof MeetingsIndexRoute
   '/_authenticated/staff/admin': typeof AuthenticatedStaffAdminRoute
   '/_authenticated/staff/approvals': typeof AuthenticatedStaffApprovalsRoute
+  '/_authenticated/staff/submit': typeof AuthenticatedStaffSubmitRoute
   '/_authenticated/staff/console/$meetingId': typeof AuthenticatedStaffConsoleMeetingIdRoute
   '/_authenticated/staff/legislation/$itemId': typeof AuthenticatedStaffLegislationItemIdRoute
   '/_authenticated/staff/meetings/$meetingId': typeof AuthenticatedStaffMeetingsMeetingIdRoute
@@ -198,6 +208,7 @@ export interface FileRouteTypes {
     | '/meetings/'
     | '/staff/admin'
     | '/staff/approvals'
+    | '/staff/submit'
     | '/staff/console/$meetingId'
     | '/staff/legislation/$itemId'
     | '/staff/meetings/$meetingId'
@@ -217,6 +228,7 @@ export interface FileRouteTypes {
     | '/meetings'
     | '/staff/admin'
     | '/staff/approvals'
+    | '/staff/submit'
     | '/staff/console/$meetingId'
     | '/staff/legislation/$itemId'
     | '/staff/meetings/$meetingId'
@@ -237,6 +249,7 @@ export interface FileRouteTypes {
     | '/meetings/'
     | '/_authenticated/staff/admin'
     | '/_authenticated/staff/approvals'
+    | '/_authenticated/staff/submit'
     | '/_authenticated/staff/console/$meetingId'
     | '/_authenticated/staff/legislation/$itemId'
     | '/_authenticated/staff/meetings/$meetingId'
@@ -329,6 +342,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/staff/submit': {
+      id: '/_authenticated/staff/submit'
+      path: '/staff/submit'
+      fullPath: '/staff/submit'
+      preLoaderRoute: typeof AuthenticatedStaffSubmitRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/staff/approvals': {
       id: '/_authenticated/staff/approvals'
       path: '/staff/approvals'
@@ -392,6 +412,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedStaffAdminRoute: typeof AuthenticatedStaffAdminRoute
   AuthenticatedStaffApprovalsRoute: typeof AuthenticatedStaffApprovalsRoute
+  AuthenticatedStaffSubmitRoute: typeof AuthenticatedStaffSubmitRoute
   AuthenticatedStaffConsoleMeetingIdRoute: typeof AuthenticatedStaffConsoleMeetingIdRoute
   AuthenticatedStaffLegislationItemIdRoute: typeof AuthenticatedStaffLegislationItemIdRoute
   AuthenticatedStaffMeetingsMeetingIdRoute: typeof AuthenticatedStaffMeetingsMeetingIdRoute
@@ -404,6 +425,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedStaffAdminRoute: AuthenticatedStaffAdminRoute,
   AuthenticatedStaffApprovalsRoute: AuthenticatedStaffApprovalsRoute,
+  AuthenticatedStaffSubmitRoute: AuthenticatedStaffSubmitRoute,
   AuthenticatedStaffConsoleMeetingIdRoute:
     AuthenticatedStaffConsoleMeetingIdRoute,
   AuthenticatedStaffLegislationItemIdRoute:

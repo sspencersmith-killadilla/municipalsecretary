@@ -20,7 +20,15 @@ export const Route = createFileRoute("/_authenticated/staff/admin")({
   component: Admin,
 });
 
-const TABS = ["Bodies", "Item types", "Vote rules", "Numbering", "Members", "Settings"] as const;
+const TABS = [
+  "Bodies",
+  "Board access",
+  "Item types",
+  "Vote rules",
+  "Numbering",
+  "Members",
+  "Settings",
+] as const;
 type Tab = (typeof TABS)[number];
 
 function Admin() {
@@ -50,6 +58,7 @@ function Admin() {
       </div>
       <div className="p-6">
         {tab === "Bodies" && <BodiesPanel />}
+        {tab === "Board access" && <BoardAccessPanel />}
         {tab === "Item types" && <ItemTypesPanel />}
         {tab === "Vote rules" && <VoteRulesPanel />}
         {tab === "Numbering" && <NumberingPanel />}
@@ -896,3 +905,168 @@ function SettingsPanel() {
     </Card>
   );
 }
+
+/* ----------------------------------------------------------- board access */
+
+function BoardAccessPanel() {
+  const qc = useQueryClient();
+  const [userId, setUserId] = useState("");
+  const [bodyId, setBodyId] = useState("");
+  const [note, setNote] = useState("");
+
+  const bodies = useQuery({
+    queryKey: ["admin", "bodies-lite"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("bodies").select("id,name").order("sort_order");
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  const people = useQuery({
+    queryKey: ["admin", "profiles"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("id,full_name,email,department")
+        .order("full_name");
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  const grants = useQuery({
+    queryKey: ["admin", "body-permissions"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("body_permissions")
+        .select("id,user_id,body_id,can_submit,note")
+        .order("created_at");
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  const grant = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase
+        .from("body_permissions")
+        .upsert(
+          { user_id: userId, body_id: bodyId, can_submit: true, note: note.trim() || null },
+          { onConflict: "user_id,body_id" },
+        );
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      setNote("");
+      toast.success("Board access granted");
+      qc.invalidateQueries({ queryKey: ["admin", "body-permissions"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const revoke = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("body_permissions").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Access revoked");
+      qc.invalidateQueries({ queryKey: ["admin", "body-permissions"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const personName = (id: string) => {
+    const p = (people.data ?? []).find((x) => x.id === id);
+    return p ? (p.full_name ?? p.email ?? id) : id;
+  };
+  const bodyName = (id: string) => (bodies.data ?? []).find((b) => b.id === id)?.name ?? id;
+
+  const byBody = (bodies.data ?? []).map((b) => ({
+    body: b,
+    rows: (grants.data ?? []).filter((g) => g.body_id === b.id),
+  }));
+
+  return (
+    <div className="space-y-6">
+      <Card title="Grant submission rights">
+        <p className="mb-4 text-sm text-muted-foreground">
+          Staff may hold submission rights on any number of boards. Administrators and clerks can
+          always submit to every board.
+        </p>
+        <form
+          className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (!userId || !bodyId) return;
+            grant.mutate();
+          }}
+        >
+          <Select label="Staff member" value={userId} onChange={(e) => setUserId(e.target.value)}>
+            <option value="">Select…</option>
+            {(people.data ?? []).map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.full_name ?? p.email}
+              </option>
+            ))}
+          </Select>
+          <Select label="Board" value={bodyId} onChange={(e) => setBodyId(e.target.value)}>
+            <option value="">Select…</option>
+            {(bodies.data ?? []).map((b) => (
+              <option key={b.id} value={b.id}>
+                {b.name}
+              </option>
+            ))}
+          </Select>
+          <Field
+            label="Note (optional)"
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            placeholder="Public Works liaison"
+          />
+          <div className="flex items-end">
+            <button
+              type="submit"
+              disabled={grant.isPending}
+              className="rounded-sm bg-primary px-3.5 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-50"
+            >
+              Grant access
+            </button>
+          </div>
+        </form>
+      </Card>
+
+      {byBody.map(({ body, rows }) => (
+        <Card key={body.id} title={body.name}>
+          {rows.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              No individual grants. Only administrators and clerks may submit to {body.name}.
+            </p>
+          ) : (
+            <ul className="divide-y divide-rule">
+              {rows.map((r) => (
+                <li key={r.id} className="flex flex-wrap items-center gap-3 py-2.5 text-sm">
+                  <span className="font-medium">{personName(r.user_id)}</span>
+                  {r.note ? (
+                    <span className="text-xs text-muted-foreground">{r.note}</span>
+                  ) : null}
+                  <span className="ml-auto text-xs uppercase tracking-wide text-muted-foreground">
+                    {bodyName(r.body_id)}
+                  </span>
+                  <button
+                    onClick={() => revoke.mutate(r.id)}
+                    className="rounded-sm border border-border px-2.5 py-1 text-xs text-seal"
+                  >
+                    Revoke
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </Card>
+      ))}
+    </div>
+  );
+}
+
