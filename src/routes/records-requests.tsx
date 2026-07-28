@@ -283,7 +283,7 @@ function RecordsRequests() {
             {settings.data?.contact_email ? (
               <a
                 href={`mailto:${settings.data.contact_email}`}
-                className="text-seal hover:underline"
+                className="text-seal underline"
               >
                 {settings.data.contact_email}
               </a>
