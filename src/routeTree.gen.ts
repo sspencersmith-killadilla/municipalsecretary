@@ -18,6 +18,7 @@ import { Route as BodiesIndexRouteImport } from './routes/bodies/index'
 import { Route as MeetingsMeetingIdRouteImport } from './routes/meetings/$meetingId'
 import { Route as LegislationItemIdRouteImport } from './routes/legislation/$itemId'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedStaffApprovalsRouteImport } from './routes/_authenticated/staff/approvals'
 import { Route as AuthenticatedStaffLegislationIndexRouteImport } from './routes/_authenticated/staff/legislation/index'
 import { Route as AuthenticatedStaffLegislationItemIdRouteImport } from './routes/_authenticated/staff/legislation/$itemId'
 
@@ -65,6 +66,12 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedStaffApprovalsRoute =
+  AuthenticatedStaffApprovalsRouteImport.update({
+    id: '/staff/approvals',
+    path: '/staff/approvals',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedStaffLegislationIndexRoute =
   AuthenticatedStaffLegislationIndexRouteImport.update({
     id: '/staff/legislation/',
@@ -87,6 +94,7 @@ export interface FileRoutesByFullPath {
   '/bodies/': typeof BodiesIndexRoute
   '/legislation/': typeof LegislationIndexRoute
   '/meetings/': typeof MeetingsIndexRoute
+  '/staff/approvals': typeof AuthenticatedStaffApprovalsRoute
   '/staff/legislation/$itemId': typeof AuthenticatedStaffLegislationItemIdRoute
   '/staff/legislation/': typeof AuthenticatedStaffLegislationIndexRoute
 }
@@ -99,6 +107,7 @@ export interface FileRoutesByTo {
   '/bodies': typeof BodiesIndexRoute
   '/legislation': typeof LegislationIndexRoute
   '/meetings': typeof MeetingsIndexRoute
+  '/staff/approvals': typeof AuthenticatedStaffApprovalsRoute
   '/staff/legislation/$itemId': typeof AuthenticatedStaffLegislationItemIdRoute
   '/staff/legislation': typeof AuthenticatedStaffLegislationIndexRoute
 }
@@ -113,6 +122,7 @@ export interface FileRoutesById {
   '/bodies/': typeof BodiesIndexRoute
   '/legislation/': typeof LegislationIndexRoute
   '/meetings/': typeof MeetingsIndexRoute
+  '/_authenticated/staff/approvals': typeof AuthenticatedStaffApprovalsRoute
   '/_authenticated/staff/legislation/$itemId': typeof AuthenticatedStaffLegislationItemIdRoute
   '/_authenticated/staff/legislation/': typeof AuthenticatedStaffLegislationIndexRoute
 }
@@ -127,6 +137,7 @@ export interface FileRouteTypes {
     | '/bodies/'
     | '/legislation/'
     | '/meetings/'
+    | '/staff/approvals'
     | '/staff/legislation/$itemId'
     | '/staff/legislation/'
   fileRoutesByTo: FileRoutesByTo
@@ -139,6 +150,7 @@ export interface FileRouteTypes {
     | '/bodies'
     | '/legislation'
     | '/meetings'
+    | '/staff/approvals'
     | '/staff/legislation/$itemId'
     | '/staff/legislation'
   id:
@@ -152,6 +164,7 @@ export interface FileRouteTypes {
     | '/bodies/'
     | '/legislation/'
     | '/meetings/'
+    | '/_authenticated/staff/approvals'
     | '/_authenticated/staff/legislation/$itemId'
     | '/_authenticated/staff/legislation/'
   fileRoutesById: FileRoutesById
@@ -232,6 +245,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/staff/approvals': {
+      id: '/_authenticated/staff/approvals'
+      path: '/staff/approvals'
+      fullPath: '/staff/approvals'
+      preLoaderRoute: typeof AuthenticatedStaffApprovalsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/staff/legislation/': {
       id: '/_authenticated/staff/legislation/'
       path: '/staff/legislation'
@@ -251,12 +271,14 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedStaffApprovalsRoute: typeof AuthenticatedStaffApprovalsRoute
   AuthenticatedStaffLegislationItemIdRoute: typeof AuthenticatedStaffLegislationItemIdRoute
   AuthenticatedStaffLegislationIndexRoute: typeof AuthenticatedStaffLegislationIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedStaffApprovalsRoute: AuthenticatedStaffApprovalsRoute,
   AuthenticatedStaffLegislationItemIdRoute:
     AuthenticatedStaffLegislationItemIdRoute,
   AuthenticatedStaffLegislationIndexRoute:
