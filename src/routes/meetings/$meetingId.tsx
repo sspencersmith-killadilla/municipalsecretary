@@ -184,7 +184,17 @@ function MeetingDetail() {
       <div className="mx-auto grid max-w-5xl gap-10 px-5 py-12 lg:grid-cols-[1fr_260px]">
         <div className="space-y-10">
           <section>
-            <h2 className="border-b border-rule pb-2 font-display text-xl font-bold">Agenda</h2>
+            <div className="flex flex-wrap items-end justify-between gap-3 border-b border-rule pb-2">
+              <h2 className="font-display text-xl font-bold">Agenda</h2>
+              <Link
+                to="/meetings/text/$meetingId"
+                params={{ meetingId }}
+                className="docnum text-xs text-seal underline"
+              >
+                Text version (accessible)
+              </Link>
+            </div>
+
             {sections.length === 0 ? (
               <p className="py-6 text-sm text-muted-foreground">Agenda has not been posted.</p>
             ) : (
