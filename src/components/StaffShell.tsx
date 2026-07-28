@@ -16,6 +16,7 @@ import {
   DatabaseZap,
   BookOpen,
   ShieldCheck,
+  ClipboardList,
 } from "lucide-react";
 import type { ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -28,6 +29,7 @@ const NAV = [
   { to: "/staff/legislation", label: "Legislative Files", icon: FileText },
   { to: "/staff/approvals", label: "My Approvals", icon: CheckSquare },
   { to: "/staff/meetings", label: "Meetings & Agendas", icon: CalendarDays },
+  { to: "/staff/briefings", label: "Meeting Briefings", icon: ClipboardList },
   { to: "/staff/console", label: "Meeting Console", icon: Gavel },
   { to: "/staff/comments", label: "Public Comment", icon: MessageSquare },
   { to: "/staff/records", label: "Records & FOIA", icon: Archive },

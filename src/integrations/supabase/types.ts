@@ -14,6 +14,78 @@ export type Database = {
   }
   public: {
     Tables: {
+      agenda_item_briefings: {
+        Row: {
+          agenda_item_id: string
+          category: string
+          considerations: string[]
+          cost_amount: number | null
+          cost_disclosed: boolean
+          created_at: string
+          department: string | null
+          generated_at: string | null
+          grant_award_amount: number | null
+          id: string
+          is_grant: boolean
+          local_match_amount: number | null
+          meeting_id: string
+          plain_summary: string
+          updated_at: string
+          why_it_matters: string | null
+        }
+        Insert: {
+          agenda_item_id: string
+          category?: string
+          considerations?: string[]
+          cost_amount?: number | null
+          cost_disclosed?: boolean
+          created_at?: string
+          department?: string | null
+          generated_at?: string | null
+          grant_award_amount?: number | null
+          id?: string
+          is_grant?: boolean
+          local_match_amount?: number | null
+          meeting_id: string
+          plain_summary?: string
+          updated_at?: string
+          why_it_matters?: string | null
+        }
+        Update: {
+          agenda_item_id?: string
+          category?: string
+          considerations?: string[]
+          cost_amount?: number | null
+          cost_disclosed?: boolean
+          created_at?: string
+          department?: string | null
+          generated_at?: string | null
+          grant_award_amount?: number | null
+          id?: string
+          is_grant?: boolean
+          local_match_amount?: number | null
+          meeting_id?: string
+          plain_summary?: string
+          updated_at?: string
+          why_it_matters?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agenda_item_briefings_agenda_item_id_fkey"
+            columns: ["agenda_item_id"]
+            isOneToOne: true
+            referencedRelation: "agenda_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "agenda_item_briefings_meeting_id_fkey"
+            columns: ["meeting_id"]
+            isOneToOne: false
+            referencedRelation: "meetings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       agenda_items: {
         Row: {
           closed_session_citation: string | null
