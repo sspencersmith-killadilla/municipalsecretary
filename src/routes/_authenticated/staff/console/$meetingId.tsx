@@ -616,8 +616,23 @@ function LiveConsole() {
             </button>
           </div>
           {minutes.data?.finalized ? (
-            <p className="mt-2 text-xs text-success">Minutes finalized and published.</p>
+            <div className="mt-3 rounded-sm border border-rule bg-muted/30 p-3">
+              <p className="text-xs font-semibold text-success">
+                Minutes finalized, certified and published.
+              </p>
+              <p className="mt-1 text-[0.68rem] leading-relaxed text-muted-foreground">
+                {minutes.data.certification_note}
+              </p>
+              <p className="eyebrow mt-2">SHA-256 integrity seal</p>
+              <p className="docnum mt-0.5 break-all text-[0.65rem] normal-case text-foreground">
+                {formatHash(minutes.data.integrity_hash)}
+              </p>
+              <p className="mt-1 text-[0.65rem] text-muted-foreground">
+                Certified {formatDateTime(minutes.data.certified_at)}.
+              </p>
+            </div>
           ) : null}
+
         </aside>
       </div>
     </StaffShell>
