@@ -9,38 +9,167 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as MeetingsIndexRouteImport } from './routes/meetings/index'
+import { Route as LegislationIndexRouteImport } from './routes/legislation/index'
+import { Route as BodiesIndexRouteImport } from './routes/bodies/index'
+import { Route as MeetingsMeetingIdRouteImport } from './routes/meetings/$meetingId'
+import { Route as LegislationItemIdRouteImport } from './routes/legislation/$itemId'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedStaffLegislationIndexRouteImport } from './routes/_authenticated/staff/legislation/index'
 
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MeetingsIndexRoute = MeetingsIndexRouteImport.update({
+  id: '/meetings/',
+  path: '/meetings/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegislationIndexRoute = LegislationIndexRouteImport.update({
+  id: '/legislation/',
+  path: '/legislation/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BodiesIndexRoute = BodiesIndexRouteImport.update({
+  id: '/bodies/',
+  path: '/bodies/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MeetingsMeetingIdRoute = MeetingsMeetingIdRouteImport.update({
+  id: '/meetings/$meetingId',
+  path: '/meetings/$meetingId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegislationItemIdRoute = LegislationItemIdRouteImport.update({
+  id: '/legislation/$itemId',
+  path: '/legislation/$itemId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedStaffLegislationIndexRoute =
+  AuthenticatedStaffLegislationIndexRouteImport.update({
+    id: '/staff/legislation/',
+    path: '/staff/legislation/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/legislation/$itemId': typeof LegislationItemIdRoute
+  '/meetings/$meetingId': typeof MeetingsMeetingIdRoute
+  '/bodies/': typeof BodiesIndexRoute
+  '/legislation/': typeof LegislationIndexRoute
+  '/meetings/': typeof MeetingsIndexRoute
+  '/staff/legislation/': typeof AuthenticatedStaffLegislationIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/legislation/$itemId': typeof LegislationItemIdRoute
+  '/meetings/$meetingId': typeof MeetingsMeetingIdRoute
+  '/bodies': typeof BodiesIndexRoute
+  '/legislation': typeof LegislationIndexRoute
+  '/meetings': typeof MeetingsIndexRoute
+  '/staff/legislation': typeof AuthenticatedStaffLegislationIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/legislation/$itemId': typeof LegislationItemIdRoute
+  '/meetings/$meetingId': typeof MeetingsMeetingIdRoute
+  '/bodies/': typeof BodiesIndexRoute
+  '/legislation/': typeof LegislationIndexRoute
+  '/meetings/': typeof MeetingsIndexRoute
+  '/_authenticated/staff/legislation/': typeof AuthenticatedStaffLegislationIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/legislation/$itemId'
+    | '/meetings/$meetingId'
+    | '/bodies/'
+    | '/legislation/'
+    | '/meetings/'
+    | '/staff/legislation/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/legislation/$itemId'
+    | '/meetings/$meetingId'
+    | '/bodies'
+    | '/legislation'
+    | '/meetings'
+    | '/staff/legislation'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/auth'
+    | '/_authenticated/dashboard'
+    | '/legislation/$itemId'
+    | '/meetings/$meetingId'
+    | '/bodies/'
+    | '/legislation/'
+    | '/meetings/'
+    | '/_authenticated/staff/legislation/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
+  LegislationItemIdRoute: typeof LegislationItemIdRoute
+  MeetingsMeetingIdRoute: typeof MeetingsMeetingIdRoute
+  BodiesIndexRoute: typeof BodiesIndexRoute
+  LegislationIndexRoute: typeof LegislationIndexRoute
+  MeetingsIndexRoute: typeof MeetingsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,22 +177,82 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/meetings/': {
+      id: '/meetings/'
+      path: '/meetings'
+      fullPath: '/meetings/'
+      preLoaderRoute: typeof MeetingsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legislation/': {
+      id: '/legislation/'
+      path: '/legislation'
+      fullPath: '/legislation/'
+      preLoaderRoute: typeof LegislationIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bodies/': {
+      id: '/bodies/'
+      path: '/bodies'
+      fullPath: '/bodies/'
+      preLoaderRoute: typeof BodiesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/meetings/$meetingId': {
+      id: '/meetings/$meetingId'
+      path: '/meetings/$meetingId'
+      fullPath: '/meetings/$meetingId'
+      preLoaderRoute: typeof MeetingsMeetingIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legislation/$itemId': {
+      id: '/legislation/$itemId'
+      path: '/legislation/$itemId'
+      fullPath: '/legislation/$itemId'
+      preLoaderRoute: typeof LegislationItemIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/staff/legislation/': {
+      id: '/_authenticated/staff/legislation/'
+      path: '/staff/legislation'
+      fullPath: '/staff/legislation/'
+      preLoaderRoute: typeof AuthenticatedStaffLegislationIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedStaffLegislationIndexRoute: typeof AuthenticatedStaffLegislationIndexRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedStaffLegislationIndexRoute:
+    AuthenticatedStaffLegislationIndexRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
+  LegislationItemIdRoute: LegislationItemIdRoute,
+  MeetingsMeetingIdRoute: MeetingsMeetingIdRoute,
+  BodiesIndexRoute: BodiesIndexRoute,
+  LegislationIndexRoute: LegislationIndexRoute,
+  MeetingsIndexRoute: MeetingsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
