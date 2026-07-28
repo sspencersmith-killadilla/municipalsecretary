@@ -402,6 +402,14 @@ function LiveConsole() {
           </ul>
         </section>
 
+        <SpeakerQueuePanel
+          meetingId={meetingId}
+          defaultSeconds={meeting.data?.speaker_seconds ?? 180}
+          onSpoken={(line) => setMinutesDraft((d) => (d ? `${d}\n${line}` : line))}
+        />
+
+
+
         <section className="space-y-6">
           <div className="rounded-sm border border-border bg-card">
             <h2 className="border-b border-rule px-5 py-3 font-display text-base font-bold">
