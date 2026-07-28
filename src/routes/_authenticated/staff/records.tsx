@@ -214,7 +214,7 @@ function RequestQueue() {
         </ul>
       </div>
 
-      <aside>
+      <aside aria-label="Selected request">
         {open ? (
           <RequestDetail
             key={open.id}
