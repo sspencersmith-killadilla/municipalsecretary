@@ -265,18 +265,18 @@ function MeetingDetail() {
             </section>
           )}
 
-          {closed.data?.public_action_taken ? (
+          {closedSession.data?.public_action_taken ? (
             <section>
               <h2 className="border-b border-rule pb-2 font-display text-xl font-bold">
                 Executive session
               </h2>
               <p className="pt-5 text-sm leading-relaxed">
-                {closed.data.citation ? (
+                {closedSession.data.citation ? (
                   <span className="docnum block text-xs uppercase text-muted-foreground">
-                    Authority: {closed.data.citation}
+                    Authority: {closedSession.data.citation}
                   </span>
                 ) : null}
-                {closed.data.public_action_taken}
+                {closedSession.data.public_action_taken}
               </p>
             </section>
           ) : null}
@@ -301,7 +301,7 @@ function MeetingDetail() {
               <PublicCommentForm
                 meetingId={meetingId}
                 agendaItems={commentItems}
-                open={m?.public_comment_open ?? true}
+                open={m?.comments_open ?? true}
                 deadline={m?.comment_deadline ?? null}
               />
               <ApprovedComments meetingId={meetingId} />
