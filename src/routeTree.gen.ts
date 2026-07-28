@@ -9,38 +9,257 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as MeetingsIndexRouteImport } from './routes/meetings/index'
+import { Route as LegislationIndexRouteImport } from './routes/legislation/index'
+import { Route as BodiesIndexRouteImport } from './routes/bodies/index'
+import { Route as MeetingsMeetingIdRouteImport } from './routes/meetings/$meetingId'
+import { Route as LegislationItemIdRouteImport } from './routes/legislation/$itemId'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedStaffApprovalsRouteImport } from './routes/_authenticated/staff/approvals'
+import { Route as AuthenticatedStaffAdminRouteImport } from './routes/_authenticated/staff/admin'
+import { Route as AuthenticatedStaffMeetingsIndexRouteImport } from './routes/_authenticated/staff/meetings/index'
+import { Route as AuthenticatedStaffLegislationIndexRouteImport } from './routes/_authenticated/staff/legislation/index'
+import { Route as AuthenticatedStaffConsoleIndexRouteImport } from './routes/_authenticated/staff/console/index'
+import { Route as AuthenticatedStaffMeetingsMeetingIdRouteImport } from './routes/_authenticated/staff/meetings/$meetingId'
+import { Route as AuthenticatedStaffLegislationItemIdRouteImport } from './routes/_authenticated/staff/legislation/$itemId'
+import { Route as AuthenticatedStaffConsoleMeetingIdRouteImport } from './routes/_authenticated/staff/console/$meetingId'
 
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MeetingsIndexRoute = MeetingsIndexRouteImport.update({
+  id: '/meetings/',
+  path: '/meetings/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegislationIndexRoute = LegislationIndexRouteImport.update({
+  id: '/legislation/',
+  path: '/legislation/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BodiesIndexRoute = BodiesIndexRouteImport.update({
+  id: '/bodies/',
+  path: '/bodies/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MeetingsMeetingIdRoute = MeetingsMeetingIdRouteImport.update({
+  id: '/meetings/$meetingId',
+  path: '/meetings/$meetingId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegislationItemIdRoute = LegislationItemIdRouteImport.update({
+  id: '/legislation/$itemId',
+  path: '/legislation/$itemId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedStaffApprovalsRoute =
+  AuthenticatedStaffApprovalsRouteImport.update({
+    id: '/staff/approvals',
+    path: '/staff/approvals',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedStaffAdminRoute = AuthenticatedStaffAdminRouteImport.update({
+  id: '/staff/admin',
+  path: '/staff/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedStaffMeetingsIndexRoute =
+  AuthenticatedStaffMeetingsIndexRouteImport.update({
+    id: '/staff/meetings/',
+    path: '/staff/meetings/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedStaffLegislationIndexRoute =
+  AuthenticatedStaffLegislationIndexRouteImport.update({
+    id: '/staff/legislation/',
+    path: '/staff/legislation/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedStaffConsoleIndexRoute =
+  AuthenticatedStaffConsoleIndexRouteImport.update({
+    id: '/staff/console/',
+    path: '/staff/console/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedStaffMeetingsMeetingIdRoute =
+  AuthenticatedStaffMeetingsMeetingIdRouteImport.update({
+    id: '/staff/meetings/$meetingId',
+    path: '/staff/meetings/$meetingId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedStaffLegislationItemIdRoute =
+  AuthenticatedStaffLegislationItemIdRouteImport.update({
+    id: '/staff/legislation/$itemId',
+    path: '/staff/legislation/$itemId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedStaffConsoleMeetingIdRoute =
+  AuthenticatedStaffConsoleMeetingIdRouteImport.update({
+    id: '/staff/console/$meetingId',
+    path: '/staff/console/$meetingId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/legislation/$itemId': typeof LegislationItemIdRoute
+  '/meetings/$meetingId': typeof MeetingsMeetingIdRoute
+  '/bodies/': typeof BodiesIndexRoute
+  '/legislation/': typeof LegislationIndexRoute
+  '/meetings/': typeof MeetingsIndexRoute
+  '/staff/admin': typeof AuthenticatedStaffAdminRoute
+  '/staff/approvals': typeof AuthenticatedStaffApprovalsRoute
+  '/staff/console/$meetingId': typeof AuthenticatedStaffConsoleMeetingIdRoute
+  '/staff/legislation/$itemId': typeof AuthenticatedStaffLegislationItemIdRoute
+  '/staff/meetings/$meetingId': typeof AuthenticatedStaffMeetingsMeetingIdRoute
+  '/staff/console/': typeof AuthenticatedStaffConsoleIndexRoute
+  '/staff/legislation/': typeof AuthenticatedStaffLegislationIndexRoute
+  '/staff/meetings/': typeof AuthenticatedStaffMeetingsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/legislation/$itemId': typeof LegislationItemIdRoute
+  '/meetings/$meetingId': typeof MeetingsMeetingIdRoute
+  '/bodies': typeof BodiesIndexRoute
+  '/legislation': typeof LegislationIndexRoute
+  '/meetings': typeof MeetingsIndexRoute
+  '/staff/admin': typeof AuthenticatedStaffAdminRoute
+  '/staff/approvals': typeof AuthenticatedStaffApprovalsRoute
+  '/staff/console/$meetingId': typeof AuthenticatedStaffConsoleMeetingIdRoute
+  '/staff/legislation/$itemId': typeof AuthenticatedStaffLegislationItemIdRoute
+  '/staff/meetings/$meetingId': typeof AuthenticatedStaffMeetingsMeetingIdRoute
+  '/staff/console': typeof AuthenticatedStaffConsoleIndexRoute
+  '/staff/legislation': typeof AuthenticatedStaffLegislationIndexRoute
+  '/staff/meetings': typeof AuthenticatedStaffMeetingsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/legislation/$itemId': typeof LegislationItemIdRoute
+  '/meetings/$meetingId': typeof MeetingsMeetingIdRoute
+  '/bodies/': typeof BodiesIndexRoute
+  '/legislation/': typeof LegislationIndexRoute
+  '/meetings/': typeof MeetingsIndexRoute
+  '/_authenticated/staff/admin': typeof AuthenticatedStaffAdminRoute
+  '/_authenticated/staff/approvals': typeof AuthenticatedStaffApprovalsRoute
+  '/_authenticated/staff/console/$meetingId': typeof AuthenticatedStaffConsoleMeetingIdRoute
+  '/_authenticated/staff/legislation/$itemId': typeof AuthenticatedStaffLegislationItemIdRoute
+  '/_authenticated/staff/meetings/$meetingId': typeof AuthenticatedStaffMeetingsMeetingIdRoute
+  '/_authenticated/staff/console/': typeof AuthenticatedStaffConsoleIndexRoute
+  '/_authenticated/staff/legislation/': typeof AuthenticatedStaffLegislationIndexRoute
+  '/_authenticated/staff/meetings/': typeof AuthenticatedStaffMeetingsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/legislation/$itemId'
+    | '/meetings/$meetingId'
+    | '/bodies/'
+    | '/legislation/'
+    | '/meetings/'
+    | '/staff/admin'
+    | '/staff/approvals'
+    | '/staff/console/$meetingId'
+    | '/staff/legislation/$itemId'
+    | '/staff/meetings/$meetingId'
+    | '/staff/console/'
+    | '/staff/legislation/'
+    | '/staff/meetings/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/legislation/$itemId'
+    | '/meetings/$meetingId'
+    | '/bodies'
+    | '/legislation'
+    | '/meetings'
+    | '/staff/admin'
+    | '/staff/approvals'
+    | '/staff/console/$meetingId'
+    | '/staff/legislation/$itemId'
+    | '/staff/meetings/$meetingId'
+    | '/staff/console'
+    | '/staff/legislation'
+    | '/staff/meetings'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/auth'
+    | '/_authenticated/dashboard'
+    | '/legislation/$itemId'
+    | '/meetings/$meetingId'
+    | '/bodies/'
+    | '/legislation/'
+    | '/meetings/'
+    | '/_authenticated/staff/admin'
+    | '/_authenticated/staff/approvals'
+    | '/_authenticated/staff/console/$meetingId'
+    | '/_authenticated/staff/legislation/$itemId'
+    | '/_authenticated/staff/meetings/$meetingId'
+    | '/_authenticated/staff/console/'
+    | '/_authenticated/staff/legislation/'
+    | '/_authenticated/staff/meetings/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
+  LegislationItemIdRoute: typeof LegislationItemIdRoute
+  MeetingsMeetingIdRoute: typeof MeetingsMeetingIdRoute
+  BodiesIndexRoute: typeof BodiesIndexRoute
+  LegislationIndexRoute: typeof LegislationIndexRoute
+  MeetingsIndexRoute: typeof MeetingsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,22 +267,148 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/meetings/': {
+      id: '/meetings/'
+      path: '/meetings'
+      fullPath: '/meetings/'
+      preLoaderRoute: typeof MeetingsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legislation/': {
+      id: '/legislation/'
+      path: '/legislation'
+      fullPath: '/legislation/'
+      preLoaderRoute: typeof LegislationIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bodies/': {
+      id: '/bodies/'
+      path: '/bodies'
+      fullPath: '/bodies/'
+      preLoaderRoute: typeof BodiesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/meetings/$meetingId': {
+      id: '/meetings/$meetingId'
+      path: '/meetings/$meetingId'
+      fullPath: '/meetings/$meetingId'
+      preLoaderRoute: typeof MeetingsMeetingIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legislation/$itemId': {
+      id: '/legislation/$itemId'
+      path: '/legislation/$itemId'
+      fullPath: '/legislation/$itemId'
+      preLoaderRoute: typeof LegislationItemIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/staff/approvals': {
+      id: '/_authenticated/staff/approvals'
+      path: '/staff/approvals'
+      fullPath: '/staff/approvals'
+      preLoaderRoute: typeof AuthenticatedStaffApprovalsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/staff/admin': {
+      id: '/_authenticated/staff/admin'
+      path: '/staff/admin'
+      fullPath: '/staff/admin'
+      preLoaderRoute: typeof AuthenticatedStaffAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/staff/meetings/': {
+      id: '/_authenticated/staff/meetings/'
+      path: '/staff/meetings'
+      fullPath: '/staff/meetings/'
+      preLoaderRoute: typeof AuthenticatedStaffMeetingsIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/staff/legislation/': {
+      id: '/_authenticated/staff/legislation/'
+      path: '/staff/legislation'
+      fullPath: '/staff/legislation/'
+      preLoaderRoute: typeof AuthenticatedStaffLegislationIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/staff/console/': {
+      id: '/_authenticated/staff/console/'
+      path: '/staff/console'
+      fullPath: '/staff/console/'
+      preLoaderRoute: typeof AuthenticatedStaffConsoleIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/staff/meetings/$meetingId': {
+      id: '/_authenticated/staff/meetings/$meetingId'
+      path: '/staff/meetings/$meetingId'
+      fullPath: '/staff/meetings/$meetingId'
+      preLoaderRoute: typeof AuthenticatedStaffMeetingsMeetingIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/staff/legislation/$itemId': {
+      id: '/_authenticated/staff/legislation/$itemId'
+      path: '/staff/legislation/$itemId'
+      fullPath: '/staff/legislation/$itemId'
+      preLoaderRoute: typeof AuthenticatedStaffLegislationItemIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/staff/console/$meetingId': {
+      id: '/_authenticated/staff/console/$meetingId'
+      path: '/staff/console/$meetingId'
+      fullPath: '/staff/console/$meetingId'
+      preLoaderRoute: typeof AuthenticatedStaffConsoleMeetingIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedStaffAdminRoute: typeof AuthenticatedStaffAdminRoute
+  AuthenticatedStaffApprovalsRoute: typeof AuthenticatedStaffApprovalsRoute
+  AuthenticatedStaffConsoleMeetingIdRoute: typeof AuthenticatedStaffConsoleMeetingIdRoute
+  AuthenticatedStaffLegislationItemIdRoute: typeof AuthenticatedStaffLegislationItemIdRoute
+  AuthenticatedStaffMeetingsMeetingIdRoute: typeof AuthenticatedStaffMeetingsMeetingIdRoute
+  AuthenticatedStaffConsoleIndexRoute: typeof AuthenticatedStaffConsoleIndexRoute
+  AuthenticatedStaffLegislationIndexRoute: typeof AuthenticatedStaffLegislationIndexRoute
+  AuthenticatedStaffMeetingsIndexRoute: typeof AuthenticatedStaffMeetingsIndexRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedStaffAdminRoute: AuthenticatedStaffAdminRoute,
+  AuthenticatedStaffApprovalsRoute: AuthenticatedStaffApprovalsRoute,
+  AuthenticatedStaffConsoleMeetingIdRoute:
+    AuthenticatedStaffConsoleMeetingIdRoute,
+  AuthenticatedStaffLegislationItemIdRoute:
+    AuthenticatedStaffLegislationItemIdRoute,
+  AuthenticatedStaffMeetingsMeetingIdRoute:
+    AuthenticatedStaffMeetingsMeetingIdRoute,
+  AuthenticatedStaffConsoleIndexRoute: AuthenticatedStaffConsoleIndexRoute,
+  AuthenticatedStaffLegislationIndexRoute:
+    AuthenticatedStaffLegislationIndexRoute,
+  AuthenticatedStaffMeetingsIndexRoute: AuthenticatedStaffMeetingsIndexRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
+  LegislationItemIdRoute: LegislationItemIdRoute,
+  MeetingsMeetingIdRoute: MeetingsMeetingIdRoute,
+  BodiesIndexRoute: BodiesIndexRoute,
+  LegislationIndexRoute: LegislationIndexRoute,
+  MeetingsIndexRoute: MeetingsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
