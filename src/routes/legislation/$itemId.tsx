@@ -1,8 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { Paperclip } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { getAttachmentLink } from "@/lib/attachments.functions";
 import { PublicLayout, StatusPill } from "@/components/PublicLayout";
 import { formatDate, formatDateTime, ITEM_STATUS_LABELS, statusTone } from "@/lib/format";
+
 
 export const Route = createFileRoute("/legislation/$itemId")({
   head: () => ({
