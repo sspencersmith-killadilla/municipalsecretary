@@ -238,7 +238,9 @@ function EditItem() {
               onChange={(v) => setForm({ ...form, department: v })}
             />
           </div>
+          <AttachmentsPanel itemId={itemId} />
         </div>
+
 
         <aside className="space-y-5">
           <div className="rounded-sm border border-border bg-card p-4">
