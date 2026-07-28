@@ -301,15 +301,6 @@ function LiveConsole() {
         { onConflict: "meeting_id" },
       );
       if (error) throw error;
-      if (finalize) {
-        await supabase.from("audit_log").insert({
-          entity_type: "minutes",
-          entity_id: meetingId,
-          action: "minutes_certified",
-          detail: `SHA-256 ${hash?.slice(0, 16)}…`,
-          actor_id: auth.user?.id ?? null,
-        });
-      }
     },
     onSuccess: (_d, finalize) => {
       toast.success(finalize ? "Minutes finalized and certified" : "Minutes saved");
