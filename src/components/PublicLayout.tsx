@@ -87,9 +87,13 @@ export function PublicLayout({ children }: { children: ReactNode }) {
             <a href="/api/public/rss.xml" className="hover:text-seal hover:underline">
               RSS
             </a>
+            <Link to="/docs/clerk-handbook" className="hover:text-seal hover:underline">
+              Clerk handbook
+            </Link>
             <Link to="/docs/self-hosting" className="hover:text-seal hover:underline">
               Self-hosting guide
             </Link>
+
 
             <Link to="/accessibility" className="hover:text-seal hover:underline">
               Accessibility
