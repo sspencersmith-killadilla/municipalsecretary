@@ -347,6 +347,62 @@ export function buildMinutes(
   return doc.finish();
 }
 
+/* ------------------------------------------------- notice / posting proof */
+
+export type NoticeRecord = {
+  kind: string;
+  version: number;
+  content: string;
+  postingLocations: string[];
+  postedAt: string;
+  postedByName: string | null;
+  deadlineAt: string | null;
+  compliant: boolean;
+  complianceNote: string | null;
+};
+
+/** Proof-of-posting certificate: the artifact a clerk produces in litigation. */
+export function buildNoticeCertificate(meta: DocMeta, notices: NoticeRecord[]): jsPDF {
+  const doc = new Doc(meta);
+
+  doc.heading("Certificate of Posting");
+  doc.text(
+    `I certify that the public notice(s) described below for the above meeting of the ${meta.bodyName} were posted at the times and locations stated, in accordance with the applicable open meetings requirements of this jurisdiction.`,
+    { size: 10, leading: 1.45 },
+  );
+
+  for (const n of notices) {
+    doc.gap(10);
+    doc.rule(0.5);
+    doc.text(`${n.kind.toUpperCase()} NOTICE — VERSION ${n.version}`, {
+      size: 9,
+      style: "bold",
+      font: "helvetica",
+    });
+    doc.labelled("Posted", formatStamp(n.postedAt));
+    doc.labelled("Posted by", n.postedByName ?? "Clerk of record");
+    doc.labelled("Posting locations", n.postingLocations.join("; ") || "Not recorded");
+    doc.labelled("Statutory deadline", n.deadlineAt ? formatStamp(n.deadlineAt) : "Not computed");
+    doc.labelled("Timeliness", n.compliant ? "TIMELY" : "POSTED AFTER DEADLINE");
+    if (n.complianceNote) doc.labelled("Note", n.complianceNote);
+    doc.gap(4);
+    doc.text("Notice as posted", { size: 8.5, style: "bold", font: "helvetica", color: 90 });
+    doc.text(n.content, { size: 9.5, leading: 1.4 });
+  }
+
+  doc.gap(28);
+  doc.rule(0.5);
+  doc.text("_______________________________________", { size: 10, color: 90 });
+  doc.text("Municipal Clerk", { size: 9, font: "helvetica", color: 90 });
+  doc.text(`Certificate generated ${formatStamp(new Date().toISOString())}`, {
+    size: 8.5,
+    font: "helvetica",
+    color: 120,
+  });
+
+  return doc.finish();
+}
+
 /* -------------------------------------------------------------- filenames */
 
 export function slugify(value: string) {
@@ -356,15 +412,24 @@ export function slugify(value: string) {
     .replace(/^-|-$/g, "");
 }
 
+export type ExportDocType = "agenda_packet" | "minutes" | "posting_certificate" | "closed_minutes";
+
+const DOC_LABELS: Record<ExportDocType, string> = {
+  agenda_packet: "agenda-packet",
+  minutes: "minutes",
+  posting_certificate: "posting-certificate",
+  closed_minutes: "closed-session-minutes",
+};
+
 export function buildFileName(input: {
   startsAt: string | null;
   bodyName: string;
-  docType: "agenda_packet" | "minutes";
+  docType: ExportDocType;
   version: number;
 }) {
   const date = input.startsAt
     ? new Date(input.startsAt).toISOString().slice(0, 10)
     : "undated";
-  const label = input.docType === "agenda_packet" ? "agenda-packet" : "minutes";
-  return `${date}_${slugify(input.bodyName)}_${label}_v${input.version}.pdf`;
+  return `${date}_${slugify(input.bodyName)}_${DOC_LABELS[input.docType]}_v${input.version}.pdf`;
 }
+

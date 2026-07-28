@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { StaffShell, StaffHeader } from "@/components/StaffShell";
+import { SpeakerQueuePanel } from "@/components/staff/SpeakerQueuePanel";
 import { formatDateTime } from "@/lib/format";
 import { computeTally, quorumRequired, type VoteChoice, type VoteRule } from "@/lib/votes";
 import { downloadMinutes } from "@/lib/documents";
@@ -401,6 +402,14 @@ function LiveConsole() {
             )}
           </ul>
         </section>
+
+        <SpeakerQueuePanel
+          meetingId={meetingId}
+          defaultSeconds={meeting.data?.speaker_seconds ?? 180}
+          onSpoken={(line) => setMinutesDraft((d) => (d ? `${d}\n${line}` : line))}
+        />
+
+
 
         <section className="space-y-6">
           <div className="rounded-sm border border-border bg-card">
