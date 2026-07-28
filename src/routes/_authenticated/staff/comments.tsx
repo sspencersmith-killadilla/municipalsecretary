@@ -135,7 +135,7 @@ function CommentModeration() {
                       <Link
                         to="/staff/meetings/$meetingId"
                         params={{ meetingId: meeting.id }}
-                        className="text-seal hover:underline"
+                        className="text-seal underline"
                       >
                         {meeting.title}
                       </Link>

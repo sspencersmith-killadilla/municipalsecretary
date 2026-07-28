@@ -70,6 +70,7 @@ function StaffLegislation() {
             className="min-w-[220px] flex-1 rounded-sm border border-input bg-card px-3 py-2 text-sm"
           />
           <select
+            aria-label="Filter by status"
             value={status}
             onChange={(e) => setStatus(e.target.value)}
             className="rounded-sm border border-input bg-card px-3 py-2 text-sm"

@@ -58,7 +58,7 @@ export function StaffShell({ children }: { children: ReactNode }) {
             </span>
           </span>
         </Link>
-        <nav className="flex-1 space-y-0.5 p-3">
+        <nav aria-label="Staff sections" className="flex-1 space-y-0.5 p-3">
           {NAV.map((n) => {
             const active = pathname === n.to || pathname.startsWith(n.to + "/");
             return (
