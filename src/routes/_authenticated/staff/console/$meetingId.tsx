@@ -280,23 +280,43 @@ function LiveConsole() {
 
   const saveMinutes = useMutation({
     mutationFn: async (finalize: boolean) => {
+      const now = new Date().toISOString();
+      const hash = finalize ? await sha256Hex(minutesDraft) : null;
+      const { data: auth } = await supabase.auth.getUser();
       const { error } = await supabase.from("minutes").upsert(
         {
           meeting_id: meetingId,
           content: minutesDraft,
           finalized: finalize,
-          finalized_at: finalize ? new Date().toISOString() : null,
+          finalized_at: finalize ? now : null,
+          finalized_by: finalize ? (auth.user?.id ?? null) : null,
+          certified_by: finalize ? (auth.user?.id ?? null) : null,
+          certified_at: finalize ? now : null,
+          certification_note: finalize
+            ? "Certified as a true and correct record of the proceedings by the presiding clerk."
+            : null,
+          integrity_hash: hash,
         },
         { onConflict: "meeting_id" },
       );
       if (error) throw error;
+      if (finalize) {
+        await supabase.from("audit_log").insert({
+          entity_type: "minutes",
+          entity_id: meetingId,
+          action: "minutes_certified",
+          detail: `SHA-256 ${hash?.slice(0, 16)}…`,
+          actor_id: auth.user?.id ?? null,
+        });
+      }
     },
     onSuccess: (_d, finalize) => {
-      toast.success(finalize ? "Minutes finalized" : "Minutes saved");
+      toast.success(finalize ? "Minutes finalized and certified" : "Minutes saved");
       inv("minutes");
     },
     onError: (e: Error) => toast.error(e.message),
   });
+
 
   const exportMinutes = useMutation({
     mutationFn: () => downloadMinutes(meetingId),
