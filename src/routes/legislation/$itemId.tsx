@@ -128,6 +128,32 @@ function ItemDetail() {
             </section>
           ) : null}
 
+          {(attachments.data ?? []).length > 0 ? (
+            <section>
+              <h2 className="flex items-center gap-2 border-b border-rule pb-2 font-display text-xl font-bold">
+                <Paperclip className="h-4 w-4" aria-hidden="true" /> Supporting documents
+              </h2>
+              <ul className="divide-y divide-border">
+                {(attachments.data ?? []).map((a) => (
+                  <li key={a.id} className="flex flex-wrap items-center gap-3 py-3 text-sm">
+                    <button
+                      type="button"
+                      onClick={() => openAttachment(a.id)}
+                      className="min-w-0 flex-1 text-left font-medium text-foreground hover:text-seal hover:underline"
+                    >
+                      {a.file_name}
+                    </button>
+                    <span className="docnum text-xs text-muted-foreground">
+                      {a.size_bytes ? `${Math.max(1, Math.round(a.size_bytes / 1024))} KB` : ""}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
+
+
+
           <section>
             <h2 className="border-b border-rule pb-2 font-display text-xl font-bold">
               Meeting history
