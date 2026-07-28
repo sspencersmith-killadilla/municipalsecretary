@@ -1,11 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { Check, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { StaffShell, StaffHeader } from "@/components/StaffShell";
 import { formatDateTime } from "@/lib/format";
+import { listCommentsForModeration } from "@/lib/staff-pii.functions";
 
 export const Route = createFileRoute("/_authenticated/staff/comments")({
   head: () => ({
@@ -26,19 +28,13 @@ type Status = "pending" | "approved" | "rejected";
 
 function CommentModeration() {
   const qc = useQueryClient();
+  const fetchComments = useServerFn(listCommentsForModeration);
   const [status, setStatus] = useState<Status>("pending");
 
   const comments = useQuery({
     queryKey: ["staff", "comments", status],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("public_comments")
-        .select("*, meetings(id,title,starts_at), agenda_items(title,display_number)")
-        .eq("status", status)
-        .order("created_at", { ascending: false })
-        .limit(200);
-      if (error) throw error;
-      return data ?? [];
+      return await fetchComments({ data: { status } });
     },
   });
 

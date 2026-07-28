@@ -192,7 +192,7 @@ export function ApprovedComments({ meetingId }: { meetingId: string }) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("public_comments")
-        .select("id,full_name,organization,position,comment_type,body,created_at,agenda_item_id")
+        .select("id,full_name,position,comment_type,body,created_at,agenda_item_id")
         .eq("meeting_id", meetingId)
         .eq("status", "approved")
         .order("created_at");

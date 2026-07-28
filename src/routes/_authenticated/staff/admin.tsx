@@ -2,7 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
+import { listMembersWithContact } from "@/lib/staff-pii.functions";
 import { StaffShell, StaffHeader } from "@/components/StaffShell";
 
 export const Route = createFileRoute("/_authenticated/staff/admin")({
@@ -711,15 +713,11 @@ function preview(pattern: string, seq: number) {
 
 function MembersPanel() {
   const qc = useQueryClient();
+  const fetchMembers = useServerFn(listMembersWithContact);
   const q = useQuery({
     queryKey: ["admin", "members"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("members")
-        .select("id,full_name,email,active")
-        .order("full_name");
-      if (error) throw error;
-      return data ?? [];
+      return await fetchMembers();
     },
   });
   const [name, setName] = useState("");
