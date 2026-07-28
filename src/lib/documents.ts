@@ -39,7 +39,9 @@ async function loadCore(meetingId: string) {
   const [{ data: meeting, error: mErr }, { data: settings }] = await Promise.all([
     supabase
       .from("meetings")
-      .select("id,title,starts_at,location,bodies(name,seat_count,quorum_type,quorum_value)")
+      .select(
+        "id,title,starts_at,location,body_id,bodies(name,seat_count,quorum_type,quorum_value)",
+      )
       .eq("id", meetingId)
       .maybeSingle(),
     supabase.from("settings").select("municipality_name").eq("id", 1).maybeSingle(),
@@ -63,8 +65,7 @@ async function loadAgenda(meetingId: string): Promise<PacketItem[]> {
   const { data, error } = await supabase
     .from("agenda_items")
     .select(
-      "id,title,display_number,section_name,section_order,position,outcome," +
-        "legislative_items(assigned_number,file_number,sponsor,department,summary,fiscal_impact,body_text,item_types(name))",
+      "id,title,display_number,section_name,section_order,position,outcome,legislative_items(assigned_number,file_number,sponsor,department,summary,fiscal_impact,body_text,item_types(name))",
     )
     .eq("meeting_id", meetingId)
     .order("section_order")
@@ -146,7 +147,7 @@ export async function downloadMinutes(meetingId: string) {
       supabase
         .from("body_seats")
         .select("seat_label,title,member_id,members(id,full_name)")
-        .eq("body_id", (base.meeting as { body_id?: string }).body_id ?? "")
+        .eq("body_id", base.meeting.body_id)
         .order("sort_order"),
       supabase.from("attendance").select("member_id,status").eq("meeting_id", meetingId),
       supabase
@@ -181,24 +182,16 @@ export async function downloadMinutes(meetingId: string) {
     present >= quorum ? "was" : "was NOT"
   } present.`;
 
-  const labelFor = (agendaItemId: string | null) => {
-    const idx = items.findIndex((_, i) => i === -1);
-    void idx;
-    const match = (items as PacketItem[]).find(
-      (_, i) => (motionAgendaTitles[agendaItemId ?? ""] ?? null) === i,
-    );
-    void match;
-    return motionAgendaTitles[agendaItemId ?? ""] ?? "General business";
-  };
-
+  const motionAgendaTitles: Record<string, string> = {};
   const { data: agendaLookup } = await supabase
     .from("agenda_items")
     .select("id,title,display_number")
     .eq("meeting_id", meetingId);
-  const motionAgendaTitles: Record<string, string> = {};
   (agendaLookup ?? []).forEach((a) => {
     motionAgendaTitles[a.id] = `${a.display_number ? `${a.display_number}. ` : ""}${a.title}`;
   });
+  const labelFor = (agendaItemId: string | null) =>
+    motionAgendaTitles[agendaItemId ?? ""] ?? "General business";
 
   const motions: MinutesMotion[] = (motionRows ?? []).map((m) => ({
     itemLabel: labelFor(m.agenda_item_id),
