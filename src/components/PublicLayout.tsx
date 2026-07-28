@@ -73,6 +73,9 @@ export function PublicLayout({ children }: { children: ReactNode }) {
             <Link to="/subscribe" className="hover:text-seal hover:underline">
               Subscribe
             </Link>
+            <Link to="/records-requests" className="hover:text-seal hover:underline">
+              Records requests
+            </Link>
             <a href="/api/public/rss.xml" className="hover:text-seal hover:underline">
               RSS
             </a>
