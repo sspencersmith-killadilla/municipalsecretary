@@ -1,12 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { ArrowDown, ArrowUp, Trash2, Plus } from "lucide-react";
+import { ArrowDown, ArrowUp, Trash2, Plus, FileDown } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { StaffShell, StaffHeader } from "@/components/StaffShell";
 import { StatusPill } from "@/components/PublicLayout";
 import { formatDateTime, MEETING_STATUS_LABELS, statusTone } from "@/lib/format";
+import { downloadAgendaPacket } from "@/lib/documents";
 
 export const Route = createFileRoute("/_authenticated/staff/meetings/$meetingId")({
   head: () => ({
@@ -183,6 +184,12 @@ function AgendaBuilder() {
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const exportPacket = useMutation({
+    mutationFn: () => downloadAgendaPacket(meetingId),
+    onSuccess: (fileName) => toast.success(`Downloaded ${fileName}`),
+    onError: (e: Error) => toast.error(e.message),
+  });
+
   const setStatus = useMutation({
     mutationFn: async (status: string) => {
       const { error } = await supabase
@@ -227,6 +234,13 @@ function AgendaBuilder() {
               className="rounded-sm border border-input px-3.5 py-2 text-sm font-semibold"
             >
               Renumber
+            </button>
+            <button
+              onClick={() => exportPacket.mutate()}
+              disabled={exportPacket.isPending}
+              className="inline-flex items-center gap-1.5 rounded-sm border border-input px-3.5 py-2 text-sm font-semibold disabled:opacity-50"
+            >
+              <FileDown className="h-4 w-4" /> Agenda packet PDF
             </button>
             <button
               onClick={() => setStatus.mutate("published")}

@@ -69,7 +69,12 @@ export function PublicLayout({ children }: { children: ReactNode }) {
             {settings?.municipality_name ?? "CivicLedger"} — official legislative record.
             {settings?.contact_email ? ` Clerk: ${settings.contact_email}` : ""}
           </p>
-          <p className="docnum">Public records portal</p>
+          <p className="docnum flex items-center gap-4">
+            <Link to="/docs/self-hosting" className="hover:text-seal hover:underline">
+              Self-hosting guide
+            </Link>
+            <span>Public records portal</span>
+          </p>
         </div>
       </footer>
     </div>

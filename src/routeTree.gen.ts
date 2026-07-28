@@ -17,6 +17,7 @@ import { Route as LegislationIndexRouteImport } from './routes/legislation/index
 import { Route as BodiesIndexRouteImport } from './routes/bodies/index'
 import { Route as MeetingsMeetingIdRouteImport } from './routes/meetings/$meetingId'
 import { Route as LegislationItemIdRouteImport } from './routes/legislation/$itemId'
+import { Route as DocsSelfHostingRouteImport } from './routes/docs/self-hosting'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedStaffApprovalsRouteImport } from './routes/_authenticated/staff/approvals'
 import { Route as AuthenticatedStaffAdminRouteImport } from './routes/_authenticated/staff/admin'
@@ -64,6 +65,11 @@ const MeetingsMeetingIdRoute = MeetingsMeetingIdRouteImport.update({
 const LegislationItemIdRoute = LegislationItemIdRouteImport.update({
   id: '/legislation/$itemId',
   path: '/legislation/$itemId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsSelfHostingRoute = DocsSelfHostingRouteImport.update({
+  id: '/docs/self-hosting',
+  path: '/docs/self-hosting',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
@@ -123,6 +129,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/docs/self-hosting': typeof DocsSelfHostingRoute
   '/legislation/$itemId': typeof LegislationItemIdRoute
   '/meetings/$meetingId': typeof MeetingsMeetingIdRoute
   '/bodies/': typeof BodiesIndexRoute
@@ -141,6 +148,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/docs/self-hosting': typeof DocsSelfHostingRoute
   '/legislation/$itemId': typeof LegislationItemIdRoute
   '/meetings/$meetingId': typeof MeetingsMeetingIdRoute
   '/bodies': typeof BodiesIndexRoute
@@ -161,6 +169,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/docs/self-hosting': typeof DocsSelfHostingRoute
   '/legislation/$itemId': typeof LegislationItemIdRoute
   '/meetings/$meetingId': typeof MeetingsMeetingIdRoute
   '/bodies/': typeof BodiesIndexRoute
@@ -181,6 +190,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/dashboard'
+    | '/docs/self-hosting'
     | '/legislation/$itemId'
     | '/meetings/$meetingId'
     | '/bodies/'
@@ -199,6 +209,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/dashboard'
+    | '/docs/self-hosting'
     | '/legislation/$itemId'
     | '/meetings/$meetingId'
     | '/bodies'
@@ -218,6 +229,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/_authenticated/dashboard'
+    | '/docs/self-hosting'
     | '/legislation/$itemId'
     | '/meetings/$meetingId'
     | '/bodies/'
@@ -237,6 +249,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  DocsSelfHostingRoute: typeof DocsSelfHostingRoute
   LegislationItemIdRoute: typeof LegislationItemIdRoute
   MeetingsMeetingIdRoute: typeof MeetingsMeetingIdRoute
   BodiesIndexRoute: typeof BodiesIndexRoute
@@ -300,6 +313,13 @@ declare module '@tanstack/react-router' {
       path: '/legislation/$itemId'
       fullPath: '/legislation/$itemId'
       preLoaderRoute: typeof LegislationItemIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/self-hosting': {
+      id: '/docs/self-hosting'
+      path: '/docs/self-hosting'
+      fullPath: '/docs/self-hosting'
+      preLoaderRoute: typeof DocsSelfHostingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/dashboard': {
@@ -403,6 +423,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  DocsSelfHostingRoute: DocsSelfHostingRoute,
   LegislationItemIdRoute: LegislationItemIdRoute,
   MeetingsMeetingIdRoute: MeetingsMeetingIdRoute,
   BodiesIndexRoute: BodiesIndexRoute,

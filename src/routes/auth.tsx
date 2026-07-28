@@ -5,6 +5,8 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { useSession } from "@/lib/session";
+import { ensureDemoAdmin } from "@/lib/demo.functions";
+import { DEMO_ADMIN_EMAIL, DEMO_ADMIN_PASSWORD } from "@/lib/demo-credentials";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -63,6 +65,24 @@ function AuthPage() {
     }
   }
 
+  async function demoSignIn() {
+    setBusy(true);
+    try {
+      await ensureDemoAdmin();
+      const { error } = await supabase.auth.signInWithPassword({
+        email: DEMO_ADMIN_EMAIL,
+        password: DEMO_ADMIN_PASSWORD,
+      });
+      if (error) throw error;
+      toast.success("Signed in as the demo administrator");
+      navigate({ to: "/staff/admin", replace: true });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Demo sign-in failed");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function google() {
     const result = await lovable.auth.signInWithOAuth("google", {
       redirect_uri: window.location.origin,
@@ -99,6 +119,31 @@ function AuthPage() {
         <div className="w-full max-w-sm">
           <p className="eyebrow">{mode === "signin" ? "Sign in" : "Create account"}</p>
           <h1 className="mt-2 font-display text-2xl font-bold text-foreground">Staff portal</h1>
+
+          <div className="mt-6 rounded-sm border border-brass/50 bg-brass/8 p-4">
+            <p className="eyebrow text-seal">Demo site — administrator access</p>
+            <dl className="mt-2 space-y-0.5 text-xs">
+              <div className="flex gap-2">
+                <dt className="w-16 text-muted-foreground">Email</dt>
+                <dd className="docnum normal-case text-foreground">{DEMO_ADMIN_EMAIL}</dd>
+              </div>
+              <div className="flex gap-2">
+                <dt className="w-16 text-muted-foreground">Password</dt>
+                <dd className="docnum normal-case text-foreground">{DEMO_ADMIN_PASSWORD}</dd>
+              </div>
+            </dl>
+            <button
+              onClick={demoSignIn}
+              disabled={busy}
+              className="mt-3 w-full rounded-sm bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-60"
+            >
+              Sign in as demo administrator
+            </button>
+            <p className="mt-2 text-[0.68rem] leading-relaxed text-muted-foreground">
+              Full access to the administration portal: bodies, seats, item types, numbering,
+              vote rules, members and municipality settings.
+            </p>
+          </div>
 
           <button
             onClick={google}
