@@ -5,6 +5,8 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { StaffShell, StaffHeader } from "@/components/StaffShell";
 import { StatusPill } from "@/components/PublicLayout";
+import { AttachmentsPanel } from "@/components/staff/AttachmentsPanel";
+
 import { useSession } from "@/lib/session";
 import { formatDateTime, ITEM_STATUS_LABELS, statusTone } from "@/lib/format";
 
