@@ -160,7 +160,7 @@ function MeetingDetail() {
               />
             ) : null}
             {m?.meeting_kind && m.meeting_kind !== "regular" ? (
-              <StatusPill label={`${m.meeting_kind} meeting`} tone="warn" />
+              <StatusPill label={`${m.meeting_kind} meeting`} tone={statusTone("in_review")} />
             ) : null}
           </div>
           {m?.cancelled_at ? (
