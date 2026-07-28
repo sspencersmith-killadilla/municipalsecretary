@@ -168,8 +168,14 @@ function LiveConsole() {
   });
 
   const setMeeting = useMutation({
-    mutationFn: async (patch: Record<string, unknown>) => {
-      const { error } = await supabase.from("meetings").update(patch).eq("id", meetingId);
+    mutationFn: async (patch: {
+      status?: string;
+      current_agenda_item_id?: string | null;
+    }) => {
+      const { error } = await supabase
+        .from("meetings")
+        .update(patch as never)
+        .eq("id", meetingId);
       if (error) throw error;
     },
     onSuccess: () => inv("meeting"),
