@@ -60,7 +60,7 @@ function MeetingTextVersion() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("minutes")
-        .select("content,finalized_at")
+        .select("content,finalized_at,certified_at,certification_note,integrity_hash")
         .eq("meeting_id", meetingId)
         .eq("finalized", true)
         .maybeSingle();
