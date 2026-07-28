@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { StaffShell, StaffHeader } from "@/components/StaffShell";
 import { SpeakerQueuePanel } from "@/components/staff/SpeakerQueuePanel";
+import { sha256Hex, formatHash } from "@/lib/integrity";
 import { formatDateTime } from "@/lib/format";
 import { computeTally, quorumRequired, type VoteChoice, type VoteRule } from "@/lib/votes";
 import { downloadMinutes } from "@/lib/documents";
