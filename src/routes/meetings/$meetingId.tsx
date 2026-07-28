@@ -327,7 +327,65 @@ function MeetingDetail() {
               )}
             </ul>
           </div>
+
+          {(notices.data ?? []).length > 0 ? (
+            <div className="paper rounded-sm p-5">
+              <p className="eyebrow">Public notice</p>
+              <ul className="mt-3 space-y-3 text-sm">
+                {(notices.data ?? []).map((n) => (
+                  <li key={n.id} className="border-b border-border pb-3 last:border-0 last:pb-0">
+                    <p className="docnum text-xs uppercase text-muted-foreground">
+                      {n.notice_kind} · v{n.version} · posted {formatDateTime(n.posted_at)}
+                    </p>
+                    {(n.posted_locations ?? []).length > 0 ? (
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        Posted at: {(n.posted_locations as string[]).join(", ")}
+                      </p>
+                    ) : null}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+
+          {(media.data ?? []).length > 0 ? (
+            <div className="paper rounded-sm p-5">
+              <p className="eyebrow">Watch or listen</p>
+              <ul className="mt-3 space-y-2 text-sm">
+                {(media.data ?? []).map((v) => (
+                  <li key={v.id}>
+                    <a
+                      href={v.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="font-medium text-seal hover:underline"
+                    >
+                      {v.label}
+                    </a>
+                    <span className="block text-xs text-muted-foreground">
+                      {v.media_type}
+                      {v.captions_available ? " · captioned" : " · captions pending"}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+
+          <div className="paper rounded-sm p-5">
+            <p className="eyebrow">Stay informed</p>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Get an email when agendas post or minutes are published.
+            </p>
+            <Link
+              to="/subscribe"
+              className="mt-3 inline-block text-sm font-semibold text-seal hover:underline"
+            >
+              Subscribe to notices →
+            </Link>
+          </div>
         </aside>
+
       </div>
     </PublicLayout>
   );
