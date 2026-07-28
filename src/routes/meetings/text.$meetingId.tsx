@@ -171,7 +171,18 @@ function MeetingTextVersion() {
             <div className="mt-3 whitespace-pre-wrap text-sm leading-relaxed text-foreground">
               {minutes.data.content}
             </div>
+            {minutes.data.integrity_hash ? (
+              <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
+                {minutes.data.certification_note ??
+                  "Certified as a true and correct record of the proceedings."}{" "}
+                SHA-256 integrity seal:{" "}
+                <span className="docnum break-all normal-case">
+                  {formatHash(minutes.data.integrity_hash)}
+                </span>
+              </p>
+            ) : null}
           </>
+
         ) : (
           <p className="pt-4 text-sm text-muted-foreground">
             Minutes have not been approved for this meeting yet.
