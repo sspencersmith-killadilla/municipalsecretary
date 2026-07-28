@@ -136,7 +136,14 @@ function RequestQueue() {
       action: string;
     }) => {
       const { data: auth } = await supabase.auth.getUser();
-      const patch: Record<string, unknown> = {};
+      const patch: {
+        status?: RequestStatus;
+        closed_at?: string | null;
+        response_note?: string | null;
+        redaction_note?: string | null;
+        fee_estimate?: number | null;
+        assigned_to?: string | null;
+      } = {};
       if (input.status) {
         patch.status = input.status;
         patch.closed_at = ["fulfilled", "denied", "withdrawn"].includes(input.status)
@@ -147,6 +154,7 @@ function RequestQueue() {
       if (input.redaction_note !== undefined) patch.redaction_note = input.redaction_note || null;
       if (input.fee_estimate !== undefined) patch.fee_estimate = input.fee_estimate;
       patch.assigned_to = auth.user?.id ?? null;
+
 
       const { error } = await supabase.from("records_requests").update(patch).eq("id", input.id);
       if (error) throw error;
