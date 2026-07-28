@@ -142,7 +142,7 @@ function EditItem() {
           step_id: s.id,
           step_name: s.name,
           step_order: s.step_order,
-          approver_role: s.approver_role,
+          approver_role: s.approver_role as never,
           state: "pending" as const,
         })),
       );
@@ -172,7 +172,7 @@ function EditItem() {
   });
 
   const i = item.data;
-  const steps = [...(((workflow.data?.workflow_step_actions ?? []) as StepAction[]) ?? [])].sort(
+  const steps = [...((workflow.data?.workflow_step_actions ?? []) as StepAction[])].sort(
     (a, b) => a.step_order - b.step_order,
   );
 

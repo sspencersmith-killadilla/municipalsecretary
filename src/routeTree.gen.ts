@@ -19,6 +19,7 @@ import { Route as MeetingsMeetingIdRouteImport } from './routes/meetings/$meetin
 import { Route as LegislationItemIdRouteImport } from './routes/legislation/$itemId'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedStaffLegislationIndexRouteImport } from './routes/_authenticated/staff/legislation/index'
+import { Route as AuthenticatedStaffLegislationItemIdRouteImport } from './routes/_authenticated/staff/legislation/$itemId'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -70,6 +71,12 @@ const AuthenticatedStaffLegislationIndexRoute =
     path: '/staff/legislation/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedStaffLegislationItemIdRoute =
+  AuthenticatedStaffLegislationItemIdRouteImport.update({
+    id: '/staff/legislation/$itemId',
+    path: '/staff/legislation/$itemId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -80,6 +87,7 @@ export interface FileRoutesByFullPath {
   '/bodies/': typeof BodiesIndexRoute
   '/legislation/': typeof LegislationIndexRoute
   '/meetings/': typeof MeetingsIndexRoute
+  '/staff/legislation/$itemId': typeof AuthenticatedStaffLegislationItemIdRoute
   '/staff/legislation/': typeof AuthenticatedStaffLegislationIndexRoute
 }
 export interface FileRoutesByTo {
@@ -91,6 +99,7 @@ export interface FileRoutesByTo {
   '/bodies': typeof BodiesIndexRoute
   '/legislation': typeof LegislationIndexRoute
   '/meetings': typeof MeetingsIndexRoute
+  '/staff/legislation/$itemId': typeof AuthenticatedStaffLegislationItemIdRoute
   '/staff/legislation': typeof AuthenticatedStaffLegislationIndexRoute
 }
 export interface FileRoutesById {
@@ -104,6 +113,7 @@ export interface FileRoutesById {
   '/bodies/': typeof BodiesIndexRoute
   '/legislation/': typeof LegislationIndexRoute
   '/meetings/': typeof MeetingsIndexRoute
+  '/_authenticated/staff/legislation/$itemId': typeof AuthenticatedStaffLegislationItemIdRoute
   '/_authenticated/staff/legislation/': typeof AuthenticatedStaffLegislationIndexRoute
 }
 export interface FileRouteTypes {
@@ -117,6 +127,7 @@ export interface FileRouteTypes {
     | '/bodies/'
     | '/legislation/'
     | '/meetings/'
+    | '/staff/legislation/$itemId'
     | '/staff/legislation/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -128,6 +139,7 @@ export interface FileRouteTypes {
     | '/bodies'
     | '/legislation'
     | '/meetings'
+    | '/staff/legislation/$itemId'
     | '/staff/legislation'
   id:
     | '__root__'
@@ -140,6 +152,7 @@ export interface FileRouteTypes {
     | '/bodies/'
     | '/legislation/'
     | '/meetings/'
+    | '/_authenticated/staff/legislation/$itemId'
     | '/_authenticated/staff/legislation/'
   fileRoutesById: FileRoutesById
 }
@@ -226,16 +239,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedStaffLegislationIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/staff/legislation/$itemId': {
+      id: '/_authenticated/staff/legislation/$itemId'
+      path: '/staff/legislation/$itemId'
+      fullPath: '/staff/legislation/$itemId'
+      preLoaderRoute: typeof AuthenticatedStaffLegislationItemIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedStaffLegislationItemIdRoute: typeof AuthenticatedStaffLegislationItemIdRoute
   AuthenticatedStaffLegislationIndexRoute: typeof AuthenticatedStaffLegislationIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedStaffLegislationItemIdRoute:
+    AuthenticatedStaffLegislationItemIdRoute,
   AuthenticatedStaffLegislationIndexRoute:
     AuthenticatedStaffLegislationIndexRoute,
 }
