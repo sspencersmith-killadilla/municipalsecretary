@@ -253,6 +253,13 @@ function AgendaBuilder() {
               Publish agenda
             </button>
             <Link
+              to="/staff/briefings/$meetingId"
+              params={{ meetingId }}
+              className="rounded-sm border border-input px-3.5 py-2 text-sm font-semibold"
+            >
+              Council briefing
+            </Link>
+            <Link
               to="/staff/console/$meetingId"
               params={{ meetingId }}
               className="rounded-sm bg-seal px-3.5 py-2 text-sm font-semibold text-seal-foreground"
