@@ -623,8 +623,8 @@ function NumberingPanel() {
           <code className="docnum">{"{seq:000}"}</code> for zero padding.
         </p>
         <div className="flex flex-wrap gap-2">
-          aria-label="Select staff member or board"
           <select
+            aria-label="Board access selection"
             value={newType}
             onChange={(e) => setNewType(e.target.value)}
             className="min-w-60 flex-1 rounded-sm border border-input bg-background px-2.5 py-2 text-sm"
