@@ -55,6 +55,30 @@ function ItemDetail() {
     },
   });
 
+  const attachments = useQuery({
+    queryKey: ["public", "item-attachments", itemId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("item_attachments")
+        .select("id,file_name,size_bytes,created_at")
+        .eq("item_id", itemId)
+        .order("created_at", { ascending: true });
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  async function openAttachment(attachmentId: string) {
+    try {
+      const res = await getAttachmentLink({ data: { attachmentId } });
+      window.open(res.url, "_blank", "noopener");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Could not open document");
+    }
+  }
+
+
+
   const i = item.data;
   const type = (i?.item_types as { name?: string } | null)?.name;
 
