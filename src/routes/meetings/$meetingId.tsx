@@ -98,7 +98,7 @@ function MeetingDetail() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("meeting_notices")
-        .select("id,notice_kind,version,posted_at,posted_locations,content")
+        .select("id,kind,version,posted_at,posting_locations")
         .eq("meeting_id", meetingId)
         .order("version", { ascending: false });
       if (error) throw error;
@@ -111,7 +111,7 @@ function MeetingDetail() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("meeting_media")
-        .select("id,label,url,media_type,captions_available")
+        .select("id,url,media_type,provider,captions_available")
         .eq("meeting_id", meetingId)
         .order("created_at");
       if (error) throw error;
@@ -335,11 +335,11 @@ function MeetingDetail() {
                 {(notices.data ?? []).map((n) => (
                   <li key={n.id} className="border-b border-border pb-3 last:border-0 last:pb-0">
                     <p className="docnum text-xs uppercase text-muted-foreground">
-                      {n.notice_kind} · v{n.version} · posted {formatDateTime(n.posted_at)}
+                      {n.kind} · v{n.version} · posted {formatDateTime(n.posted_at)}
                     </p>
-                    {(n.posted_locations ?? []).length > 0 ? (
+                    {(n.posting_locations ?? []).length > 0 ? (
                       <p className="mt-1 text-xs text-muted-foreground">
-                        Posted at: {(n.posted_locations as string[]).join(", ")}
+                        Posted at: {(n.posting_locations as string[]).join(", ")}
                       </p>
                     ) : null}
                   </li>
@@ -360,7 +360,7 @@ function MeetingDetail() {
                       rel="noreferrer"
                       className="font-medium text-seal hover:underline"
                     >
-                      {v.label}
+                      {v.provider ?? v.media_type}
                     </a>
                     <span className="block text-xs text-muted-foreground">
                       {v.media_type}
