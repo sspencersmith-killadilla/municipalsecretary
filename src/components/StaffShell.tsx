@@ -12,6 +12,8 @@ import {
   Landmark,
   MessageSquare,
   Archive,
+  ScrollText,
+  ShieldCheck,
 } from "lucide-react";
 import type { ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -27,6 +29,8 @@ const NAV = [
   { to: "/staff/console", label: "Meeting Console", icon: Gavel },
   { to: "/staff/comments", label: "Public Comment", icon: MessageSquare },
   { to: "/staff/records", label: "Records & FOIA", icon: Archive },
+  { to: "/staff/audit", label: "Audit Trail", icon: ScrollText },
+  { to: "/staff/security", label: "Account Security", icon: ShieldCheck },
   { to: "/staff/admin", label: "Administration", icon: Settings2 },
 ] as const;
 
