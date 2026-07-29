@@ -58,6 +58,10 @@ function RecordsRequests() {
   const [filed, setFiled] = useState<{ tracking_code: string; due_at: string | null } | null>(null);
   const [code, setCode] = useState("");
   const [lookupCode, setLookupCode] = useState("");
+  const lookupRequest = useServerFn(lookupRecordsRequest);
+  const fileRequest = useServerFn(fileRecordsRequest);
+
+
 
   const settings = useQuery({
     queryKey: ["settings", "records"],
