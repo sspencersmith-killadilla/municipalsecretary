@@ -9,6 +9,7 @@ import { sha256Hex, formatHash } from "@/lib/integrity";
 import { formatDateTime } from "@/lib/format";
 import { computeTally, quorumRequired, type VoteChoice, type VoteRule } from "@/lib/votes";
 import { downloadMinutes } from "@/lib/documents";
+import { useSession, ROLE_LABELS } from "@/lib/session";
 
 export const Route = createFileRoute("/_authenticated/staff/console/$meetingId")({
   head: () => ({
@@ -22,12 +23,22 @@ export const Route = createFileRoute("/_authenticated/staff/console/$meetingId")
   component: LiveConsole,
 });
 
+
+function describeWriteError(e: Error) {
+  if (/row-level security|permission denied/i.test(e.message)) {
+    return "Only the Clerk or an Administrator may record proceedings for this meeting.";
+  }
+  return e.message;
+}
+
 const CHOICES: VoteChoice[] = ["aye", "nay", "abstain", "recuse", "absent"];
 const ATTEND = ["present", "remote", "absent", "excused"] as const;
 
 function LiveConsole() {
   const { meetingId } = Route.useParams();
   const qc = useQueryClient();
+  const { canManage, roles, loading: sessionLoading } = useSession();
+  const readOnly = !sessionLoading && !canManage;
   const [motionText, setMotionText] = useState("");
   const [mover, setMover] = useState("");
   const [seconder, setSeconder] = useState("");
@@ -167,7 +178,7 @@ function LiveConsole() {
       if (error) throw error;
     },
     onSuccess: () => inv("attendance"),
-    onError: (e: Error) => toast.error(e.message),
+    onError: (e: Error) => toast.error(describeWriteError(e)),
   });
 
   const setMeeting = useMutation({
@@ -182,7 +193,7 @@ function LiveConsole() {
       if (error) throw error;
     },
     onSuccess: () => inv("meeting"),
-    onError: (e: Error) => toast.error(e.message),
+    onError: (e: Error) => toast.error(describeWriteError(e)),
   });
 
   const createMotion = useMutation({
@@ -205,7 +216,7 @@ function LiveConsole() {
       toast.success("Motion on the floor");
       inv("motions");
     },
-    onError: (e: Error) => toast.error(e.message),
+    onError: (e: Error) => toast.error(describeWriteError(e)),
   });
 
   const castVote = useMutation({
@@ -227,7 +238,7 @@ function LiveConsole() {
       if (error) throw error;
     },
     onSuccess: () => inv("motions"),
-    onError: (e: Error) => toast.error(e.message),
+    onError: (e: Error) => toast.error(describeWriteError(e)),
   });
 
   const closeMotion = useMutation({
@@ -276,7 +287,7 @@ function LiveConsole() {
       inv("motions");
       inv("agenda");
     },
-    onError: (e: Error) => toast.error(e.message),
+    onError: (e: Error) => toast.error(describeWriteError(e)),
   });
 
   const saveMinutes = useMutation({
@@ -306,14 +317,14 @@ function LiveConsole() {
       toast.success(finalize ? "Minutes finalized and certified" : "Minutes saved");
       inv("minutes");
     },
-    onError: (e: Error) => toast.error(e.message),
+    onError: (e: Error) => toast.error(describeWriteError(e)),
   });
 
 
   const exportMinutes = useMutation({
     mutationFn: () => downloadMinutes(meetingId),
     onSuccess: (fileName) => toast.success(`Downloaded ${fileName}`),
-    onError: (e: Error) => toast.error(e.message),
+    onError: (e: Error) => toast.error(describeWriteError(e)),
   });
 
   function generateMinutes() {
@@ -363,19 +374,33 @@ function LiveConsole() {
             </span>
             <button
               onClick={() => setMeeting.mutate({ status: "in_progress" })}
-              className="rounded-sm bg-seal px-3.5 py-2 text-sm font-semibold text-seal-foreground"
+              disabled={readOnly}
+              className="rounded-sm bg-seal px-3.5 py-2 text-sm font-semibold text-seal-foreground disabled:opacity-40"
             >
               Call to order
             </button>
             <button
               onClick={() => setMeeting.mutate({ status: "adjourned", current_agenda_item_id: null })}
-              className="rounded-sm border border-input px-3.5 py-2 text-sm font-semibold"
+              disabled={readOnly}
+              className="rounded-sm border border-input px-3.5 py-2 text-sm font-semibold disabled:opacity-40"
             >
               Adjourn
             </button>
           </>
         }
       />
+
+      {readOnly ? (
+        <div
+          role="status"
+          className="mx-6 mt-6 rounded-sm border border-seal/30 bg-seal/10 px-4 py-3 text-sm text-foreground"
+        >
+          <strong className="font-semibold">Observer view.</strong> Signed in as{" "}
+          {roles.map((r) => ROLE_LABELS[r]).join(", ") || "no role"} — recording roll call, motions,
+          votes and minutes is reserved for the Clerk and Administrators. You can follow the
+          proceedings here in real time.
+        </div>
+      ) : null}
 
       <div className="grid gap-6 p-6 xl:grid-cols-[18rem_minmax(0,1fr)_20rem]">
         <section className="rounded-sm border border-border bg-card p-5">
@@ -394,7 +419,8 @@ function LiveConsole() {
                         onClick={() =>
                           setAttendance.mutate({ memberId: m.member!.id, status: s })
                         }
-                        className={`rounded-sm border px-2 py-0.5 text-[0.68rem] font-semibold uppercase tracking-wide ${
+                        disabled={readOnly}
+                        className={`rounded-sm border px-2 py-0.5 text-[0.68rem] font-semibold uppercase tracking-wide disabled:opacity-40 ${
                           active
                             ? "border-primary bg-primary text-primary-foreground"
                             : "border-input text-muted-foreground"
@@ -445,7 +471,8 @@ function LiveConsole() {
                   </span>
                   <button
                     onClick={() => setMeeting.mutate({ current_agenda_item_id: a.id })}
-                    className="rounded-sm border border-input px-2 py-1 text-xs font-semibold"
+                    disabled={readOnly}
+                    className="rounded-sm border border-input px-2 py-1 text-xs font-semibold disabled:opacity-40"
                   >
                     {a.id === currentId ? "On the floor" : "Take up"}
                   </button>
@@ -469,6 +496,7 @@ function LiveConsole() {
                 rule={(rules.data ?? []).find((r) => r.id === openMotion.vote_rule_id) ?? null}
                 seatCount={body?.seat_count ?? members.length}
                 presentCount={presentCount}
+                readOnly={readOnly}
                 onVote={(memberId, choice) =>
                   castVote.mutate({ motionId: openMotion.id, memberId, choice })
                 }
@@ -530,7 +558,8 @@ function LiveConsole() {
                 </div>
                 <button
                   type="submit"
-                  className="rounded-sm bg-seal px-3.5 py-2 text-sm font-semibold text-seal-foreground"
+                  disabled={readOnly}
+                  className="rounded-sm bg-seal px-3.5 py-2 text-sm font-semibold text-seal-foreground disabled:opacity-40"
                 >
                   Put motion on the floor
                 </button>
@@ -570,6 +599,7 @@ function LiveConsole() {
             <div className="flex gap-1.5">
               <button
                 onClick={generateMinutes}
+                disabled={readOnly}
                 className="rounded-sm border border-input px-2 py-1 text-xs font-semibold"
               >
                 Generate
@@ -587,20 +617,20 @@ function LiveConsole() {
             value={minutesDraft}
             onChange={(e) => setMinutesDraft(e.target.value)}
             rows={22}
-            disabled={!!minutes.data?.finalized}
+            disabled={readOnly || !!minutes.data?.finalized}
             className="mt-3 w-full rounded-sm border border-input bg-background px-2.5 py-2 font-mono text-xs leading-relaxed disabled:opacity-70"
           />
           <div className="mt-3 flex gap-2">
             <button
               onClick={() => saveMinutes.mutate(false)}
-              disabled={!!minutes.data?.finalized}
+              disabled={readOnly || !!minutes.data?.finalized}
               className="rounded-sm border border-input px-3 py-1.5 text-sm font-semibold disabled:opacity-40"
             >
               Save draft
             </button>
             <button
               onClick={() => saveMinutes.mutate(true)}
-              disabled={!!minutes.data?.finalized}
+              disabled={readOnly || !!minutes.data?.finalized}
               className="rounded-sm bg-primary px-3 py-1.5 text-sm font-semibold text-primary-foreground disabled:opacity-40"
             >
               Finalize
@@ -639,6 +669,7 @@ function OpenMotionPanel({
   presentCount,
   onVote,
   onClose,
+  readOnly,
 }: {
   motion: { id: string; text: string; votes: { member_id: string; choice: string }[] };
   members: { id: string; full_name: string }[];
@@ -648,6 +679,7 @@ function OpenMotionPanel({
   presentCount: number;
   onVote: (memberId: string, choice: VoteChoice) => void;
   onClose: () => void;
+  readOnly: boolean;
 }) {
   const voteMap = new Map(motion.votes.map((v) => [v.member_id, v.choice]));
   const tally = computeTally({
@@ -675,7 +707,8 @@ function OpenMotionPanel({
                 <button
                   key={c}
                   onClick={() => onVote(m.id, c)}
-                  className={`rounded-sm border px-2 py-1 text-[0.68rem] font-semibold uppercase tracking-wide ${
+                  disabled={readOnly}
+                  className={`rounded-sm border px-2 py-1 text-[0.68rem] font-semibold uppercase tracking-wide disabled:opacity-40 ${
                     active
                       ? "border-seal bg-seal text-seal-foreground"
                       : "border-input text-muted-foreground"
@@ -697,7 +730,8 @@ function OpenMotionPanel({
         </p>
         <button
           onClick={onClose}
-          className="rounded-sm bg-primary px-3.5 py-2 text-sm font-semibold text-primary-foreground"
+          disabled={readOnly}
+          className="rounded-sm bg-primary px-3.5 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-40"
         >
           Close vote & record
         </button>
