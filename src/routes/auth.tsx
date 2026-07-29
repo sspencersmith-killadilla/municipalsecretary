@@ -116,34 +116,46 @@ function AuthPage() {
       </aside>
 
       <main className="flex flex-1 items-center justify-center bg-background px-5 py-12">
-        <div className="w-full max-w-sm">
+        <div className="w-full max-w-md">
           <p className="eyebrow">{mode === "signin" ? "Sign in" : "Create account"}</p>
           <h1 className="mt-2 font-display text-2xl font-bold text-foreground">Staff portal</h1>
 
           <div className="mt-6 rounded-sm border border-brass/50 bg-brass/8 p-4">
-            <p className="eyebrow text-seal">Demo site — administrator access</p>
-            <dl className="mt-2 space-y-0.5 text-xs">
-              <div className="flex gap-2">
-                <dt className="w-16 text-muted-foreground">Email</dt>
-                <dd className="docnum normal-case text-foreground">{DEMO_ADMIN_EMAIL}</dd>
-              </div>
-              <div className="flex gap-2">
-                <dt className="w-16 text-muted-foreground">Password</dt>
-                <dd className="docnum normal-case text-foreground">{DEMO_ADMIN_PASSWORD}</dd>
-              </div>
-            </dl>
-            <button
-              onClick={demoSignIn}
-              disabled={busy}
-              className="mt-3 w-full rounded-sm bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-60"
-            >
-              Sign in as demo administrator
-            </button>
-            <p className="mt-2 text-[0.68rem] leading-relaxed text-muted-foreground">
-              Full access to the administration portal: bodies, seats, item types, numbering,
-              vote rules, members and municipality settings.
+            <p className="eyebrow text-seal">Demo site — pick a role to explore</p>
+            <p className="mt-1.5 text-[0.68rem] leading-relaxed text-muted-foreground">
+              Every demo account uses the password{" "}
+              <span className="docnum normal-case text-foreground">{DEMO_PASSWORD}</span>. Accounts
+              are provisioned the first time one is used.
             </p>
+
+            {(["Administration", "Staff", "Board members"] as const).map((group) => (
+              <div key={group} className="mt-4">
+                <h2 className="eyebrow text-muted-foreground">{group}</h2>
+                <ul className="mt-1.5 space-y-1.5">
+                  {DEMO_ACCOUNTS.filter((a) => a.group === group).map((account) => (
+                    <li key={account.email}>
+                      <button
+                        onClick={() => demoSignIn(account)}
+                        disabled={busy}
+                        className="w-full rounded-sm border border-rule bg-card px-3 py-2 text-left transition-colors hover:border-seal disabled:opacity-60"
+                      >
+                        <span className="block text-sm font-semibold text-foreground">
+                          {account.name} — {account.title}
+                        </span>
+                        <span className="docnum mt-0.5 block normal-case text-[0.68rem] text-muted-foreground">
+                          {account.email}
+                        </span>
+                        <span className="mt-1 block text-[0.68rem] leading-relaxed text-muted-foreground">
+                          {account.blurb}
+                        </span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
+
 
           <button
             onClick={google}
