@@ -92,6 +92,3 @@ export const ensureDemoAccounts = createServerFn({ method: "POST" }).handler(asy
 
   return { count: DEMO_ACCOUNTS.length };
 });
-
-/** Backwards-compatible alias used by the sign-in page. */
-export const ensureDemoAdmin = ensureDemoAccounts;
