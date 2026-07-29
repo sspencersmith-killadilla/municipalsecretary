@@ -5,8 +5,8 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { useSession } from "@/lib/session";
-import { ensureDemoAdmin } from "@/lib/demo.functions";
-import { DEMO_ADMIN_EMAIL, DEMO_ADMIN_PASSWORD } from "@/lib/demo-credentials";
+import { ensureDemoAccounts } from "@/lib/demo.functions";
+import { DEMO_ACCOUNTS, DEMO_PASSWORD, type DemoAccount } from "@/lib/demo-credentials";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
