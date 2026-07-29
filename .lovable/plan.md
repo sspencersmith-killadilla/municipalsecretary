@@ -1,57 +1,53 @@
-# Making CivicLedger city-deployable: full compliance build-out
+## Goal
 
-The core system (bodies, items, agendas, live console, voting, minutes, PDFs, AI intake, board permissions) exists. What follows is the remaining work, mostly statutory compliance, records law, accessibility, and operations. I'll build it phase by phase in this order.
+One scripted end-to-end tour of CivicLedger, captured once and published twice: a step-by-step PDF guide with screen grabs, and a real screen-recorded MP4 of the same session.
 
-Requirements vary by state (open-meetings act, retention schedule, publication rules), so everything is built as configurable settings rather than one state's rules hardcoded.
+## Approach
 
----
+A single Playwright script drives the live app in the sandbox, signing in as each demo persona in turn. Playwright records the whole session to video while also taking a labeled screenshot at every step. Both deliverables come from that one run, so the doc and the video never drift apart.
 
-## Phase A — Open Meetings Act compliance
+```text
+walkthrough.py  ──►  screenshots/NN_step.png ──►  build_pdf.py  ──► walkthrough.pdf
+                └─►  session.webm            ──►  ffmpeg edit  ──► walkthrough.mp4
+```
 
-1. **Public notice engine** — a notice record per meeting: notice text, posting timestamp, posting locations, who posted, and the statutory deadline computed from existing `settings.notice_days` / `posting_deadline_hours`. Warn when publishing inside the deadline; every agenda change creates an "amended agenda" with its own posting timestamp and version.
-2. **Proof-of-posting audit** — append-only posting records plus a downloadable posting-certificate PDF.
-3. **Meeting kinds** — regular / special / emergency / continued, each with its own notice rule, plus cancellation and continuation notices on the public portal.
-4. **Executive (closed) sessions** — closed agenda items requiring a statutory citation, sealed minutes restricted by role, and a public "action taken after closed session" record.
+## The script (chapters and steps)
 
-## Phase B — Public participation
+**1. Public portal (signed out)**
+Home, meetings calendar, a meeting detail page (agenda, notice banner, media, approved comments), the plain-text HTML alternative, legislation search and a file detail, boards list, filing a public comment / request to speak, subscribe page with the calendar and RSS feeds, records-request filing and tracking by code, accessibility statement.
 
-5. **Public comment intake** — comment cards (speak or written-only), per-item or general, with open/close windows, staff moderation, and attachment to the meeting record.
-6. **Speaker queue + timer** in the live console, feeding into minutes.
-7. **Subscriptions** — email / RSS / ICS by body; automatic notices on agenda posting, meeting changes, and item status changes.
+**2. Staff: intake to agenda**
+Sign in as Public Works Director → Submit an Item: pick a board, complete the intake questionnaire, run the AI draft, edit and file. Sign in as City Attorney → approvals queue, approve. Sign in as Deputy Clerk → agenda builder: add items to sections, reorder, mark consent, post the notice, publish, download the agenda packet PDF.
 
-## Phase C — Records law and retention
+**3. Live meeting and minutes**
+Deputy Clerk in the meeting console: call to order, roll call with live quorum, take up an item, speaker queue with timer, motion with mover/seconder, roll-call vote and automatic tally, closed-session panel, draft minutes, finalize with the SHA-256 seal, download the minutes PDF. Also shows the read-only observer banner when a board member opens the same console.
 
-8. **Document storage** — no storage bucket exists yet, so `item_attachments` can't actually receive files. Create a documents bucket with role-scoped RLS, size/type limits, and public vs. staff-only visibility per attachment.
-9. **Retention schedule** — configurable retention class per record type, legal-hold flag that blocks disposal, and a disposition log.
-10. **Public records (FOIA) requests** — intake form, due-date clock, redaction notes, response log, exportable packet.
-11. **Full-text search + bulk export** across items, minutes, and attachments, plus a complete machine-readable archive export (no vendor lock-in).
+**4. Admin, briefings, records**
+Demo City Clerk (admin): bodies and seats, item types, vote rules, numbering preview, members, board access, settings. Mayor persona: council briefing dashboard — stat cards, grant vs. local match, charts, filters, briefing cards. Back to clerk: comment moderation, records/FOIA queue with retention and legal holds, audit log, MFA enrollment screen.
 
-## Phase D — Accessibility and publication quality
+Each step records a title, a one- or two-sentence "what you're seeing / what to click" caption, and the persona in use — this metadata feeds both outputs.
 
-12. **WCAG 2.1 AA pass** on the public portal and staff console: contrast tokens, focus order, keyboard operation of tables and console, ARIA live regions, skip links, single `<main>`, plus a published Accessibility Statement with remediation contact.
-13. **Accessible documents** — current jsPDF output is untagged; add document title/lang metadata and heading structure, and publish an HTML alternative of every packet and minutes document so posted records meet Section 508.
-14. **Publication formatting** — ordinance number, adoption date, effective date, publication date, and codification reference on every adopted item, with plain-language public summaries.
+## PDF guide
 
-## Phase E — Integrity, security, operations
+ReportLab document, US Letter, styled to match the site's records-office look (ink/parchment palette, serif headings). Cover page, table of contents, then one section per chapter with numbered steps: heading, caption text, and the full-width screenshot with a thin rule border. A short "demo logins" table up front listing each persona and what it can do. Rendered pages are converted to images and visually inspected page by page before delivery; any clipped text, overlap, or bad spacing gets fixed and re-verified.
 
-15. **MFA for staff**, session timeout, and a role-change audit trail.
-16. **Audit log viewer** with filters and export — the log is written today but never readable.
-17. **Certification and signatures** — clerk attestation and mayor signature/veto/effective-date tracking on minutes and ordinances, plus an integrity hash printed on published PDFs.
-18. **Operations documentation** — backup/restore, uptime, and incident runbook added to the self-hosting guide; privacy and cookie/analytics disclosure pages.
-19. **Meeting media** — audio/video link per meeting with timestamped agenda-item indexing and a captions requirement note (integration point, not video hosting).
+## Video
 
-## Phase F — Adoption readiness
+Playwright records the browser session at 1280×800. The raw capture is post-processed with ffmpeg:
+- title card at the start and a closing card
+- a chapter card between the four sections
+- a lower-third caption bar showing the current step text and active persona, burned in at the right timestamps from the step metadata
+- deliberate pacing: the script pauses on each screen long enough to read, and scrolls smoothly rather than jumping
 
-20. **Migration importers** for Legistar/Granicus CSV/XML exports of historic items, meetings, and minutes.
-21. **Codification/vendor export** (Municode / American Legal) and an open-data JSON API for the portal.
-22. **Operational material** — clerk runbook, department-submitter guide, and a realistic seeded agenda template set.
+Output is H.264 MP4, roughly 4–6 minutes, saved alongside the PDF.
 
----
+## Notes and caveats
 
-## Technical notes
+- The tour runs against the demo data and demo accounts already provisioned, so it will re-run cleanly whenever the app changes.
+- Steps that mutate state (filing an item, publishing an agenda, finalizing minutes) will create real rows in the demo database — expected for a demo site, but worth knowing.
+- The AI drafting step depends on a live model call; if it's slow the script waits, and if it fails the step is captured with the manual-edit path instead.
+- Both files land in your Files panel as `civicledger-walkthrough.pdf` and `civicledger-walkthrough.mp4`. No changes are made to the app itself.
 
-- New tables: `meeting_notices`, `public_comments`, `records_requests`, `retention_policies`, `legal_holds`, `subscriptions`, `meeting_media`, `posting_certificates`; extend `meetings` with `meeting_kind`, `agenda_items` with closed-session fields, `minutes` with certification fields, `legislative_items` with effective/publication dates.
-- Every new public-schema table gets explicit GRANTs and RLS; only published-record tables get a narrow `anon` SELECT.
-- Notifications and FOIA clocks run through server functions plus a scheduled `/api/public/*` route driven by pg_cron, not client timers.
-- Accessible PDFs likely need an HTML-first generation path alongside jsPDF; this is the largest single technical change in the list.
-- Work lands phase by phase, with each phase verified in the browser before moving on.
+## Technical details
+
+Playwright Python (already installed) with `record_video_dir` on the browser context; screenshots via `page.screenshot`, element screenshots for close-ups of the quorum and tally widgets. Sign-in uses the demo persona buttons on `/auth`, which call `ensureDemoAccounts` before signing in. Step metadata is written to a JSON manifest consumed by both the ReportLab builder and the ffmpeg caption filter graph. All intermediates live under `/tmp/walkthrough/`; only the two finished files go to `/mnt/documents/`.
