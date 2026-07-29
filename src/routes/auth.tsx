@@ -65,17 +65,17 @@ function AuthPage() {
     }
   }
 
-  async function demoSignIn() {
+  async function demoSignIn(account: DemoAccount) {
     setBusy(true);
     try {
-      await ensureDemoAdmin();
+      await ensureDemoAccounts();
       const { error } = await supabase.auth.signInWithPassword({
-        email: DEMO_ADMIN_EMAIL,
-        password: DEMO_ADMIN_PASSWORD,
+        email: account.email,
+        password: DEMO_PASSWORD,
       });
       if (error) throw error;
-      toast.success("Signed in as the demo administrator");
-      navigate({ to: "/staff/admin", replace: true });
+      toast.success(`Signed in as ${account.name} — ${account.title}`);
+      navigate({ to: account.landing, replace: true });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Demo sign-in failed");
     } finally {
