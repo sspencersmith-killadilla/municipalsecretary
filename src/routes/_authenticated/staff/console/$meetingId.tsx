@@ -496,6 +496,7 @@ function LiveConsole() {
                 rule={(rules.data ?? []).find((r) => r.id === openMotion.vote_rule_id) ?? null}
                 seatCount={body?.seat_count ?? members.length}
                 presentCount={presentCount}
+                readOnly={readOnly}
                 onVote={(memberId, choice) =>
                   castVote.mutate({ motionId: openMotion.id, memberId, choice })
                 }
@@ -668,6 +669,7 @@ function OpenMotionPanel({
   presentCount,
   onVote,
   onClose,
+  readOnly,
 }: {
   motion: { id: string; text: string; votes: { member_id: string; choice: string }[] };
   members: { id: string; full_name: string }[];
@@ -677,6 +679,7 @@ function OpenMotionPanel({
   presentCount: number;
   onVote: (memberId: string, choice: VoteChoice) => void;
   onClose: () => void;
+  readOnly: boolean;
 }) {
   const voteMap = new Map(motion.votes.map((v) => [v.member_id, v.choice]));
   const tally = computeTally({
@@ -704,7 +707,8 @@ function OpenMotionPanel({
                 <button
                   key={c}
                   onClick={() => onVote(m.id, c)}
-                  className={`rounded-sm border px-2 py-1 text-[0.68rem] font-semibold uppercase tracking-wide ${
+                  disabled={readOnly}
+                  className={`rounded-sm border px-2 py-1 text-[0.68rem] font-semibold uppercase tracking-wide disabled:opacity-40 ${
                     active
                       ? "border-seal bg-seal text-seal-foreground"
                       : "border-input text-muted-foreground"
@@ -726,7 +730,8 @@ function OpenMotionPanel({
         </p>
         <button
           onClick={onClose}
-          className="rounded-sm bg-primary px-3.5 py-2 text-sm font-semibold text-primary-foreground"
+          disabled={readOnly}
+          className="rounded-sm bg-primary px-3.5 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-40"
         >
           Close vote & record
         </button>
