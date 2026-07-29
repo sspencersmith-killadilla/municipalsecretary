@@ -1,10 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { PublicLayout, PageHeader, StatusPill } from "@/components/PublicLayout";
 import { formatDate, formatDateTime } from "@/lib/format";
+import {
+  fileRecordsRequest,
+  lookupRecordsRequest,
+} from "@/lib/records-requests.functions";
 
 export const Route = createFileRoute("/records-requests")({
   head: () => ({
@@ -53,6 +58,10 @@ function RecordsRequests() {
   const [filed, setFiled] = useState<{ tracking_code: string; due_at: string | null } | null>(null);
   const [code, setCode] = useState("");
   const [lookupCode, setLookupCode] = useState("");
+  const lookupRequest = useServerFn(lookupRecordsRequest);
+  const fileRequest = useServerFn(fileRecordsRequest);
+
+
 
   const settings = useQuery({
     queryKey: ["settings", "records"],
@@ -82,11 +91,7 @@ function RecordsRequests() {
     queryKey: ["public", "records-request", lookupCode],
     enabled: lookupCode.length > 0,
     queryFn: async () => {
-      const { data, error } = await supabase.rpc("lookup_records_request", {
-        _tracking_code: lookupCode,
-      });
-      if (error) throw error;
-      return (data ?? [])[0] ?? null;
+      return await lookupRequest({ data: { tracking_code: lookupCode } });
     },
   });
 
@@ -95,16 +100,14 @@ function RecordsRequests() {
       if (!form.requester_name.trim() || !form.description.trim()) {
         throw new Error("Name and description of records are required.");
       }
-      const { data, error } = await supabase.rpc("file_records_request", {
-        _requester_name: form.requester_name.trim(),
-        _description: form.description.trim(),
-        _requester_email: form.requester_email.trim() || undefined,
-        _requester_phone: form.requester_phone.trim() || undefined,
+      return await fileRequest({
+        data: {
+          requester_name: form.requester_name,
+          description: form.description,
+          requester_email: form.requester_email,
+          requester_phone: form.requester_phone,
+        },
       });
-      if (error) throw error;
-      const row = (data ?? [])[0];
-      if (!row) throw new Error("Request could not be filed.");
-      return row;
     },
     onSuccess: (data) => {
       setFiled(data);
