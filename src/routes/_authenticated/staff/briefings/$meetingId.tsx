@@ -214,21 +214,25 @@ function BriefingDashboard() {
                 tone={statusTone(meeting.data.status)}
               />
             ) : null}
-            <button
-              onClick={() => run.mutate(true)}
-              disabled={run.isPending || rows.length === 0}
-              className="inline-flex items-center gap-1.5 rounded-sm bg-seal px-3.5 py-2 text-sm font-semibold text-seal-foreground disabled:opacity-50"
-            >
-              <Sparkles className="h-4 w-4" />
-              {run.isPending ? "Briefing…" : "Brief missing items"}
-            </button>
-            <button
-              onClick={() => run.mutate(false)}
-              disabled={run.isPending || rows.length === 0}
-              className="inline-flex items-center gap-1.5 rounded-sm border border-input px-3.5 py-2 text-sm font-semibold disabled:opacity-50"
-            >
-              <RefreshCw className="h-4 w-4" /> Regenerate all
-            </button>
+            {canManage ? (
+              <>
+                <button
+                  onClick={() => run.mutate(true)}
+                  disabled={run.isPending || rows.length === 0}
+                  className="inline-flex items-center gap-1.5 rounded-sm bg-seal px-3.5 py-2 text-sm font-semibold text-seal-foreground disabled:opacity-50"
+                >
+                  <Sparkles className="h-4 w-4" />
+                  {run.isPending ? "Briefing…" : "Brief missing items"}
+                </button>
+                <button
+                  onClick={() => run.mutate(false)}
+                  disabled={run.isPending || rows.length === 0}
+                  className="inline-flex items-center gap-1.5 rounded-sm border border-input px-3.5 py-2 text-sm font-semibold disabled:opacity-50"
+                >
+                  <RefreshCw className="h-4 w-4" /> Regenerate all
+                </button>
+              </>
+            ) : null}
             <Link
               to="/staff/meetings/$meetingId"
               params={{ meetingId }}
