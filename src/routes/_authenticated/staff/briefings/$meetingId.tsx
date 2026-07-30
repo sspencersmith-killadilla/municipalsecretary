@@ -11,7 +11,7 @@ import {
   CartesianGrid,
   Cell,
 } from "recharts";
-import { Sparkles, RefreshCw } from "lucide-react";
+import { Sparkles, RefreshCw, Info } from "lucide-react";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
@@ -19,6 +19,7 @@ import { StaffShell, StaffHeader } from "@/components/StaffShell";
 import { StatusPill } from "@/components/PublicLayout";
 import { formatDateTime, MEETING_STATUS_LABELS, statusTone } from "@/lib/format";
 import { generateMeetingBriefings } from "@/lib/briefings.functions";
+import { useSession } from "@/lib/session";
 
 export const Route = createFileRoute("/_authenticated/staff/briefings/$meetingId")({
   head: () => ({
@@ -91,6 +92,7 @@ type AgendaRow = {
 function BriefingDashboard() {
   const { meetingId } = Route.useParams();
   const qc = useQueryClient();
+  const { canManage, loading: sessionLoading } = useSession();
   const [dept, setDept] = useState("all");
   const [cat, setCat] = useState("all");
   const [grantsOnly, setGrantsOnly] = useState(false);
@@ -212,21 +214,25 @@ function BriefingDashboard() {
                 tone={statusTone(meeting.data.status)}
               />
             ) : null}
-            <button
-              onClick={() => run.mutate(true)}
-              disabled={run.isPending || rows.length === 0}
-              className="inline-flex items-center gap-1.5 rounded-sm bg-seal px-3.5 py-2 text-sm font-semibold text-seal-foreground disabled:opacity-50"
-            >
-              <Sparkles className="h-4 w-4" />
-              {run.isPending ? "Briefing…" : "Brief missing items"}
-            </button>
-            <button
-              onClick={() => run.mutate(false)}
-              disabled={run.isPending || rows.length === 0}
-              className="inline-flex items-center gap-1.5 rounded-sm border border-input px-3.5 py-2 text-sm font-semibold disabled:opacity-50"
-            >
-              <RefreshCw className="h-4 w-4" /> Regenerate all
-            </button>
+            {canManage ? (
+              <>
+                <button
+                  onClick={() => run.mutate(true)}
+                  disabled={run.isPending || rows.length === 0}
+                  className="inline-flex items-center gap-1.5 rounded-sm bg-seal px-3.5 py-2 text-sm font-semibold text-seal-foreground disabled:opacity-50"
+                >
+                  <Sparkles className="h-4 w-4" />
+                  {run.isPending ? "Briefing…" : "Brief missing items"}
+                </button>
+                <button
+                  onClick={() => run.mutate(false)}
+                  disabled={run.isPending || rows.length === 0}
+                  className="inline-flex items-center gap-1.5 rounded-sm border border-input px-3.5 py-2 text-sm font-semibold disabled:opacity-50"
+                >
+                  <RefreshCw className="h-4 w-4" /> Regenerate all
+                </button>
+              </>
+            ) : null}
             <Link
               to="/staff/meetings/$meetingId"
               params={{ meetingId }}
@@ -239,6 +245,19 @@ function BriefingDashboard() {
       />
 
       <div className="space-y-6 p-6">
+        {!canManage && !sessionLoading ? (
+          <div
+            role="status"
+            className="flex items-start gap-2.5 rounded-sm border border-brass/50 bg-brass/10 px-4 py-3 text-sm text-foreground"
+          >
+            <Info className="mt-0.5 h-4 w-4 shrink-0 text-brass" />
+            <p>
+              <span className="font-semibold">View-only briefing.</span> Generating or regenerating
+              briefings requires Clerk or Administrator access. You can read every briefing below;
+              ask the Clerk's office to run new ones.
+            </p>
+          </div>
+        ) : null}
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <Stat label="Total items" value={String(stats.total)} note={`${briefed.length} briefed`} />
           <Stat
