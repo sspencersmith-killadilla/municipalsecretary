@@ -245,6 +245,19 @@ function BriefingDashboard() {
       />
 
       <div className="space-y-6 p-6">
+        {!canManage && !sessionLoading ? (
+          <div
+            role="status"
+            className="flex items-start gap-2.5 rounded-sm border border-brass/50 bg-brass/10 px-4 py-3 text-sm text-foreground"
+          >
+            <Info className="mt-0.5 h-4 w-4 shrink-0 text-brass" />
+            <p>
+              <span className="font-semibold">View-only briefing.</span> Generating or regenerating
+              briefings requires Clerk or Administrator access. You can read every briefing below;
+              ask the Clerk's office to run new ones.
+            </p>
+          </div>
+        ) : null}
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <Stat label="Total items" value={String(stats.total)} note={`${briefed.length} briefed`} />
           <Stat
