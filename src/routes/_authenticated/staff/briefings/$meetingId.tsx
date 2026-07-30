@@ -11,7 +11,7 @@ import {
   CartesianGrid,
   Cell,
 } from "recharts";
-import { Sparkles, RefreshCw } from "lucide-react";
+import { Sparkles, RefreshCw, Info } from "lucide-react";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
