@@ -19,6 +19,7 @@ import { StaffShell, StaffHeader } from "@/components/StaffShell";
 import { StatusPill } from "@/components/PublicLayout";
 import { formatDateTime, MEETING_STATUS_LABELS, statusTone } from "@/lib/format";
 import { generateMeetingBriefings } from "@/lib/briefings.functions";
+import { useSession } from "@/lib/session";
 
 export const Route = createFileRoute("/_authenticated/staff/briefings/$meetingId")({
   head: () => ({
