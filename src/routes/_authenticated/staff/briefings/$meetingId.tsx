@@ -92,6 +92,7 @@ type AgendaRow = {
 function BriefingDashboard() {
   const { meetingId } = Route.useParams();
   const qc = useQueryClient();
+  const { canManage, loading: sessionLoading } = useSession();
   const [dept, setDept] = useState("all");
   const [cat, setCat] = useState("all");
   const [grantsOnly, setGrantsOnly] = useState(false);
