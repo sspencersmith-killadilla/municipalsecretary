@@ -13,12 +13,14 @@ import {
   MessageSquare,
   Archive,
   ScrollText,
-  DatabaseZap,
+  DatabaseZop,
   BookOpen,
   ShieldCheck,
   ClipboardList,
+  Menu,
+  X,
 } from "lucide-react";
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession, ROLE_LABELS } from "@/lib/session";
 import { useSettings } from "@/components/PublicLayout";
@@ -39,6 +41,13 @@ const NAV = [
   { to: "/staff/admin", label: "Administration", icon: Settings2 },
   { to: "/docs/clerk-handbook", label: "Clerk Handbook", icon: BookOpen },
 ] as const;
+
+const MOBILE_TABS = [
+  { to: "/dashboard", label: "Home", icon: LayoutDashboard },
+  { to: "/staff/meetings", label: "Meetings", icon: CalendarDays },
+  { to: "/staff/console", label: "Console", icon: Gavel },
+  { to: "/staff/briefings", label: "Briefings", icon: ClipboardList },
+];
 
 export function StaffShell({ children }: { children: ReactNode }) {
   const { user, roles } = useSession();
