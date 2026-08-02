@@ -1,53 +1,63 @@
+# Mobile Meeting Console Quick Wins
+
 ## Goal
+Make the live meeting console usable on phones and tablets during a real meeting, with larger touch targets, a stacked layout, and a simplified at-a-glance view for board members.
 
-One scripted end-to-end tour of CivicLedger, captured once and published twice: a step-by-step PDF guide with screen grabs, and a real screen-recorded MP4 of the same session.
+## What we’ll build
 
-## Approach
+### 1. Responsive console layout
+- Collapse the current 3-column desktop grid into a single stacked column on small screens.
+- Promote the **current agenda item + open motion + quorum badge** into a sticky top summary card so clerks and members always see the live state without scrolling.
+- Increase tap targets for all console buttons (roll-call status chips, vote buttons, agenda actions) to at least 44×44 px.
 
-A single Playwright script drives the live app in the sandbox, signing in as each demo persona in turn. Playwright records the whole session to video while also taking a labeled screenshot at every step. Both deliverables come from that one run, so the doc and the video never drift apart.
+### 2. Board-member “meeting at a glance” view
+- For users without `canManage` (board members, viewers), render a read-only mobile card showing:
+  - Meeting status, quorum, and current item.
+  - Open motion text and current vote tally.
+  - Recent speaker-queue activity.
+- Hide clerk-only controls (record roll call, create motion, edit minutes) instead of just disabling them.
 
-```text
-walkthrough.py  ──►  screenshots/NN_step.png ──►  build_pdf.py  ──► walkthrough.pdf
-                └─►  session.webm            ──►  ffmpeg edit  ──► walkthrough.mp4
-```
+### 3. Touch-optimized roll call & voting
+- Roll call: replace the tiny status chips with a full-width row per member containing 4 large segmented buttons (`Present`, `Remote`, `Absent`, `Excused`).
+- Voting: when a motion is open, show a grid of large choice buttons (`Aye`, `Nay`, `Abstain`, `Recuse`) per member, suitable for a clerk tapping on a tablet.
+- Add haptic/visual feedback on tap (active state + toast confirmation).
 
-## The script (chapters and steps)
+### 4. Mobile staff navigation
+- Replace the horizontal text-only mobile nav in `StaffShell` with an icon + label bottom tab bar on small screens, so clerks can jump between Console, Briefings, and Meetings quickly during a meeting.
+- Keep the existing sidebar on `lg` screens unchanged.
 
-**1. Public portal (signed out)**
-Home, meetings calendar, a meeting detail page (agenda, notice banner, media, approved comments), the plain-text HTML alternative, legislation search and a file detail, boards list, filing a public comment / request to speak, subscribe page with the calendar and RSS feeds, records-request filing and tracking by code, accessibility statement.
+## Files to touch
 
-**2. Staff: intake to agenda**
-Sign in as Public Works Director → Submit an Item: pick a board, complete the intake questionnaire, run the AI draft, edit and file. Sign in as City Attorney → approvals queue, approve. Sign in as Deputy Clerk → agenda builder: add items to sections, reorder, mark consent, post the notice, publish, download the agenda packet PDF.
+- `src/routes/_authenticated/staff/console/$meetingId.tsx`
+  - Refactor layout with responsive grid/flex stacking.
+  - Extract `CurrentItemCard`, `RollCallPanel`, `VotingPanel`, `AgendaList`, `MinutesPanel` sub-components.
+  - Add board-member read-only summary.
+- `src/components/StaffShell.tsx`
+  - Swap the horizontal mobile nav for a bottom tab bar (`sm:hidden`).
+- `src/styles.css`
+  - Add any needed mobile utility variables (already Tailwind v4).
+- `src/lib/votes.ts`
+  - No logic changes; reuse existing `computeTally` and `quorumRequired`.
 
-**3. Live meeting and minutes**
-Deputy Clerk in the meeting console: call to order, roll call with live quorum, take up an item, speaker queue with timer, motion with mover/seconder, roll-call vote and automatic tally, closed-session panel, draft minutes, finalize with the SHA-256 seal, download the minutes PDF. Also shows the read-only observer banner when a board member opens the same console.
+## Out of scope (for this quick-win pass)
 
-**4. Admin, briefings, records**
-Demo City Clerk (admin): bodies and seats, item types, vote rules, numbering preview, members, board access, settings. Mayor persona: council briefing dashboard — stat cards, grant vs. local match, charts, filters, briefing cards. Back to clerk: comment moderation, records/FOIA queue with retention and legal holds, audit log, MFA enrollment screen.
+- Offline/PWA installability (not requested).
+- Native mobile app.
+- Real-time subscriptions/WebSockets (console already refreshes via queries).
+- New backend tables or permissions.
 
-Each step records a title, a one- or two-sentence "what you're seeing / what to click" caption, and the persona in use — this metadata feeds both outputs.
+## Acceptance criteria
 
-## PDF guide
+1. Console renders in a single readable column on a 375 px wide viewport with no horizontal overflow.
+2. Roll-call buttons are easy to tap; a clerk can mark a 7-member board present in under 10 taps.
+3. Board-member view shows current item, open motion, and tally without edit controls.
+4. Mobile bottom tab bar provides one-tap access to Console, Briefings, and Meetings.
+5. All existing desktop functionality remains unchanged at `lg` and above.
 
-ReportLab document, US Letter, styled to match the site's records-office look (ink/parchment palette, serif headings). Cover page, table of contents, then one section per chapter with numbered steps: heading, caption text, and the full-width screenshot with a thin rule border. A short "demo logins" table up front listing each persona and what it can do. Rendered pages are converted to images and visually inspected page by page before delivery; any clipped text, overlap, or bad spacing gets fixed and re-verified.
+## Suggested order
 
-## Video
-
-Playwright records the browser session at 1280×800. The raw capture is post-processed with ffmpeg:
-- title card at the start and a closing card
-- a chapter card between the four sections
-- a lower-third caption bar showing the current step text and active persona, burned in at the right timestamps from the step metadata
-- deliberate pacing: the script pauses on each screen long enough to read, and scrolls smoothly rather than jumping
-
-Output is H.264 MP4, roughly 4–6 minutes, saved alongside the PDF.
-
-## Notes and caveats
-
-- The tour runs against the demo data and demo accounts already provisioned, so it will re-run cleanly whenever the app changes.
-- Steps that mutate state (filing an item, publishing an agenda, finalizing minutes) will create real rows in the demo database — expected for a demo site, but worth knowing.
-- The AI drafting step depends on a live model call; if it's slow the script waits, and if it fails the step is captured with the manual-edit path instead.
-- Both files land in your Files panel as `civicledger-walkthrough.pdf` and `civicledger-walkthrough.mp4`. No changes are made to the app itself.
-
-## Technical details
-
-Playwright Python (already installed) with `record_video_dir` on the browser context; screenshots via `page.screenshot`, element screenshots for close-ups of the quorum and tally widgets. Sign-in uses the demo persona buttons on `/auth`, which call `ensureDemoAccounts` before signing in. Step metadata is written to a JSON manifest consumed by both the ReportLab builder and the ffmpeg caption filter graph. All intermediates live under `/tmp/walkthrough/`; only the two finished files go to `/mnt/documents/`.
+1. Refactor console layout + current-item summary card.
+2. Build responsive roll-call and voting panels.
+3. Add board-member read-only summary.
+4. Replace mobile staff nav with bottom tab bar.
+5. Verify on mobile, tablet, and desktop viewports.
