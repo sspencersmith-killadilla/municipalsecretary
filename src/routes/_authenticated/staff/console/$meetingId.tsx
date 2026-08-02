@@ -150,7 +150,7 @@ function LiveConsole() {
       title: s.title,
       member: s.members as { id: string; full_name: string } | null,
     }))
-    .filter((s) => s.member);
+    .filter((s): s is MemberRow => !!s.member);
 
   const attMap = useMemo(
     () => new Map((attendance.data ?? []).map((a) => [a.member_id, a.status as string])),
