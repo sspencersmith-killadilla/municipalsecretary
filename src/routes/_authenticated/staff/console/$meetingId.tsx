@@ -596,13 +596,19 @@ function StatusSummary({
   );
 }
 
+type MemberRow = {
+  seatLabel: string;
+  title?: string | null;
+  member: { id: string; full_name: string };
+};
+
 function RollCallPanel({
   members,
   attMap,
   readOnly,
   onSetAttendance,
 }: {
-  members: { seatLabel: string; title?: string | null; member: { id: string; full_name: string } }[];
+  members: MemberRow[];
   attMap: Map<string, string>;
   readOnly: boolean;
   onSetAttendance: (memberId: string, status: string) => void;
