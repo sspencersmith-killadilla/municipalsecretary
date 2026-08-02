@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { StaffShell, StaffHeader } from "@/components/StaffShell";
@@ -22,7 +22,6 @@ export const Route = createFileRoute("/_authenticated/staff/console/$meetingId")
   }),
   component: LiveConsole,
 });
-
 
 function describeWriteError(e: Error) {
   if (/row-level security|permission denied/i.test(e.message)) {
@@ -153,9 +152,12 @@ function LiveConsole() {
     }))
     .filter((s) => s.member);
 
-  const attMap = new Map((attendance.data ?? []).map((a) => [a.member_id, a.status as string]));
-  const presentCount = members.filter(
-    (m) => ["present", "remote"].includes(attMap.get(m.member!.id) ?? ""),
+  const attMap = useMemo(
+    () => new Map((attendance.data ?? []).map((a) => [a.member_id, a.status as string])),
+    [attendance.data],
+  );
+  const presentCount = members.filter((m) =>
+    ["present", "remote"].includes(attMap.get(m.member!.id) ?? ""),
   ).length;
   const quorum = body ? quorumRequired(body.quorum_type, body.quorum_value, body.seat_count) : 0;
   const hasQuorum = presentCount >= quorum;
@@ -164,8 +166,7 @@ function LiveConsole() {
   const currentItem = (agenda.data ?? []).find((a) => a.id === currentId) ?? null;
   const openMotion = (motions.data ?? []).find((m) => m.is_open) ?? null;
 
-  const inv = (key: string) =>
-    qc.invalidateQueries({ queryKey: ["console", key, meetingId] });
+  const inv = (key: string) => qc.invalidateQueries({ queryKey: ["console", key, meetingId] });
 
   const setAttendance = useMutation({
     mutationFn: async ({ memberId, status }: { memberId: string; status: string }) => {
@@ -186,10 +187,7 @@ function LiveConsole() {
       status?: string;
       current_agenda_item_id?: string | null;
     }) => {
-      const { error } = await supabase
-        .from("meetings")
-        .update(patch as never)
-        .eq("id", meetingId);
+      const { error } = await supabase.from("meetings").update(patch as never).eq("id", meetingId);
       if (error) throw error;
     },
     onSuccess: () => inv("meeting"),
@@ -263,10 +261,7 @@ function LiveConsole() {
       if (error) throw error;
 
       if (motion.agenda_item_id) {
-        await supabase
-          .from("agenda_items")
-          .update({ outcome: result })
-          .eq("id", motion.agenda_item_id);
+        await supabase.from("agenda_items").update({ outcome: result }).eq("id", motion.agenda_item_id);
         const item = (agenda.data ?? []).find((a) => a.id === motion.agenda_item_id);
         if (item?.item_id) {
           await supabase
@@ -320,7 +315,6 @@ function LiveConsole() {
     onError: (e: Error) => toast.error(describeWriteError(e)),
   });
 
-
   const exportMinutes = useMutation({
     mutationFn: () => downloadMinutes(meetingId),
     onSuccess: (fileName) => toast.success(`Downloaded ${fileName}`),
@@ -354,6 +348,20 @@ function LiveConsole() {
     setMinutesDraft(lines.join("\n"));
     toast.success("Draft minutes generated");
   }
+
+  const openTally = useMemo(() => {
+    if (!openMotion) return null;
+    const rule = (rules.data ?? []).find((r) => r.id === openMotion.vote_rule_id) ?? null;
+    return computeTally({
+      votes: (openMotion.votes ?? []).map((v) => ({
+        member_id: v.member_id,
+        choice: v.choice as VoteChoice,
+      })),
+      seatCount: body?.seat_count ?? members.length,
+      presentCount,
+      rule,
+    });
+  }, [openMotion, rules.data, body?.seat_count, members.length, presentCount]);
 
   return (
     <StaffShell>
@@ -402,261 +410,449 @@ function LiveConsole() {
         </div>
       ) : null}
 
-      <div className="grid gap-6 p-6 xl:grid-cols-[18rem_minmax(0,1fr)_20rem]">
-        <section className="rounded-sm border border-border bg-card p-5">
-          <h2 className="font-display text-base font-bold">Roll call</h2>
-          <ul className="mt-3 space-y-3">
-            {members.map((m) => (
-              <li key={m.member!.id}>
-                <p className="text-sm font-medium text-foreground">{m.member!.full_name}</p>
-                <p className="eyebrow">{m.title ?? m.seatLabel}</p>
-                <div className="mt-1.5 flex flex-wrap gap-1">
-                  {ATTEND.map((s) => {
-                    const active = attMap.get(m.member!.id) === s;
-                    return (
-                      <button
-                        key={s}
-                        onClick={() =>
-                          setAttendance.mutate({ memberId: m.member!.id, status: s })
-                        }
-                        disabled={readOnly}
-                        className={`rounded-sm border px-2 py-0.5 text-[0.68rem] font-semibold uppercase tracking-wide disabled:opacity-40 ${
-                          active
-                            ? "border-primary bg-primary text-primary-foreground"
-                            : "border-input text-muted-foreground"
-                        }`}
-                      >
-                        {s}
-                      </button>
-                    );
-                  })}
-                </div>
-              </li>
-            ))}
-            {members.length === 0 && (
-              <li className="text-sm text-muted-foreground">
-                No seats assigned for this body yet.
-              </li>
-            )}
-          </ul>
-        </section>
-
-        <SpeakerQueuePanel
-          meetingId={meetingId}
-          defaultSeconds={meeting.data?.speaker_seconds ?? 180}
-          onSpoken={(line) => setMinutesDraft((d) => (d ? `${d}\n${line}` : line))}
-        />
-
-
-
-        <section className="space-y-6">
-          <div className="rounded-sm border border-border bg-card">
-            <h2 className="border-b border-rule px-5 py-3 font-display text-base font-bold">
-              Agenda
-            </h2>
-            <ul className="divide-y divide-border">
-              {(agenda.data ?? []).map((a) => (
-                <li
-                  key={a.id}
-                  className={`flex items-center gap-3 px-5 py-3 ${
-                    a.id === currentId ? "bg-accent/50" : ""
-                  }`}
-                >
-                  <span className="docnum w-8 text-muted-foreground">
-                    {a.display_number ?? "—"}
-                  </span>
-                  <span className="min-w-0 flex-1 text-sm text-foreground">{a.title}</span>
-                  <span className="docnum text-xs text-muted-foreground">
-                    {a.outcome ?? "pending"}
-                  </span>
-                  <button
-                    onClick={() => setMeeting.mutate({ current_agenda_item_id: a.id })}
-                    disabled={readOnly}
-                    className="rounded-sm border border-input px-2 py-1 text-xs font-semibold disabled:opacity-40"
-                  >
-                    {a.id === currentId ? "On the floor" : "Take up"}
-                  </button>
-                </li>
-              ))}
-              {(agenda.data ?? []).length === 0 && (
-                <li className="px-5 py-8 text-sm text-muted-foreground">No agenda items.</li>
-              )}
-            </ul>
-          </div>
-
-          <div className="rounded-sm border border-border bg-card p-5">
-            <h2 className="font-display text-base font-bold">
-              Motion {currentItem ? `on ${currentItem.display_number ?? ""} ${currentItem.title}` : ""}
-            </h2>
-            {openMotion ? (
-              <OpenMotionPanel
-                motion={openMotion as never}
-                members={members.map((m) => m.member!)}
-                attMap={attMap}
-                rule={(rules.data ?? []).find((r) => r.id === openMotion.vote_rule_id) ?? null}
-                seatCount={body?.seat_count ?? members.length}
-                presentCount={presentCount}
-                readOnly={readOnly}
-                onVote={(memberId, choice) =>
-                  castVote.mutate({ motionId: openMotion.id, memberId, choice })
-                }
-                onClose={() => closeMotion.mutate(openMotion as never)}
-              />
-            ) : (
-              <form
-                className="mt-3 space-y-3"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  if (!motionText.trim()) return;
-                  createMotion.mutate();
-                }}
-              >
-                <textarea
-                  value={motionText}
-                  onChange={(e) => setMotionText(e.target.value)}
-                  rows={2}
-                  placeholder="Motion to adopt…"
-                  className="w-full rounded-sm border border-input bg-background px-2.5 py-2 text-sm"
-                />
-                <div className="grid gap-2 sm:grid-cols-3">
-                  <select
-                    value={mover}
-                    onChange={(e) => setMover(e.target.value)}
-                    className="rounded-sm border border-input bg-background px-2.5 py-2 text-sm"
-                  >
-                    <option value="">Moved by…</option>
-                    {members.map((m) => (
-                      <option key={m.member!.id} value={m.member!.id}>
-                        {m.member!.full_name}
-                      </option>
-                    ))}
-                  </select>
-                  <select
-                    value={seconder}
-                    onChange={(e) => setSeconder(e.target.value)}
-                    className="rounded-sm border border-input bg-background px-2.5 py-2 text-sm"
-                  >
-                    <option value="">Seconded by…</option>
-                    {members.map((m) => (
-                      <option key={m.member!.id} value={m.member!.id}>
-                        {m.member!.full_name}
-                      </option>
-                    ))}
-                  </select>
-                  <select
-                    value={ruleId}
-                    onChange={(e) => setRuleId(e.target.value)}
-                    className="rounded-sm border border-input bg-background px-2.5 py-2 text-sm"
-                  >
-                    <option value="">Simple majority</option>
-                    {(rules.data ?? []).map((r) => (
-                      <option key={r.id} value={r.id}>
-                        {r.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <button
-                  type="submit"
-                  disabled={readOnly}
-                  className="rounded-sm bg-seal px-3.5 py-2 text-sm font-semibold text-seal-foreground disabled:opacity-40"
-                >
-                  Put motion on the floor
-                </button>
-              </form>
-            )}
-          </div>
-
-          <div className="rounded-sm border border-border bg-card">
-            <h2 className="border-b border-rule px-5 py-3 font-display text-base font-bold">
-              Recorded motions
-            </h2>
-            <ul className="divide-y divide-border">
-              {(motions.data ?? [])
-                .filter((m) => !m.is_open)
-                .map((m) => {
-                  const t = m.tally as { aye?: number; nay?: number; abstain?: number; explanation?: string } | null;
-                  return (
-                    <li key={m.id} className="px-5 py-3">
-                      <p className="text-sm text-foreground">{m.text}</p>
-                      <p className="docnum mt-1 text-xs text-muted-foreground">
-                        {m.result ?? "pending"} · Aye {t?.aye ?? 0} · Nay {t?.nay ?? 0} · Abstain{" "}
-                        {t?.abstain ?? 0}
-                      </p>
-                    </li>
-                  );
-                })}
-              {(motions.data ?? []).filter((m) => !m.is_open).length === 0 && (
-                <li className="px-5 py-6 text-sm text-muted-foreground">No motions recorded.</li>
-              )}
-            </ul>
-          </div>
-        </section>
-
-        <aside className="rounded-sm border border-border bg-card p-5">
-          <div className="flex items-center justify-between gap-2">
-            <h2 className="font-display text-base font-bold">Minutes</h2>
-            <div className="flex gap-1.5">
-              <button
-                onClick={generateMinutes}
-                disabled={readOnly}
-                className="rounded-sm border border-input px-2 py-1 text-xs font-semibold"
-              >
-                Generate
-              </button>
-              <button
-                onClick={() => exportMinutes.mutate()}
-                disabled={exportMinutes.isPending}
-                className="rounded-sm border border-input px-2 py-1 text-xs font-semibold disabled:opacity-50"
-              >
-                PDF
-              </button>
-            </div>
-          </div>
-          <textarea
-            value={minutesDraft}
-            onChange={(e) => setMinutesDraft(e.target.value)}
-            rows={22}
-            disabled={readOnly || !!minutes.data?.finalized}
-            className="mt-3 w-full rounded-sm border border-input bg-background px-2.5 py-2 font-mono text-xs leading-relaxed disabled:opacity-70"
+      <div className="space-y-6 p-4 lg:grid lg:grid-cols-[18rem_minmax(0,1fr)_20rem] lg:gap-6 lg:p-6">
+        {/* Sticky mobile summary */}
+        <div className="lg:hidden">
+          <StatusSummary
+            meeting={meeting.data}
+            body={body}
+            presentCount={presentCount}
+            quorum={quorum}
+            hasQuorum={hasQuorum}
+            currentItem={currentItem}
+            openMotion={openMotion}
+            openTally={openTally}
+            readOnly={readOnly}
+            onCallToOrder={() => setMeeting.mutate({ status: "in_progress" })}
+            onAdjourn={() => setMeeting.mutate({ status: "adjourned", current_agenda_item_id: null })}
           />
-          <div className="mt-3 flex gap-2">
-            <button
-              onClick={() => saveMinutes.mutate(false)}
-              disabled={readOnly || !!minutes.data?.finalized}
-              className="rounded-sm border border-input px-3 py-1.5 text-sm font-semibold disabled:opacity-40"
-            >
-              Save draft
-            </button>
-            <button
-              onClick={() => saveMinutes.mutate(true)}
-              disabled={readOnly || !!minutes.data?.finalized}
-              className="rounded-sm bg-primary px-3 py-1.5 text-sm font-semibold text-primary-foreground disabled:opacity-40"
-            >
-              Finalize
-            </button>
-          </div>
-          {minutes.data?.finalized ? (
-            <div className="mt-3 rounded-sm border border-rule bg-muted/30 p-3">
-              <p className="text-xs font-semibold text-success">
-                Minutes finalized, certified and published.
-              </p>
-              <p className="mt-1 text-[0.68rem] leading-relaxed text-muted-foreground">
-                {minutes.data.certification_note}
-              </p>
-              <p className="eyebrow mt-2">SHA-256 integrity seal</p>
-              <p className="docnum mt-0.5 break-all text-[0.65rem] normal-case text-foreground">
-                {formatHash(minutes.data.integrity_hash)}
-              </p>
-              <p className="mt-1 text-[0.65rem] text-muted-foreground">
-                Certified {formatDateTime(minutes.data.certified_at)}.
-              </p>
-            </div>
-          ) : null}
+        </div>
 
-        </aside>
+        {/* Left column */}
+        <div className="space-y-6">
+          <RollCallPanel
+            members={members}
+            attMap={attMap}
+            readOnly={readOnly}
+            onSetAttendance={(memberId, status) => setAttendance.mutate({ memberId, status })}
+          />
+
+          <div className="lg:hidden">
+            <SpeakerQueuePanel
+              meetingId={meetingId}
+              defaultSeconds={meeting.data?.speaker_seconds ?? 180}
+              onSpoken={(line) => setMinutesDraft((d) => (d ? `${d}\n${line}` : line))}
+            />
+          </div>
+        </div>
+
+        {/* Center column */}
+        <div className="space-y-6">
+          <div className="hidden lg:block">
+            <SpeakerQueuePanel
+              meetingId={meetingId}
+              defaultSeconds={meeting.data?.speaker_seconds ?? 180}
+              onSpoken={(line) => setMinutesDraft((d) => (d ? `${d}\n${line}` : line))}
+            />
+          </div>
+
+          <AgendaPanel
+            items={agenda.data ?? []}
+            currentId={currentId}
+            readOnly={readOnly}
+            onTakeUp={(id) => setMeeting.mutate({ current_agenda_item_id: id })}
+          />
+
+          <MotionPanel
+            currentItem={currentItem}
+            openMotion={openMotion}
+            motions={motions.data ?? []}
+            members={members.map((m) => m.member!)}
+            attMap={attMap}
+            rules={rules.data ?? []}
+            body={body}
+            presentCount={presentCount}
+            readOnly={readOnly}
+            motionText={motionText}
+            setMotionText={setMotionText}
+            mover={mover}
+            setMover={setMover}
+            seconder={seconder}
+            setSeconder={setSeconder}
+            ruleId={ruleId}
+            setRuleId={setRuleId}
+            onCreateMotion={() => createMotion.mutate()}
+            onVote={(memberId, choice) =>
+              openMotion && castVote.mutate({ motionId: openMotion.id, memberId, choice })
+            }
+            onCloseMotion={() => openMotion && closeMotion.mutate(openMotion as never)}
+          />
+        </div>
+
+        {/* Right column */}
+        <MinutesPanel
+          minutes={minutes.data}
+          minutesDraft={minutesDraft}
+          setMinutesDraft={setMinutesDraft}
+          readOnly={readOnly}
+          onGenerate={generateMinutes}
+          onSave={() => saveMinutes.mutate(false)}
+          onFinalize={() => saveMinutes.mutate(true)}
+          onExport={() => exportMinutes.mutate()}
+          exporting={exportMinutes.isPending}
+        />
       </div>
     </StaffShell>
+  );
+}
+
+function StatusSummary({
+  meeting,
+  body,
+  presentCount,
+  quorum,
+  hasQuorum,
+  currentItem,
+  openMotion,
+  openTally,
+  readOnly,
+  onCallToOrder,
+  onAdjourn,
+}: {
+  meeting: { title?: string; starts_at?: string; status?: string } | null | undefined;
+  body: { name?: string; seat_count?: number } | null;
+  presentCount: number;
+  quorum: number;
+  hasQuorum: boolean;
+  currentItem: { display_number?: string | null; title?: string } | null;
+  openMotion: { text?: string } | null;
+  openTally: { aye: number; nay: number; abstain: number; recuse: number; explanation?: string } | null;
+  readOnly: boolean;
+  onCallToOrder: () => void;
+  onAdjourn: () => void;
+}) {
+  return (
+    <section className="sticky top-0 z-10 rounded-sm border border-border bg-card p-4 shadow-sm">
+      <div className="flex flex-wrap items-start justify-between gap-2">
+        <div className="min-w-0 flex-1">
+          <p className="eyebrow">{body?.name ?? "Meeting"}</p>
+          <h2 className="mt-0.5 font-display text-lg font-bold leading-tight">{meeting?.title ?? "Meeting console"}</h2>
+          <p className="mt-0.5 text-xs text-muted-foreground">{formatDateTime(meeting?.starts_at)}</p>
+        </div>
+        <span
+          className={`shrink-0 rounded-sm border px-2.5 py-1 text-xs font-semibold uppercase tracking-wider ${
+            hasQuorum
+              ? "border-success/30 bg-success/12 text-success"
+              : "border-destructive/30 bg-destructive/10 text-destructive"
+          }`}
+        >
+          {presentCount}/{body?.seat_count ?? 0} present
+        </span>
+      </div>
+
+      {!readOnly && (
+        <div className="mt-3 flex flex-wrap gap-2">
+          <button
+            onClick={onCallToOrder}
+            className="rounded-sm bg-seal px-3 py-2 text-sm font-semibold text-seal-foreground"
+          >
+            Call to order
+          </button>
+          <button onClick={onAdjourn} className="rounded-sm border border-input px-3 py-2 text-sm font-semibold">
+            Adjourn
+          </button>
+        </div>
+      )}
+
+      {currentItem ? (
+        <div className="mt-3 rounded-sm border border-seal/30 bg-seal/10 p-3">
+          <p className="text-xs text-muted-foreground">Current item</p>
+          <p className="mt-0.5 text-sm font-semibold text-foreground">
+            {currentItem.display_number ?? "—"}. {currentItem.title}
+          </p>
+        </div>
+      ) : null}
+
+      {openMotion ? (
+        <div className="mt-3 rounded-sm border border-border bg-secondary p-3">
+          <p className="text-xs text-muted-foreground">Open motion</p>
+          <p className="mt-0.5 text-sm italic text-foreground">{openMotion.text}</p>
+          {openTally ? (
+            <p className="docnum mt-1.5 text-xs">
+              Aye {openTally.aye} · Nay {openTally.nay} · Abstain {openTally.abstain} · Recuse{" "}
+              {openTally.recuse}
+              <span className="ml-1.5 text-muted-foreground">{openTally.explanation}</span>
+            </p>
+          ) : null}
+        </div>
+      ) : (
+        <p className="mt-3 text-sm text-muted-foreground">No motion on the floor.</p>
+      )}
+
+      <p className="mt-2 text-xs text-muted-foreground">
+        Quorum requires {quorum} members. {hasQuorum ? "Quorum is present." : "Quorum is NOT present."}
+      </p>
+    </section>
+  );
+}
+
+function RollCallPanel({
+  members,
+  attMap,
+  readOnly,
+  onSetAttendance,
+}: {
+  members: { seatLabel: string; title?: string | null; member: { id: string; full_name: string } }[];
+  attMap: Map<string, string>;
+  readOnly: boolean;
+  onSetAttendance: (memberId: string, status: string) => void;
+}) {
+  return (
+    <section className="rounded-sm border border-border bg-card p-5">
+      <h2 className="font-display text-base font-bold">Roll call</h2>
+      <ul className="mt-3 space-y-3">
+        {members.map((m) => {
+          const current = attMap.get(m.member.id) ?? "";
+          return (
+            <li key={m.member.id} className="rounded-sm border border-input p-3">
+              <div className="flex items-center justify-between gap-2">
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-medium text-foreground">{m.member.full_name}</p>
+                  <p className="eyebrow">{m.title ?? m.seatLabel}</p>
+                </div>
+                <span className="docnum shrink-0 text-xs uppercase text-muted-foreground">
+                  {current || "—"}
+                </span>
+              </div>
+              <div className="mt-2 grid grid-cols-4 gap-2">
+                {ATTEND.map((s) => {
+                  const active = current === s;
+                  return (
+                    <button
+                      key={s}
+                      onClick={() => onSetAttendance(m.member.id, s)}
+                      disabled={readOnly}
+                      className={`rounded-sm border px-1 py-2.5 text-[0.65rem] font-semibold uppercase tracking-wide disabled:opacity-40 sm:text-xs ${
+                        active
+                          ? "border-primary bg-primary text-primary-foreground"
+                          : "border-input text-muted-foreground"
+                      }`}
+                    >
+                      {s}
+                    </button>
+                  );
+                })}
+              </div>
+            </li>
+          );
+        })}
+        {members.length === 0 && (
+          <li className="text-sm text-muted-foreground">No seats assigned for this body yet.</li>
+        )}
+      </ul>
+    </section>
+  );
+}
+
+function AgendaPanel({
+  items,
+  currentId,
+  readOnly,
+  onTakeUp,
+}: {
+  items: {
+    id: string;
+    title: string;
+    display_number: string | null;
+    section_name: string;
+    outcome: string | null;
+  }[];
+  currentId: string | null;
+  readOnly: boolean;
+  onTakeUp: (id: string) => void;
+}) {
+  return (
+    <section className="rounded-sm border border-border bg-card">
+      <h2 className="border-b border-rule px-5 py-3 font-display text-base font-bold">Agenda</h2>
+      <ul className="divide-y divide-border">
+        {items.map((a) => (
+          <li
+            key={a.id}
+            className={`grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 sm:px-5 ${
+              a.id === currentId ? "bg-accent/50" : ""
+            }`}
+          >
+            <span className="docnum w-8 shrink-0 text-muted-foreground">{a.display_number ?? "—"}</span>
+            <span className="min-w-0 text-sm text-foreground">
+              <span className="block truncate">{a.title}</span>
+              <span className="docnum block text-xs text-muted-foreground">{a.outcome ?? "pending"}</span>
+            </span>
+            <button
+              onClick={() => onTakeUp(a.id)}
+              disabled={readOnly}
+              className="shrink-0 rounded-sm border border-input px-2.5 py-1.5 text-xs font-semibold disabled:opacity-40"
+            >
+              {a.id === currentId ? "On floor" : "Take up"}
+            </button>
+          </li>
+        ))}
+        {items.length === 0 && (
+          <li className="px-5 py-8 text-sm text-muted-foreground">No agenda items.</li>
+        )}
+      </ul>
+    </section>
+  );
+}
+
+function MotionPanel({
+  currentItem,
+  openMotion,
+  motions,
+  members,
+  attMap,
+  rules,
+  body,
+  presentCount,
+  readOnly,
+  motionText,
+  setMotionText,
+  mover,
+  setMover,
+  seconder,
+  setSeconder,
+  ruleId,
+  setRuleId,
+  onCreateMotion,
+  onVote,
+  onCloseMotion,
+}: {
+  currentItem: { display_number?: string | null; title?: string } | null;
+  openMotion: { id: string; text: string; votes: { member_id: string; choice: string }[]; vote_rule_id: string | null } | null;
+  motions: { id: string; text: string; is_open: boolean; result: string | null; tally: unknown; agenda_item_id: string | null; vote_rule_id: string | null; votes: { member_id: string; choice: string }[] }[];
+  members: { id: string; full_name: string }[];
+  attMap: Map<string, string>;
+  rules: VoteRule[];
+  body: { seat_count?: number; quorum_type?: string; quorum_value?: number | null } | null;
+  presentCount: number;
+  readOnly: boolean;
+  motionText: string;
+  setMotionText: (v: string) => void;
+  mover: string;
+  setMover: (v: string) => void;
+  seconder: string;
+  setSeconder: (v: string) => void;
+  ruleId: string;
+  setRuleId: (v: string) => void;
+  onCreateMotion: () => void;
+  onVote: (memberId: string, choice: VoteChoice) => void;
+  onCloseMotion: () => void;
+}) {
+  return (
+    <div className="space-y-6">
+      <section className="rounded-sm border border-border bg-card p-5">
+        <h2 className="font-display text-base font-bold">
+          Motion {currentItem ? `on ${currentItem.display_number ?? ""} ${currentItem.title}` : ""}
+        </h2>
+        {openMotion ? (
+          <OpenMotionPanel
+            motion={openMotion}
+            members={members}
+            attMap={attMap}
+            rule={rules.find((r) => r.id === openMotion.vote_rule_id) ?? null}
+            seatCount={body?.seat_count ?? members.length}
+            presentCount={presentCount}
+            readOnly={readOnly}
+            onVote={onVote}
+            onClose={onCloseMotion}
+          />
+        ) : (
+          <form
+            className="mt-3 space-y-3"
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (!motionText.trim()) return;
+              onCreateMotion();
+            }}
+          >
+            <textarea
+              value={motionText}
+              onChange={(e) => setMotionText(e.target.value)}
+              rows={2}
+              placeholder="Motion to adopt…"
+              className="w-full rounded-sm border border-input bg-background px-2.5 py-2 text-sm"
+            />
+            <div className="grid gap-2 sm:grid-cols-3">
+              <select
+                value={mover}
+                onChange={(e) => setMover(e.target.value)}
+                className="rounded-sm border border-input bg-background px-2.5 py-2 text-sm"
+              >
+                <option value="">Moved by…</option>
+                {members.map((m) => (
+                  <option key={m.id} value={m.id}>
+                    {m.full_name}
+                  </option>
+                ))}
+              </select>
+              <select
+                value={seconder}
+                onChange={(e) => setSeconder(e.target.value)}
+                className="rounded-sm border border-input bg-background px-2.5 py-2 text-sm"
+              >
+                <option value="">Seconded by…</option>
+                {members.map((m) => (
+                  <option key={m.id} value={m.id}>
+                    {m.full_name}
+                  </option>
+                ))}
+              </select>
+              <select
+                value={ruleId}
+                onChange={(e) => setRuleId(e.target.value)}
+                className="rounded-sm border border-input bg-background px-2.5 py-2 text-sm"
+              >
+                <option value="">Simple majority</option>
+                {rules.map((r) => (
+                  <option key={r.id} value={r.id}>
+                    {r.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <button
+              type="submit"
+              disabled={readOnly}
+              className="rounded-sm bg-seal px-3.5 py-2 text-sm font-semibold text-seal-foreground disabled:opacity-40"
+            >
+              Put motion on the floor
+            </button>
+          </form>
+        )}
+      </section>
+
+      <section className="rounded-sm border border-border bg-card">
+        <h2 className="border-b border-rule px-5 py-3 font-display text-base font-bold">Recorded motions</h2>
+        <ul className="divide-y divide-border">
+          {motions
+            .filter((m) => !m.is_open)
+            .map((m) => {
+              const t = m.tally as { aye?: number; nay?: number; abstain?: number; explanation?: string } | null;
+              return (
+                <li key={m.id} className="px-5 py-3">
+                  <p className="text-sm text-foreground">{m.text}</p>
+                  <p className="docnum mt-1 text-xs text-muted-foreground">
+                    {m.result ?? "pending"} · Aye {t?.aye ?? 0} · Nay {t?.nay ?? 0} · Abstain{" "}
+                    {t?.abstain ?? 0}
+                  </p>
+                </li>
+              );
+            })}
+          {motions.filter((m) => !m.is_open).length === 0 && (
+            <li className="px-5 py-6 text-sm text-muted-foreground">No motions recorded.</li>
+          )}
+        </ul>
+      </section>
+    </div>
   );
 }
 
@@ -692,32 +888,34 @@ function OpenMotionPanel({
   return (
     <div className="mt-3">
       <p className="border-l-2 border-seal pl-3 text-sm italic text-foreground">{motion.text}</p>
-      <ul className="mt-4 space-y-2">
+      <ul className="mt-4 space-y-3">
         {members.map((m) => (
-          <li key={m.id} className="flex flex-wrap items-center gap-2">
-            <span className="min-w-40 flex-1 text-sm text-foreground">
-              {m.full_name}
-              <span className="ml-2 text-xs text-muted-foreground">
+          <li key={m.id} className="rounded-sm border border-input p-3">
+            <div className="flex items-center justify-between gap-2">
+              <p className="min-w-0 flex-1 text-sm font-medium text-foreground">{m.full_name}</p>
+              <span className="docnum shrink-0 text-xs text-muted-foreground">
                 {attMap.get(m.id) ?? "—"}
               </span>
-            </span>
-            {CHOICES.map((c) => {
-              const active = voteMap.get(m.id) === c;
-              return (
-                <button
-                  key={c}
-                  onClick={() => onVote(m.id, c)}
-                  disabled={readOnly}
-                  className={`rounded-sm border px-2 py-1 text-[0.68rem] font-semibold uppercase tracking-wide disabled:opacity-40 ${
-                    active
-                      ? "border-seal bg-seal text-seal-foreground"
-                      : "border-input text-muted-foreground"
-                  }`}
-                >
-                  {c}
-                </button>
-              );
-            })}
+            </div>
+            <div className="mt-2 grid grid-cols-5 gap-2">
+              {CHOICES.map((c) => {
+                const active = voteMap.get(m.id) === c;
+                return (
+                  <button
+                    key={c}
+                    onClick={() => onVote(m.id, c)}
+                    disabled={readOnly}
+                    className={`rounded-sm border px-1 py-3 text-[0.6rem] font-semibold uppercase tracking-wide disabled:opacity-40 sm:text-[0.7rem] ${
+                      active
+                        ? "border-seal bg-seal text-seal-foreground"
+                        : "border-input text-muted-foreground"
+                    }`}
+                  >
+                    {c}
+                  </button>
+                );
+              })}
+            </div>
           </li>
         ))}
       </ul>
@@ -737,5 +935,89 @@ function OpenMotionPanel({
         </button>
       </div>
     </div>
+  );
+}
+
+function MinutesPanel({
+  minutes,
+  minutesDraft,
+  setMinutesDraft,
+  readOnly,
+  onGenerate,
+  onSave,
+  onFinalize,
+  onExport,
+  exporting,
+}: {
+  minutes: { finalized?: boolean; certification_note?: string | null; integrity_hash?: string | null; certified_at?: string | null } | null | undefined;
+  minutesDraft: string;
+  setMinutesDraft: (v: string) => void;
+  readOnly: boolean;
+  onGenerate: () => void;
+  onSave: () => void;
+  onFinalize: () => void;
+  onExport: () => void;
+  exporting: boolean;
+}) {
+  return (
+    <aside className="rounded-sm border border-border bg-card p-5">
+      <div className="flex items-center justify-between gap-2">
+        <h2 className="font-display text-base font-bold">Minutes</h2>
+        <div className="flex gap-1.5">
+          <button
+            onClick={onGenerate}
+            disabled={readOnly}
+            className="rounded-sm border border-input px-2 py-1 text-xs font-semibold disabled:opacity-40"
+          >
+            Generate
+          </button>
+          <button
+            onClick={onExport}
+            disabled={exporting}
+            className="rounded-sm border border-input px-2 py-1 text-xs font-semibold disabled:opacity-50"
+          >
+            PDF
+          </button>
+        </div>
+      </div>
+      <textarea
+        value={minutesDraft}
+        onChange={(e) => setMinutesDraft(e.target.value)}
+        rows={14}
+        disabled={readOnly || !!minutes?.finalized}
+        className="mt-3 w-full rounded-sm border border-input bg-background px-2.5 py-2 font-mono text-xs leading-relaxed disabled:opacity-70 lg:rows-[22]"
+      />
+      <div className="mt-3 flex flex-wrap gap-2">
+        <button
+          onClick={onSave}
+          disabled={readOnly || !!minutes?.finalized}
+          className="rounded-sm border border-input px-3 py-1.5 text-sm font-semibold disabled:opacity-40"
+        >
+          Save draft
+        </button>
+        <button
+          onClick={onFinalize}
+          disabled={readOnly || !!minutes?.finalized}
+          className="rounded-sm bg-primary px-3 py-1.5 text-sm font-semibold text-primary-foreground disabled:opacity-40"
+        >
+          Finalize
+        </button>
+      </div>
+      {minutes?.finalized ? (
+        <div className="mt-3 rounded-sm border border-rule bg-muted/30 p-3">
+          <p className="text-xs font-semibold text-success">Minutes finalized, certified and published.</p>
+          <p className="mt-1 text-[0.68rem] leading-relaxed text-muted-foreground">
+            {minutes.certification_note}
+          </p>
+          <p className="eyebrow mt-2">SHA-256 integrity seal</p>
+          <p className="docnum mt-0.5 break-all text-[0.65rem] normal-case text-foreground">
+            {formatHash(minutes.integrity_hash)}
+          </p>
+          <p className="mt-1 text-[0.65rem] text-muted-foreground">
+            Certified {formatDateTime(minutes.certified_at)}.
+          </p>
+        </div>
+      ) : null}
+    </aside>
   );
 }
