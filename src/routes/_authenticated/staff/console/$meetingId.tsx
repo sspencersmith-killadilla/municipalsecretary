@@ -598,7 +598,7 @@ function StatusSummary({
 
 type MemberRow = {
   seatLabel: string;
-  title?: string | null;
+  title: string | null;
   member: { id: string; full_name: string };
 };
 
