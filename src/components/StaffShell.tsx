@@ -66,7 +66,10 @@ export function StaffShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex min-h-dvh bg-background">
-      <aside aria-label="Staff navigation" className="hidden w-64 shrink-0 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground lg:flex">
+      <aside
+        aria-label="Staff navigation"
+        className="hidden w-64 shrink-0 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground lg:flex"
+      >
         <Link to="/" className="flex items-center gap-2.5 border-b border-sidebar-border px-5 py-5">
           <Landmark className="h-6 w-6 text-sidebar-primary" strokeWidth={1.5} />
           <span className="leading-tight">

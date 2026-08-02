@@ -58,9 +58,13 @@ function LiveConsole() {
     },
   });
 
-  const body = meeting.data?.bodies as
-    | { id: string; name: string; seat_count: number; quorum_type: string; quorum_value: number | null }
-    | null;
+  const body = meeting.data?.bodies as {
+    id: string;
+    name: string;
+    seat_count: number;
+    quorum_type: string;
+    quorum_value: number | null;
+  } | null;
 
   const seats = useQuery({
     queryKey: ["console", "seats", body?.id],
@@ -183,11 +187,11 @@ function LiveConsole() {
   });
 
   const setMeeting = useMutation({
-    mutationFn: async (patch: {
-      status?: string;
-      current_agenda_item_id?: string | null;
-    }) => {
-      const { error } = await supabase.from("meetings").update(patch as never).eq("id", meetingId);
+    mutationFn: async (patch: { status?: string; current_agenda_item_id?: string | null }) => {
+      const { error } = await supabase
+        .from("meetings")
+        .update(patch as never)
+        .eq("id", meetingId);
       if (error) throw error;
     },
     onSuccess: () => inv("meeting"),
@@ -248,7 +252,10 @@ function LiveConsole() {
     }) => {
       const rule = (rules.data ?? []).find((r) => r.id === motion.vote_rule_id) ?? null;
       const tally = computeTally({
-        votes: motion.votes.map((v) => ({ member_id: v.member_id, choice: v.choice as VoteChoice })),
+        votes: motion.votes.map((v) => ({
+          member_id: v.member_id,
+          choice: v.choice as VoteChoice,
+        })),
         seatCount: body?.seat_count ?? members.length,
         presentCount,
         rule,
@@ -261,7 +268,10 @@ function LiveConsole() {
       if (error) throw error;
 
       if (motion.agenda_item_id) {
-        await supabase.from("agenda_items").update({ outcome: result }).eq("id", motion.agenda_item_id);
+        await supabase
+          .from("agenda_items")
+          .update({ outcome: result })
+          .eq("id", motion.agenda_item_id);
         const item = (agenda.data ?? []).find((a) => a.id === motion.agenda_item_id);
         if (item?.item_id) {
           await supabase
@@ -329,7 +339,9 @@ function LiveConsole() {
     members.forEach((m) =>
       lines.push(`  ${m.member!.full_name}: ${attMap.get(m.member!.id) ?? "not recorded"}`),
     );
-    lines.push(`  Quorum ${hasQuorum ? "present" : "NOT present"} (${presentCount} of ${quorum} required)`);
+    lines.push(
+      `  Quorum ${hasQuorum ? "present" : "NOT present"} (${presentCount} of ${quorum} required)`,
+    );
     lines.push("");
     lines.push("AGENDA");
     (agenda.data ?? []).forEach((a) => {
@@ -388,7 +400,9 @@ function LiveConsole() {
               Call to order
             </button>
             <button
-              onClick={() => setMeeting.mutate({ status: "adjourned", current_agenda_item_id: null })}
+              onClick={() =>
+                setMeeting.mutate({ status: "adjourned", current_agenda_item_id: null })
+              }
               disabled={readOnly}
               className="rounded-sm border border-input px-3.5 py-2 text-sm font-semibold disabled:opacity-40"
             >
@@ -424,7 +438,9 @@ function LiveConsole() {
             openTally={openTally}
             readOnly={readOnly}
             onCallToOrder={() => setMeeting.mutate({ status: "in_progress" })}
-            onAdjourn={() => setMeeting.mutate({ status: "adjourned", current_agenda_item_id: null })}
+            onAdjourn={() =>
+              setMeeting.mutate({ status: "adjourned", current_agenda_item_id: null })
+            }
           />
         </div>
 
@@ -526,7 +542,13 @@ function StatusSummary({
   hasQuorum: boolean;
   currentItem: { display_number?: string | null; title?: string } | null;
   openMotion: { text?: string } | null;
-  openTally: { aye: number; nay: number; abstain: number; recuse: number; explanation?: string } | null;
+  openTally: {
+    aye: number;
+    nay: number;
+    abstain: number;
+    recuse: number;
+    explanation?: string;
+  } | null;
   readOnly: boolean;
   onCallToOrder: () => void;
   onAdjourn: () => void;
@@ -536,8 +558,12 @@ function StatusSummary({
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div className="min-w-0 flex-1">
           <p className="eyebrow">{body?.name ?? "Meeting"}</p>
-          <h2 className="mt-0.5 font-display text-lg font-bold leading-tight">{meeting?.title ?? "Meeting console"}</h2>
-          <p className="mt-0.5 text-xs text-muted-foreground">{formatDateTime(meeting?.starts_at)}</p>
+          <h2 className="mt-0.5 font-display text-lg font-bold leading-tight">
+            {meeting?.title ?? "Meeting console"}
+          </h2>
+          <p className="mt-0.5 text-xs text-muted-foreground">
+            {formatDateTime(meeting?.starts_at)}
+          </p>
         </div>
         <span
           className={`shrink-0 rounded-sm border px-2.5 py-1 text-xs font-semibold uppercase tracking-wider ${
@@ -558,7 +584,10 @@ function StatusSummary({
           >
             Call to order
           </button>
-          <button onClick={onAdjourn} className="rounded-sm border border-input px-3 py-2 text-sm font-semibold">
+          <button
+            onClick={onAdjourn}
+            className="rounded-sm border border-input px-3 py-2 text-sm font-semibold"
+          >
             Adjourn
           </button>
         </div>
@@ -590,7 +619,8 @@ function StatusSummary({
       )}
 
       <p className="mt-2 text-xs text-muted-foreground">
-        Quorum requires {quorum} members. {hasQuorum ? "Quorum is present." : "Quorum is NOT present."}
+        Quorum requires {quorum} members.{" "}
+        {hasQuorum ? "Quorum is present." : "Quorum is NOT present."}
       </p>
     </section>
   );
@@ -688,10 +718,14 @@ function AgendaPanel({
               a.id === currentId ? "bg-accent/50" : ""
             }`}
           >
-            <span className="docnum w-8 shrink-0 text-muted-foreground">{a.display_number ?? "—"}</span>
+            <span className="docnum w-8 shrink-0 text-muted-foreground">
+              {a.display_number ?? "—"}
+            </span>
             <span className="min-w-0 text-sm text-foreground">
               <span className="block truncate">{a.title}</span>
-              <span className="docnum block text-xs text-muted-foreground">{a.outcome ?? "pending"}</span>
+              <span className="docnum block text-xs text-muted-foreground">
+                {a.outcome ?? "pending"}
+              </span>
             </span>
             <button
               onClick={() => onTakeUp(a.id)}
@@ -733,8 +767,22 @@ function MotionPanel({
   onCloseMotion,
 }: {
   currentItem: { display_number?: string | null; title?: string } | null;
-  openMotion: { id: string; text: string; votes: { member_id: string; choice: string }[]; vote_rule_id: string | null } | null;
-  motions: { id: string; text: string; is_open: boolean; result: string | null; tally: unknown; agenda_item_id: string | null; vote_rule_id: string | null; votes: { member_id: string; choice: string }[] }[];
+  openMotion: {
+    id: string;
+    text: string;
+    votes: { member_id: string; choice: string }[];
+    vote_rule_id: string | null;
+  } | null;
+  motions: {
+    id: string;
+    text: string;
+    is_open: boolean;
+    result: string | null;
+    tally: unknown;
+    agenda_item_id: string | null;
+    vote_rule_id: string | null;
+    votes: { member_id: string; choice: string }[];
+  }[];
   members: { id: string; full_name: string }[];
   attMap: Map<string, string>;
   rules: VoteRule[];
@@ -837,12 +885,19 @@ function MotionPanel({
       </section>
 
       <section className="rounded-sm border border-border bg-card">
-        <h2 className="border-b border-rule px-5 py-3 font-display text-base font-bold">Recorded motions</h2>
+        <h2 className="border-b border-rule px-5 py-3 font-display text-base font-bold">
+          Recorded motions
+        </h2>
         <ul className="divide-y divide-border">
           {motions
             .filter((m) => !m.is_open)
             .map((m) => {
-              const t = m.tally as { aye?: number; nay?: number; abstain?: number; explanation?: string } | null;
+              const t = m.tally as {
+                aye?: number;
+                nay?: number;
+                abstain?: number;
+                explanation?: string;
+              } | null;
               return (
                 <li key={m.id} className="px-5 py-3">
                   <p className="text-sm text-foreground">{m.text}</p>
@@ -955,7 +1010,15 @@ function MinutesPanel({
   onExport,
   exporting,
 }: {
-  minutes: { finalized?: boolean; certification_note?: string | null; integrity_hash?: string | null; certified_at?: string | null } | null | undefined;
+  minutes:
+    | {
+        finalized?: boolean;
+        certification_note?: string | null;
+        integrity_hash?: string | null;
+        certified_at?: string | null;
+      }
+    | null
+    | undefined;
   minutesDraft: string;
   setMinutesDraft: (v: string) => void;
   readOnly: boolean;
@@ -1011,7 +1074,9 @@ function MinutesPanel({
       </div>
       {minutes?.finalized ? (
         <div className="mt-3 rounded-sm border border-rule bg-muted/30 p-3">
-          <p className="text-xs font-semibold text-success">Minutes finalized, certified and published.</p>
+          <p className="text-xs font-semibold text-success">
+            Minutes finalized, certified and published.
+          </p>
           <p className="mt-1 text-[0.68rem] leading-relaxed text-muted-foreground">
             {minutes.certification_note}
           </p>
