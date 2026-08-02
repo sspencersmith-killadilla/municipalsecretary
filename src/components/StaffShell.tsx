@@ -55,6 +55,7 @@ export function StaffShell({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const [moreOpen, setMoreOpen] = useState(false);
 
   async function signOut() {
     await queryClient.cancelQueries();
