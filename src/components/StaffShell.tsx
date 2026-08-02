@@ -13,7 +13,7 @@ import {
   MessageSquare,
   Archive,
   ScrollText,
-  DatabaseZop,
+  DatabaseZap,
   BookOpen,
   ShieldCheck,
   ClipboardList,
