@@ -17,6 +17,9 @@ import {
   BookOpen,
   ShieldCheck,
   ClipboardList,
+  Bell,
+  BarChart3,
+  Rocket,
   Menu,
   X,
 } from "lucide-react";
