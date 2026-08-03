@@ -8,6 +8,8 @@ import { StatusPill } from "@/components/PublicLayout";
 import { AttachmentsPanel } from "@/components/staff/AttachmentsPanel";
 
 import { useSession } from "@/lib/session";
+import { assignItemNumber } from "@/lib/numbering.functions";
+
 import { formatDateTime, ITEM_STATUS_LABELS, statusTone } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/staff/legislation/$itemId")({
