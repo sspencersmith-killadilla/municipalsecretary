@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SubscribeRouteImport } from './routes/subscribe'
 import { Route as RecordsRequestsRouteImport } from './routes/records-requests'
+import { Route as ManageNoticesRouteImport } from './routes/manage-notices'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AccessibilityRouteImport } from './routes/accessibility'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
@@ -51,6 +52,11 @@ const SubscribeRoute = SubscribeRouteImport.update({
 const RecordsRequestsRoute = RecordsRequestsRouteImport.update({
   id: '/records-requests',
   path: '/records-requests',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ManageNoticesRoute = ManageNoticesRouteImport.update({
+  id: '/manage-notices',
+  path: '/manage-notices',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -226,6 +232,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/accessibility': typeof AccessibilityRoute
   '/auth': typeof AuthRoute
+  '/manage-notices': typeof ManageNoticesRoute
   '/records-requests': typeof RecordsRequestsRoute
   '/subscribe': typeof SubscribeRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -260,6 +267,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/accessibility': typeof AccessibilityRoute
   '/auth': typeof AuthRoute
+  '/manage-notices': typeof ManageNoticesRoute
   '/records-requests': typeof RecordsRequestsRoute
   '/subscribe': typeof SubscribeRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -296,6 +304,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/accessibility': typeof AccessibilityRoute
   '/auth': typeof AuthRoute
+  '/manage-notices': typeof ManageNoticesRoute
   '/records-requests': typeof RecordsRequestsRoute
   '/subscribe': typeof SubscribeRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
@@ -332,6 +341,7 @@ export interface FileRouteTypes {
     | '/'
     | '/accessibility'
     | '/auth'
+    | '/manage-notices'
     | '/records-requests'
     | '/subscribe'
     | '/dashboard'
@@ -366,6 +376,7 @@ export interface FileRouteTypes {
     | '/'
     | '/accessibility'
     | '/auth'
+    | '/manage-notices'
     | '/records-requests'
     | '/subscribe'
     | '/dashboard'
@@ -401,6 +412,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/accessibility'
     | '/auth'
+    | '/manage-notices'
     | '/records-requests'
     | '/subscribe'
     | '/_authenticated/dashboard'
@@ -437,6 +449,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AccessibilityRoute: typeof AccessibilityRoute
   AuthRoute: typeof AuthRoute
+  ManageNoticesRoute: typeof ManageNoticesRoute
   RecordsRequestsRoute: typeof RecordsRequestsRoute
   SubscribeRoute: typeof SubscribeRoute
   DocsClerkHandbookRoute: typeof DocsClerkHandbookRoute
@@ -465,6 +478,13 @@ declare module '@tanstack/react-router' {
       path: '/records-requests'
       fullPath: '/records-requests'
       preLoaderRoute: typeof RecordsRequestsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/manage-notices': {
+      id: '/manage-notices'
+      path: '/manage-notices'
+      fullPath: '/manage-notices'
+      preLoaderRoute: typeof ManageNoticesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -740,6 +760,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AccessibilityRoute: AccessibilityRoute,
   AuthRoute: AuthRoute,
+  ManageNoticesRoute: ManageNoticesRoute,
   RecordsRequestsRoute: RecordsRequestsRoute,
   SubscribeRoute: SubscribeRoute,
   DocsClerkHandbookRoute: DocsClerkHandbookRoute,
