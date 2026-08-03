@@ -17,6 +17,9 @@ import {
   BookOpen,
   ShieldCheck,
   ClipboardList,
+  Bell,
+  BarChart3,
+  Rocket,
   Menu,
   X,
 } from "lucide-react";
@@ -35,9 +38,12 @@ const NAV = [
   { to: "/staff/console", label: "Meeting Console", icon: Gavel },
   { to: "/staff/comments", label: "Public Comment", icon: MessageSquare },
   { to: "/staff/records", label: "Records & FOIA", icon: Archive },
+  { to: "/staff/notifications", label: "Notifications", icon: Bell },
+  { to: "/staff/reports", label: "Reports", icon: BarChart3 },
   { to: "/staff/audit", label: "Audit Trail", icon: ScrollText },
   { to: "/staff/security", label: "Account Security", icon: ShieldCheck },
   { to: "/staff/import", label: "Data Migration", icon: DatabaseZap },
+  { to: "/staff/setup", label: "Setup Wizard", icon: Rocket },
   { to: "/staff/admin", label: "Administration", icon: Settings2 },
   { to: "/docs/clerk-handbook", label: "Clerk Handbook", icon: BookOpen },
 ] as const;

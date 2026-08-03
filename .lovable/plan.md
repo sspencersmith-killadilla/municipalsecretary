@@ -1,63 +1,70 @@
-# Mobile Meeting Console Quick Wins
-
 ## Goal
-Make the live meeting console usable on phones and tablets during a real meeting, with larger touch targets, a stacked layout, and a simplified at-a-glance view for board members.
 
-## What we’ll build
+Close the three gaps that decide whether a small/mid-size city can actually run CivicLedger day to day: nobody gets notified, a new city can't set itself up, and there's no way to report out or plug into the existing city website.
 
-### 1. Responsive console layout
-- Collapse the current 3-column desktop grid into a single stacked column on small screens.
-- Promote the **current agenda item + open motion + quorum badge** into a sticky top summary card so clerks and members always see the live state without scrolling.
-- Increase tap targets for all console buttons (roll-call status chips, vote buttons, agenda actions) to at least 44×44 px.
+Verified current state: subscriber records are stored but never emailed (no email domain configured, no send code anywhere), roles are only granted by the signup trigger — the admin portal has Bodies / Board access / Item types / Vote rules / Numbering / Members / Settings but no user & role management, and there are no reporting or embed routes.
 
-### 2. Board-member “meeting at a glance” view
-- For users without `canManage` (board members, viewers), render a read-only mobile card showing:
-  - Meeting status, quorum, and current item.
-  - Open motion text and current vote tally.
-  - Recent speaker-queue activity.
-- Hide clerk-only controls (record roll call, create motion, edit minutes) instead of just disabling them.
+---
 
-### 3. Touch-optimized roll call & voting
-- Roll call: replace the tiny status chips with a full-width row per member containing 4 large segmented buttons (`Present`, `Remote`, `Absent`, `Excused`).
-- Voting: when a motion is open, show a grid of large choice buttons (`Aye`, `Nay`, `Abstain`, `Recuse`) per member, suitable for a clerk tapping on a tablet.
-- Add haptic/visual feedback on tap (active state + toast confirmation).
+## 1. Notifications & email (the daily clerk need)
 
-### 4. Mobile staff navigation
-- Replace the horizontal text-only mobile nav in `StaffShell` with an icon + label bottom tab bar on small screens, so clerks can jump between Console, Briefings, and Meetings quickly during a meeting.
-- Keep the existing sidebar on `lg` screens unchanged.
+Prerequisite: connect a sender domain (e.g. a subdomain of civicplexus.org). One-time setup dialog; nothing else in this phase works until it's done.
 
-## Files to touch
+Branded templates matching the parchment/ink design:
+- **Subscriber confirmation** (double opt-in — the `confirmed` flag exists and is never set today)
+- **Agenda posted** — sent on meeting publish, with packet link and meeting details
+- **Agenda amended / meeting cancelled** — tied to the notice record
+- **Minutes published**
+- **Approval requested / item returned** — to the assigned staff approver
+- **Records request received / due-date reminder / closed** — to the requester's tracking code
+- **Public comment received** — digest to the clerk
 
-- `src/routes/_authenticated/staff/console/$meetingId.tsx`
-  - Refactor layout with responsive grid/flex stacking.
-  - Extract `CurrentItemCard`, `RollCallPanel`, `VotingPanel`, `AgendaList`, `MinutesPanel` sub-components.
-  - Add board-member read-only summary.
-- `src/components/StaffShell.tsx`
-  - Swap the horizontal mobile nav for a bottom tab bar (`sm:hidden`).
-- `src/styles.css`
-  - Add any needed mobile utility variables (already Tailwind v4).
-- `src/lib/votes.ts`
-  - No logic changes; reuse existing `computeTally` and `quorumRequired`.
+Mechanics:
+- Fan-out from the existing publish/finalize actions through a server-side notifier that resolves the recipient list from `subscriptions` (per body, per notification type).
+- A one-click unsubscribe/manage page keyed off the existing `subscriptions.token`.
+- A staff **Notifications log** page so the clerk can prove a notice went out — an important open-meetings evidence trail.
 
-## Out of scope (for this quick-win pass)
+## 2. Onboarding & user management
 
-- Offline/PWA installability (not requested).
-- Native mobile app.
-- Real-time subscriptions/WebSockets (console already refreshes via queries).
-- New backend tables or permissions.
+**Setup wizard** at `/staff/setup`, run once by the first admin:
+1. Municipality name, tagline, seal/logo, contact email, timezone
+2. Notice days, posting deadline hours, records response days, public-comment defaults
+3. Create bodies and seats (council + common boards as presets)
+4. Choose item types, numbering patterns, vote rules from templates
+5. Import members/roster (reuse the existing CSV import), invite staff
+6. Readiness checklist with a "you're live" state
 
-## Acceptance criteria
+**User & role management** in the admin portal:
+- Invite staff by email (creates the account, assigns role and board permissions in one step)
+- Role editor for admin / clerk / attorney / department staff / board member / viewer
+- Link a member record to a user account so board members see their own briefings
+- Deactivate a departing employee without deleting their audit trail
 
-1. Console renders in a single readable column on a 375 px wide viewport with no horizontal overflow.
-2. Roll-call buttons are easy to tap; a clerk can mark a 7-member board present in under 10 taps.
-3. Board-member view shows current item, open motion, and tally without edit controls.
-4. Mobile bottom tab bar provides one-tap access to Console, Briefings, and Meetings.
-5. All existing desktop functionality remains unchanged at `lg` and above.
+## 3. Reporting & website embed
+
+**Clerk reports** at `/staff/reports`, each viewable and exportable to CSV/PDF:
+- Attendance by member and by meeting (state reporting + per-diem)
+- Voting record by member and by item type
+- Item turnaround: intake → adoption, and items stalled in review
+- Records-request performance: on-time rate, average days, overdue queue
+- Meeting-cost / agenda-volume trend for budget season
+
+**Embeddable widgets** so the city's existing website can show live data:
+- `/embed/upcoming` — next meetings for one body
+- `/embed/agenda/:meetingId` — current agenda with packet link
+- Lightweight, theme-parameterized HTML with a copy-paste `<iframe>` snippet generator in the admin portal, plus permissive CORS on those routes only.
+
+---
+
+## Technical notes
+
+- Deployment stays one instance per city — no tenant column, no cross-city routing. The setup wizard is what makes a fresh instance usable.
+- New tables: `notification_log` (recipient, type, entity, sent_at, status) and `staff_invites`. `subscriptions` gains per-type granularity if needed; grants + RLS written in the same migration, staff-read/service-write only.
+- Emails send from server functions triggered by existing publish/finalize actions — no queue, no cron table.
+- Embed routes are public read-only, served through a publishable-key client against the existing public RLS policies; cancelled meetings stay excluded.
+- Reports read through role-checked server functions so member PII stays behind the existing column grants.
+- Self-hosting guide and clerk handbook get sections for email domain setup, the wizard, and embedding.
 
 ## Suggested order
 
-1. Refactor console layout + current-item summary card.
-2. Build responsive roll-call and voting panels.
-3. Add board-member read-only summary.
-4. Replace mobile staff nav with bottom tab bar.
-5. Verify on mobile, tablet, and desktop viewports.
+Email + notifications first (highest daily value), then setup wizard + user management (makes a fresh install deployable), then reports + embeds.

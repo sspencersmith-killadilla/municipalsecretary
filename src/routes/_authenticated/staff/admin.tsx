@@ -22,8 +22,12 @@ export const Route = createFileRoute("/_authenticated/staff/admin")({
   component: Admin,
 });
 
+
+import { StaffUsersPanel } from "@/components/staff/StaffUsersPanel";
+
 const TABS = [
   "Bodies",
+  "Staff & roles",
   "Board access",
   "Item types",
   "Vote rules",
@@ -60,6 +64,7 @@ function Admin() {
       </div>
       <div className="p-6">
         {tab === "Bodies" && <BodiesPanel />}
+        {tab === "Staff & roles" && <StaffUsersPanel />}
         {tab === "Board access" && <BoardAccessPanel />}
         {tab === "Item types" && <ItemTypesPanel />}
         {tab === "Vote rules" && <VoteRulesPanel />}

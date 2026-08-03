@@ -1241,6 +1241,56 @@ export type Database = {
           },
         ]
       }
+      notification_log: {
+        Row: {
+          body_id: string | null
+          created_at: string
+          detail: string | null
+          entity_id: string | null
+          entity_type: string | null
+          id: string
+          kind: string
+          recipient: string
+          sent_at: string
+          status: string
+          subject: string | null
+        }
+        Insert: {
+          body_id?: string | null
+          created_at?: string
+          detail?: string | null
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          kind: string
+          recipient: string
+          sent_at?: string
+          status?: string
+          subject?: string | null
+        }
+        Update: {
+          body_id?: string | null
+          created_at?: string
+          detail?: string | null
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          kind?: string
+          recipient?: string
+          sent_at?: string
+          status?: string
+          subject?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_log_body_id_fkey"
+            columns: ["body_id"]
+            isOneToOne: false
+            referencedRelation: "bodies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       numbering_rules: {
         Row: {
           body_id: string | null
@@ -1526,35 +1576,47 @@ export type Database = {
         Row: {
           contact_email: string | null
           id: number
+          logo_url: string | null
           municipality_name: string
           notice_days: number
           posting_deadline_hours: number
           public_comment_enabled: boolean
           records_response_days: number
+          setup_completed_at: string | null
           tagline: string | null
+          timezone: string
           updated_at: string
+          website_url: string | null
         }
         Insert: {
           contact_email?: string | null
           id?: number
+          logo_url?: string | null
           municipality_name?: string
           notice_days?: number
           posting_deadline_hours?: number
           public_comment_enabled?: boolean
           records_response_days?: number
+          setup_completed_at?: string | null
           tagline?: string | null
+          timezone?: string
           updated_at?: string
+          website_url?: string | null
         }
         Update: {
           contact_email?: string | null
           id?: number
+          logo_url?: string | null
           municipality_name?: string
           notice_days?: number
           posting_deadline_hours?: number
           public_comment_enabled?: boolean
           records_response_days?: number
+          setup_completed_at?: string | null
           tagline?: string | null
+          timezone?: string
           updated_at?: string
+          website_url?: string | null
         }
         Relationships: []
       }
@@ -1628,10 +1690,62 @@ export type Database = {
           },
         ]
       }
+      staff_invites: {
+        Row: {
+          accepted_at: string | null
+          body_ids: string[]
+          created_at: string
+          department: string | null
+          email: string
+          expires_at: string
+          full_name: string | null
+          id: string
+          invited_by: string | null
+          revoked_at: string | null
+          role: Database["public"]["Enums"]["app_role"]
+          title: string | null
+          token: string
+          updated_at: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          body_ids?: string[]
+          created_at?: string
+          department?: string | null
+          email: string
+          expires_at?: string
+          full_name?: string | null
+          id?: string
+          invited_by?: string | null
+          revoked_at?: string | null
+          role?: Database["public"]["Enums"]["app_role"]
+          title?: string | null
+          token?: string
+          updated_at?: string
+        }
+        Update: {
+          accepted_at?: string | null
+          body_ids?: string[]
+          created_at?: string
+          department?: string | null
+          email?: string
+          expires_at?: string
+          full_name?: string | null
+          id?: string
+          invited_by?: string | null
+          revoked_at?: string | null
+          role?: Database["public"]["Enums"]["app_role"]
+          title?: string | null
+          token?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       subscriptions: {
         Row: {
           body_id: string | null
           confirmed: boolean
+          confirmed_at: string | null
           created_at: string
           email: string
           id: string
@@ -1639,11 +1753,13 @@ export type Database = {
           notify_changes: boolean
           notify_minutes: boolean
           token: string
+          unsubscribed_at: string | null
           updated_at: string
         }
         Insert: {
           body_id?: string | null
           confirmed?: boolean
+          confirmed_at?: string | null
           created_at?: string
           email: string
           id?: string
@@ -1651,11 +1767,13 @@ export type Database = {
           notify_changes?: boolean
           notify_minutes?: boolean
           token?: string
+          unsubscribed_at?: string | null
           updated_at?: string
         }
         Update: {
           body_id?: string | null
           confirmed?: boolean
+          confirmed_at?: string | null
           created_at?: string
           email?: string
           id?: string
@@ -1663,6 +1781,7 @@ export type Database = {
           notify_changes?: boolean
           notify_minutes?: boolean
           token?: string
+          unsubscribed_at?: string | null
           updated_at?: string
         }
         Relationships: [
