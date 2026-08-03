@@ -21,6 +21,7 @@ import { Route as LegislationIndexRouteImport } from './routes/legislation/index
 import { Route as BodiesIndexRouteImport } from './routes/bodies/index'
 import { Route as MeetingsMeetingIdRouteImport } from './routes/meetings/$meetingId'
 import { Route as LegislationItemIdRouteImport } from './routes/legislation/$itemId'
+import { Route as EmbedUpcomingRouteImport } from './routes/embed/upcoming'
 import { Route as DocsSelfHostingRouteImport } from './routes/docs/self-hosting'
 import { Route as DocsClerkHandbookRouteImport } from './routes/docs/clerk-handbook'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
@@ -104,6 +105,11 @@ const MeetingsMeetingIdRoute = MeetingsMeetingIdRouteImport.update({
 const LegislationItemIdRoute = LegislationItemIdRouteImport.update({
   id: '/legislation/$itemId',
   path: '/legislation/$itemId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EmbedUpcomingRoute = EmbedUpcomingRouteImport.update({
+  id: '/embed/upcoming',
+  path: '/embed/upcoming',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DocsSelfHostingRoute = DocsSelfHostingRouteImport.update({
@@ -258,6 +264,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/docs/clerk-handbook': typeof DocsClerkHandbookRoute
   '/docs/self-hosting': typeof DocsSelfHostingRoute
+  '/embed/upcoming': typeof EmbedUpcomingRoute
   '/legislation/$itemId': typeof LegislationItemIdRoute
   '/meetings/$meetingId': typeof MeetingsMeetingIdRoute
   '/bodies/': typeof BodiesIndexRoute
@@ -296,6 +303,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/docs/clerk-handbook': typeof DocsClerkHandbookRoute
   '/docs/self-hosting': typeof DocsSelfHostingRoute
+  '/embed/upcoming': typeof EmbedUpcomingRoute
   '/legislation/$itemId': typeof LegislationItemIdRoute
   '/meetings/$meetingId': typeof MeetingsMeetingIdRoute
   '/bodies': typeof BodiesIndexRoute
@@ -336,6 +344,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/docs/clerk-handbook': typeof DocsClerkHandbookRoute
   '/docs/self-hosting': typeof DocsSelfHostingRoute
+  '/embed/upcoming': typeof EmbedUpcomingRoute
   '/legislation/$itemId': typeof LegislationItemIdRoute
   '/meetings/$meetingId': typeof MeetingsMeetingIdRoute
   '/bodies/': typeof BodiesIndexRoute
@@ -376,6 +385,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/docs/clerk-handbook'
     | '/docs/self-hosting'
+    | '/embed/upcoming'
     | '/legislation/$itemId'
     | '/meetings/$meetingId'
     | '/bodies/'
@@ -414,6 +424,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/docs/clerk-handbook'
     | '/docs/self-hosting'
+    | '/embed/upcoming'
     | '/legislation/$itemId'
     | '/meetings/$meetingId'
     | '/bodies'
@@ -453,6 +464,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/docs/clerk-handbook'
     | '/docs/self-hosting'
+    | '/embed/upcoming'
     | '/legislation/$itemId'
     | '/meetings/$meetingId'
     | '/bodies/'
@@ -492,6 +504,7 @@ export interface RootRouteChildren {
   SubscribeRoute: typeof SubscribeRoute
   DocsClerkHandbookRoute: typeof DocsClerkHandbookRoute
   DocsSelfHostingRoute: typeof DocsSelfHostingRoute
+  EmbedUpcomingRoute: typeof EmbedUpcomingRoute
   LegislationItemIdRoute: typeof LegislationItemIdRoute
   MeetingsMeetingIdRoute: typeof MeetingsMeetingIdRoute
   BodiesIndexRoute: typeof BodiesIndexRoute
@@ -586,6 +599,13 @@ declare module '@tanstack/react-router' {
       path: '/legislation/$itemId'
       fullPath: '/legislation/$itemId'
       preLoaderRoute: typeof LegislationItemIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/embed/upcoming': {
+      id: '/embed/upcoming'
+      path: '/embed/upcoming'
+      fullPath: '/embed/upcoming'
+      preLoaderRoute: typeof EmbedUpcomingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/docs/self-hosting': {
@@ -830,6 +850,7 @@ const rootRouteChildren: RootRouteChildren = {
   SubscribeRoute: SubscribeRoute,
   DocsClerkHandbookRoute: DocsClerkHandbookRoute,
   DocsSelfHostingRoute: DocsSelfHostingRoute,
+  EmbedUpcomingRoute: EmbedUpcomingRoute,
   LegislationItemIdRoute: LegislationItemIdRoute,
   MeetingsMeetingIdRoute: MeetingsMeetingIdRoute,
   BodiesIndexRoute: BodiesIndexRoute,
