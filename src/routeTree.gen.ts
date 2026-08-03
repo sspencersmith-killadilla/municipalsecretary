@@ -28,6 +28,7 @@ import { Route as MeetingsTextMeetingIdRouteImport } from './routes/meetings/tex
 import { Route as ApiPublicRssDotxmlRouteImport } from './routes/api/public/rss[.]xml'
 import { Route as ApiPublicCalendarDoticsRouteImport } from './routes/api/public/calendar[.]ics'
 import { Route as AuthenticatedStaffSubmitRouteImport } from './routes/_authenticated/staff/submit'
+import { Route as AuthenticatedStaffSetupRouteImport } from './routes/_authenticated/staff/setup'
 import { Route as AuthenticatedStaffSecurityRouteImport } from './routes/_authenticated/staff/security'
 import { Route as AuthenticatedStaffReportsRouteImport } from './routes/_authenticated/staff/reports'
 import { Route as AuthenticatedStaffRecordsRouteImport } from './routes/_authenticated/staff/records'
@@ -141,6 +142,11 @@ const AuthenticatedStaffSubmitRoute =
     path: '/staff/submit',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedStaffSetupRoute = AuthenticatedStaffSetupRouteImport.update({
+  id: '/staff/setup',
+  path: '/staff/setup',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedStaffSecurityRoute =
   AuthenticatedStaffSecurityRouteImport.update({
     id: '/staff/security',
@@ -266,6 +272,7 @@ export interface FileRoutesByFullPath {
   '/staff/records': typeof AuthenticatedStaffRecordsRoute
   '/staff/reports': typeof AuthenticatedStaffReportsRoute
   '/staff/security': typeof AuthenticatedStaffSecurityRoute
+  '/staff/setup': typeof AuthenticatedStaffSetupRoute
   '/staff/submit': typeof AuthenticatedStaffSubmitRoute
   '/api/public/calendar.ics': typeof ApiPublicCalendarDoticsRoute
   '/api/public/rss.xml': typeof ApiPublicRssDotxmlRoute
@@ -303,6 +310,7 @@ export interface FileRoutesByTo {
   '/staff/records': typeof AuthenticatedStaffRecordsRoute
   '/staff/reports': typeof AuthenticatedStaffReportsRoute
   '/staff/security': typeof AuthenticatedStaffSecurityRoute
+  '/staff/setup': typeof AuthenticatedStaffSetupRoute
   '/staff/submit': typeof AuthenticatedStaffSubmitRoute
   '/api/public/calendar.ics': typeof ApiPublicCalendarDoticsRoute
   '/api/public/rss.xml': typeof ApiPublicRssDotxmlRoute
@@ -342,6 +350,7 @@ export interface FileRoutesById {
   '/_authenticated/staff/records': typeof AuthenticatedStaffRecordsRoute
   '/_authenticated/staff/reports': typeof AuthenticatedStaffReportsRoute
   '/_authenticated/staff/security': typeof AuthenticatedStaffSecurityRoute
+  '/_authenticated/staff/setup': typeof AuthenticatedStaffSetupRoute
   '/_authenticated/staff/submit': typeof AuthenticatedStaffSubmitRoute
   '/api/public/calendar.ics': typeof ApiPublicCalendarDoticsRoute
   '/api/public/rss.xml': typeof ApiPublicRssDotxmlRoute
@@ -381,6 +390,7 @@ export interface FileRouteTypes {
     | '/staff/records'
     | '/staff/reports'
     | '/staff/security'
+    | '/staff/setup'
     | '/staff/submit'
     | '/api/public/calendar.ics'
     | '/api/public/rss.xml'
@@ -418,6 +428,7 @@ export interface FileRouteTypes {
     | '/staff/records'
     | '/staff/reports'
     | '/staff/security'
+    | '/staff/setup'
     | '/staff/submit'
     | '/api/public/calendar.ics'
     | '/api/public/rss.xml'
@@ -456,6 +467,7 @@ export interface FileRouteTypes {
     | '/_authenticated/staff/records'
     | '/_authenticated/staff/reports'
     | '/_authenticated/staff/security'
+    | '/_authenticated/staff/setup'
     | '/_authenticated/staff/submit'
     | '/api/public/calendar.ics'
     | '/api/public/rss.xml'
@@ -625,6 +637,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedStaffSubmitRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/staff/setup': {
+      id: '/_authenticated/staff/setup'
+      path: '/staff/setup'
+      fullPath: '/staff/setup'
+      preLoaderRoute: typeof AuthenticatedStaffSetupRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/staff/security': {
       id: '/_authenticated/staff/security'
       path: '/staff/security'
@@ -758,6 +777,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedStaffRecordsRoute: typeof AuthenticatedStaffRecordsRoute
   AuthenticatedStaffReportsRoute: typeof AuthenticatedStaffReportsRoute
   AuthenticatedStaffSecurityRoute: typeof AuthenticatedStaffSecurityRoute
+  AuthenticatedStaffSetupRoute: typeof AuthenticatedStaffSetupRoute
   AuthenticatedStaffSubmitRoute: typeof AuthenticatedStaffSubmitRoute
   AuthenticatedStaffBriefingsMeetingIdRoute: typeof AuthenticatedStaffBriefingsMeetingIdRoute
   AuthenticatedStaffConsoleMeetingIdRoute: typeof AuthenticatedStaffConsoleMeetingIdRoute
@@ -780,6 +800,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedStaffRecordsRoute: AuthenticatedStaffRecordsRoute,
   AuthenticatedStaffReportsRoute: AuthenticatedStaffReportsRoute,
   AuthenticatedStaffSecurityRoute: AuthenticatedStaffSecurityRoute,
+  AuthenticatedStaffSetupRoute: AuthenticatedStaffSetupRoute,
   AuthenticatedStaffSubmitRoute: AuthenticatedStaffSubmitRoute,
   AuthenticatedStaffBriefingsMeetingIdRoute:
     AuthenticatedStaffBriefingsMeetingIdRoute,

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { CheckCircle2, Circle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import type { TablesUpdate } from "@/integrations/supabase/types";
 import { StaffShell, StaffHeader } from "@/components/StaffShell";
 import { useSession } from "@/lib/session";
 
@@ -86,7 +87,7 @@ function SetupWizard() {
   }, [settings.data]);
 
   const save = useMutation({
-    mutationFn: async (patch: Record<string, unknown>) => {
+    mutationFn: async (patch: TablesUpdate<"settings">) => {
       const { error } = await supabase.from("settings").update(patch).eq("id", 1);
       if (error) throw error;
     },
