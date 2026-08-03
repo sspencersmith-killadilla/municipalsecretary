@@ -31,7 +31,7 @@ export const Route = createFileRoute("/_authenticated/staff/reports")({
       },
     ],
   }),
-  component: Reports;
+  component: Reports,
 });
 
 function download(name: string, rows: (string | number)[][]) {
