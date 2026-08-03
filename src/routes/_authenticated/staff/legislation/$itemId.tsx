@@ -8,6 +8,8 @@ import { StatusPill } from "@/components/PublicLayout";
 import { AttachmentsPanel } from "@/components/staff/AttachmentsPanel";
 
 import { useSession } from "@/lib/session";
+import { assignItemNumber } from "@/lib/numbering.functions";
+
 import { formatDateTime, ITEM_STATUS_LABELS, statusTone } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/staff/legislation/$itemId")({
@@ -114,10 +116,9 @@ function EditItem() {
 
   const assignNumber = useMutation({
     mutationFn: async () => {
-      const { data, error } = await supabase.rpc("assign_item_number", { _item_id: itemId });
-      if (error) throw error;
-      return data as string;
+      return await assignItemNumber({ data: { item_id: itemId } });
     },
+
     onSuccess: (num) => {
       toast.success(`Assigned ${num}`);
       queryClient.invalidateQueries({ queryKey: ["staff", "item", itemId] });

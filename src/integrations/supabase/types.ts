@@ -1946,7 +1946,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      assign_item_number: { Args: { _item_id: string }; Returns: string }
+      admin_assign_item_number: {
+        Args: { _actor: string; _item_id: string }
+        Returns: string
+      }
       can_manage: { Args: { _user_id: string }; Returns: boolean }
       can_submit_to_body: {
         Args: { _body_id: string; _user_id: string }
