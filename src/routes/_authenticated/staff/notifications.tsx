@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { StaffShell, StaffHeader } from "@/components/StaffShell";
-import { NOTICE_LABELS, type NoticeKind } from "@/lib/notify.server";
+import { NOTICE_LABELS, type NoticeKind } from "@/lib/notices";
 
 export const Route = createFileRoute("/_authenticated/staff/notifications")({
   head: () => ({
