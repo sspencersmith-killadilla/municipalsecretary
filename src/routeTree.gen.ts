@@ -26,6 +26,7 @@ import { Route as DocsSelfHostingRouteImport } from './routes/docs/self-hosting'
 import { Route as DocsClerkHandbookRouteImport } from './routes/docs/clerk-handbook'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as MeetingsTextMeetingIdRouteImport } from './routes/meetings/text.$meetingId'
+import { Route as EmbedAgendaMeetingIdRouteImport } from './routes/embed/agenda.$meetingId'
 import { Route as ApiPublicRssDotxmlRouteImport } from './routes/api/public/rss[.]xml'
 import { Route as ApiPublicCalendarDoticsRouteImport } from './routes/api/public/calendar[.]ics'
 import { Route as AuthenticatedStaffSubmitRouteImport } from './routes/_authenticated/staff/submit'
@@ -130,6 +131,11 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
 const MeetingsTextMeetingIdRoute = MeetingsTextMeetingIdRouteImport.update({
   id: '/meetings/text/$meetingId',
   path: '/meetings/text/$meetingId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EmbedAgendaMeetingIdRoute = EmbedAgendaMeetingIdRouteImport.update({
+  id: '/embed/agenda/$meetingId',
+  path: '/embed/agenda/$meetingId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicRssDotxmlRoute = ApiPublicRssDotxmlRouteImport.update({
@@ -283,6 +289,7 @@ export interface FileRoutesByFullPath {
   '/staff/submit': typeof AuthenticatedStaffSubmitRoute
   '/api/public/calendar.ics': typeof ApiPublicCalendarDoticsRoute
   '/api/public/rss.xml': typeof ApiPublicRssDotxmlRoute
+  '/embed/agenda/$meetingId': typeof EmbedAgendaMeetingIdRoute
   '/meetings/text/$meetingId': typeof MeetingsTextMeetingIdRoute
   '/staff/briefings/$meetingId': typeof AuthenticatedStaffBriefingsMeetingIdRoute
   '/staff/console/$meetingId': typeof AuthenticatedStaffConsoleMeetingIdRoute
@@ -322,6 +329,7 @@ export interface FileRoutesByTo {
   '/staff/submit': typeof AuthenticatedStaffSubmitRoute
   '/api/public/calendar.ics': typeof ApiPublicCalendarDoticsRoute
   '/api/public/rss.xml': typeof ApiPublicRssDotxmlRoute
+  '/embed/agenda/$meetingId': typeof EmbedAgendaMeetingIdRoute
   '/meetings/text/$meetingId': typeof MeetingsTextMeetingIdRoute
   '/staff/briefings/$meetingId': typeof AuthenticatedStaffBriefingsMeetingIdRoute
   '/staff/console/$meetingId': typeof AuthenticatedStaffConsoleMeetingIdRoute
@@ -363,6 +371,7 @@ export interface FileRoutesById {
   '/_authenticated/staff/submit': typeof AuthenticatedStaffSubmitRoute
   '/api/public/calendar.ics': typeof ApiPublicCalendarDoticsRoute
   '/api/public/rss.xml': typeof ApiPublicRssDotxmlRoute
+  '/embed/agenda/$meetingId': typeof EmbedAgendaMeetingIdRoute
   '/meetings/text/$meetingId': typeof MeetingsTextMeetingIdRoute
   '/_authenticated/staff/briefings/$meetingId': typeof AuthenticatedStaffBriefingsMeetingIdRoute
   '/_authenticated/staff/console/$meetingId': typeof AuthenticatedStaffConsoleMeetingIdRoute
@@ -404,6 +413,7 @@ export interface FileRouteTypes {
     | '/staff/submit'
     | '/api/public/calendar.ics'
     | '/api/public/rss.xml'
+    | '/embed/agenda/$meetingId'
     | '/meetings/text/$meetingId'
     | '/staff/briefings/$meetingId'
     | '/staff/console/$meetingId'
@@ -443,6 +453,7 @@ export interface FileRouteTypes {
     | '/staff/submit'
     | '/api/public/calendar.ics'
     | '/api/public/rss.xml'
+    | '/embed/agenda/$meetingId'
     | '/meetings/text/$meetingId'
     | '/staff/briefings/$meetingId'
     | '/staff/console/$meetingId'
@@ -483,6 +494,7 @@ export interface FileRouteTypes {
     | '/_authenticated/staff/submit'
     | '/api/public/calendar.ics'
     | '/api/public/rss.xml'
+    | '/embed/agenda/$meetingId'
     | '/meetings/text/$meetingId'
     | '/_authenticated/staff/briefings/$meetingId'
     | '/_authenticated/staff/console/$meetingId'
@@ -512,6 +524,7 @@ export interface RootRouteChildren {
   MeetingsIndexRoute: typeof MeetingsIndexRoute
   ApiPublicCalendarDoticsRoute: typeof ApiPublicCalendarDoticsRoute
   ApiPublicRssDotxmlRoute: typeof ApiPublicRssDotxmlRoute
+  EmbedAgendaMeetingIdRoute: typeof EmbedAgendaMeetingIdRoute
   MeetingsTextMeetingIdRoute: typeof MeetingsTextMeetingIdRoute
 }
 
@@ -634,6 +647,13 @@ declare module '@tanstack/react-router' {
       path: '/meetings/text/$meetingId'
       fullPath: '/meetings/text/$meetingId'
       preLoaderRoute: typeof MeetingsTextMeetingIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/embed/agenda/$meetingId': {
+      id: '/embed/agenda/$meetingId'
+      path: '/embed/agenda/$meetingId'
+      fullPath: '/embed/agenda/$meetingId'
+      preLoaderRoute: typeof EmbedAgendaMeetingIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/rss.xml': {
@@ -858,6 +878,7 @@ const rootRouteChildren: RootRouteChildren = {
   MeetingsIndexRoute: MeetingsIndexRoute,
   ApiPublicCalendarDoticsRoute: ApiPublicCalendarDoticsRoute,
   ApiPublicRssDotxmlRoute: ApiPublicRssDotxmlRoute,
+  EmbedAgendaMeetingIdRoute: EmbedAgendaMeetingIdRoute,
   MeetingsTextMeetingIdRoute: MeetingsTextMeetingIdRoute,
 }
 export const routeTree = rootRouteImport
