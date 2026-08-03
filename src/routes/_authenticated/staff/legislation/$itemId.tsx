@@ -114,10 +114,9 @@ function EditItem() {
 
   const assignNumber = useMutation({
     mutationFn: async () => {
-      const { data, error } = await supabase.rpc("assign_item_number", { _item_id: itemId });
-      if (error) throw error;
-      return data as string;
+      return await assignItemNumber({ data: { item_id: itemId } });
     },
+
     onSuccess: (num) => {
       toast.success(`Assigned ${num}`);
       queryClient.invalidateQueries({ queryKey: ["staff", "item", itemId] });
