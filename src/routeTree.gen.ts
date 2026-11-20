@@ -9,64 +9,53 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SubscribeRouteImport } from './routes/subscribe'
-import { Route as RecordsRequestsRouteImport } from './routes/records-requests'
-import { Route as ManageNoticesRouteImport } from './routes/manage-notices'
-import { Route as AuthRouteImport } from './routes/auth'
-import { Route as AccessibilityRouteImport } from './routes/accessibility'
-import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as MeetingsIndexRouteImport } from './routes/meetings/index'
-import { Route as LegislationIndexRouteImport } from './routes/legislation/index'
-import { Route as BodiesIndexRouteImport } from './routes/bodies/index'
-import { Route as MeetingsMeetingIdRouteImport } from './routes/meetings/$meetingId'
-import { Route as LegislationItemIdRouteImport } from './routes/legislation/$itemId'
-import { Route as EmbedUpcomingRouteImport } from './routes/embed/upcoming'
-import { Route as DocsSelfHostingRouteImport } from './routes/docs/self-hosting'
-import { Route as DocsClerkHandbookRouteImport } from './routes/docs/clerk-handbook'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AccessibilityRouteImport } from './routes/accessibility'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ManageNoticesRouteImport } from './routes/manage-notices'
+import { Route as RecordsRequestsRouteImport } from './routes/records-requests'
+import { Route as SubscribeRouteImport } from './routes/subscribe'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
-import { Route as MeetingsTextMeetingIdRouteImport } from './routes/meetings/text.$meetingId'
-import { Route as EmbedAgendaMeetingIdRouteImport } from './routes/embed/agenda.$meetingId'
-import { Route as ApiPublicRssDotxmlRouteImport } from './routes/api/public/rss[.]xml'
-import { Route as ApiPublicCalendarDoticsRouteImport } from './routes/api/public/calendar[.]ics'
-import { Route as AuthenticatedStaffSubmitRouteImport } from './routes/_authenticated/staff/submit'
-import { Route as AuthenticatedStaffSetupRouteImport } from './routes/_authenticated/staff/setup'
-import { Route as AuthenticatedStaffSecurityRouteImport } from './routes/_authenticated/staff/security'
-import { Route as AuthenticatedStaffReportsRouteImport } from './routes/_authenticated/staff/reports'
-import { Route as AuthenticatedStaffRecordsRouteImport } from './routes/_authenticated/staff/records'
-import { Route as AuthenticatedStaffNotificationsRouteImport } from './routes/_authenticated/staff/notifications'
-import { Route as AuthenticatedStaffImportRouteImport } from './routes/_authenticated/staff/import'
-import { Route as AuthenticatedStaffCommentsRouteImport } from './routes/_authenticated/staff/comments'
-import { Route as AuthenticatedStaffAuditRouteImport } from './routes/_authenticated/staff/audit'
-import { Route as AuthenticatedStaffApprovalsRouteImport } from './routes/_authenticated/staff/approvals'
+import { Route as BodiesIndexRouteImport } from './routes/bodies/index'
+import { Route as DocsClerkHandbookRouteImport } from './routes/docs/clerk-handbook'
+import { Route as DocsSelfHostingRouteImport } from './routes/docs/self-hosting'
+import { Route as EmbedUpcomingRouteImport } from './routes/embed/upcoming'
+import { Route as LegislationIndexRouteImport } from './routes/legislation/index'
+import { Route as LegislationItemIdRouteImport } from './routes/legislation/$itemId'
+import { Route as MeetingsIndexRouteImport } from './routes/meetings/index'
+import { Route as MeetingsMeetingIdRouteImport } from './routes/meetings/$meetingId'
 import { Route as AuthenticatedStaffAdminRouteImport } from './routes/_authenticated/staff/admin'
-import { Route as AuthenticatedStaffMeetingsIndexRouteImport } from './routes/_authenticated/staff/meetings/index'
-import { Route as AuthenticatedStaffLegislationIndexRouteImport } from './routes/_authenticated/staff/legislation/index'
-import { Route as AuthenticatedStaffConsoleIndexRouteImport } from './routes/_authenticated/staff/console/index'
+import { Route as AuthenticatedStaffApprovalsRouteImport } from './routes/_authenticated/staff/approvals'
+import { Route as AuthenticatedStaffAuditRouteImport } from './routes/_authenticated/staff/audit'
+import { Route as AuthenticatedStaffCommentsRouteImport } from './routes/_authenticated/staff/comments'
+import { Route as AuthenticatedStaffImportRouteImport } from './routes/_authenticated/staff/import'
+import { Route as AuthenticatedStaffNotificationsRouteImport } from './routes/_authenticated/staff/notifications'
+import { Route as AuthenticatedStaffRecordsRouteImport } from './routes/_authenticated/staff/records'
+import { Route as AuthenticatedStaffReportsRouteImport } from './routes/_authenticated/staff/reports'
+import { Route as AuthenticatedStaffSecurityRouteImport } from './routes/_authenticated/staff/security'
+import { Route as AuthenticatedStaffSetupRouteImport } from './routes/_authenticated/staff/setup'
+import { Route as AuthenticatedStaffSubmitRouteImport } from './routes/_authenticated/staff/submit'
+import { Route as ApiPublicCalendarDoticsRouteImport } from './routes/api/public/calendar[.]ics'
+import { Route as ApiPublicRssDotxmlRouteImport } from './routes/api/public/rss[.]xml'
+import { Route as EmbedAgendaMeetingIdRouteImport } from './routes/embed/agenda.$meetingId'
+import { Route as MeetingsTextMeetingIdRouteImport } from './routes/meetings/text.$meetingId'
 import { Route as AuthenticatedStaffBriefingsIndexRouteImport } from './routes/_authenticated/staff/briefings/index'
-import { Route as AuthenticatedStaffMeetingsMeetingIdRouteImport } from './routes/_authenticated/staff/meetings/$meetingId'
-import { Route as AuthenticatedStaffLegislationItemIdRouteImport } from './routes/_authenticated/staff/legislation/$itemId'
-import { Route as AuthenticatedStaffConsoleMeetingIdRouteImport } from './routes/_authenticated/staff/console/$meetingId'
 import { Route as AuthenticatedStaffBriefingsMeetingIdRouteImport } from './routes/_authenticated/staff/briefings/$meetingId'
+import { Route as AuthenticatedStaffConsoleIndexRouteImport } from './routes/_authenticated/staff/console/index'
+import { Route as AuthenticatedStaffConsoleMeetingIdRouteImport } from './routes/_authenticated/staff/console/$meetingId'
+import { Route as AuthenticatedStaffLegislationIndexRouteImport } from './routes/_authenticated/staff/legislation/index'
+import { Route as AuthenticatedStaffLegislationItemIdRouteImport } from './routes/_authenticated/staff/legislation/$itemId'
+import { Route as AuthenticatedStaffMeetingsIndexRouteImport } from './routes/_authenticated/staff/meetings/index'
+import { Route as AuthenticatedStaffMeetingsMeetingIdRouteImport } from './routes/_authenticated/staff/meetings/$meetingId'
 
-const SubscribeRoute = SubscribeRouteImport.update({
-  id: '/subscribe',
-  path: '/subscribe',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const RecordsRequestsRoute = RecordsRequestsRouteImport.update({
-  id: '/records-requests',
-  path: '/records-requests',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ManageNoticesRoute = ManageNoticesRouteImport.update({
-  id: '/manage-notices',
-  path: '/manage-notices',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AccessibilityRoute = AccessibilityRouteImport.update({
@@ -74,53 +63,24 @@ const AccessibilityRoute = AccessibilityRouteImport.update({
   path: '/accessibility',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
-  id: '/_authenticated',
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const ManageNoticesRoute = ManageNoticesRouteImport.update({
+  id: '/manage-notices',
+  path: '/manage-notices',
   getParentRoute: () => rootRouteImport,
 } as any)
-const MeetingsIndexRoute = MeetingsIndexRouteImport.update({
-  id: '/meetings/',
-  path: '/meetings/',
+const RecordsRequestsRoute = RecordsRequestsRouteImport.update({
+  id: '/records-requests',
+  path: '/records-requests',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LegislationIndexRoute = LegislationIndexRouteImport.update({
-  id: '/legislation/',
-  path: '/legislation/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BodiesIndexRoute = BodiesIndexRouteImport.update({
-  id: '/bodies/',
-  path: '/bodies/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MeetingsMeetingIdRoute = MeetingsMeetingIdRouteImport.update({
-  id: '/meetings/$meetingId',
-  path: '/meetings/$meetingId',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LegislationItemIdRoute = LegislationItemIdRouteImport.update({
-  id: '/legislation/$itemId',
-  path: '/legislation/$itemId',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EmbedUpcomingRoute = EmbedUpcomingRouteImport.update({
-  id: '/embed/upcoming',
-  path: '/embed/upcoming',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DocsSelfHostingRoute = DocsSelfHostingRouteImport.update({
-  id: '/docs/self-hosting',
-  path: '/docs/self-hosting',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DocsClerkHandbookRoute = DocsClerkHandbookRouteImport.update({
-  id: '/docs/clerk-handbook',
-  path: '/docs/clerk-handbook',
+const SubscribeRoute = SubscribeRouteImport.update({
+  id: '/subscribe',
+  path: '/subscribe',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
@@ -128,76 +88,49 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const MeetingsTextMeetingIdRoute = MeetingsTextMeetingIdRouteImport.update({
-  id: '/meetings/text/$meetingId',
-  path: '/meetings/text/$meetingId',
+const BodiesIndexRoute = BodiesIndexRouteImport.update({
+  id: '/bodies/',
+  path: '/bodies/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const EmbedAgendaMeetingIdRoute = EmbedAgendaMeetingIdRouteImport.update({
-  id: '/embed/agenda/$meetingId',
-  path: '/embed/agenda/$meetingId',
+const DocsClerkHandbookRoute = DocsClerkHandbookRouteImport.update({
+  id: '/docs/clerk-handbook',
+  path: '/docs/clerk-handbook',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicRssDotxmlRoute = ApiPublicRssDotxmlRouteImport.update({
-  id: '/api/public/rss.xml',
-  path: '/api/public/rss.xml',
+const DocsSelfHostingRoute = DocsSelfHostingRouteImport.update({
+  id: '/docs/self-hosting',
+  path: '/docs/self-hosting',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicCalendarDoticsRoute = ApiPublicCalendarDoticsRouteImport.update({
-  id: '/api/public/calendar.ics',
-  path: '/api/public/calendar.ics',
+const EmbedUpcomingRoute = EmbedUpcomingRouteImport.update({
+  id: '/embed/upcoming',
+  path: '/embed/upcoming',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedStaffSubmitRoute =
-  AuthenticatedStaffSubmitRouteImport.update({
-    id: '/staff/submit',
-    path: '/staff/submit',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
-const AuthenticatedStaffSetupRoute = AuthenticatedStaffSetupRouteImport.update({
-  id: '/staff/setup',
-  path: '/staff/setup',
-  getParentRoute: () => AuthenticatedRouteRoute,
+const LegislationIndexRoute = LegislationIndexRouteImport.update({
+  id: '/legislation/',
+  path: '/legislation/',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedStaffSecurityRoute =
-  AuthenticatedStaffSecurityRouteImport.update({
-    id: '/staff/security',
-    path: '/staff/security',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
-const AuthenticatedStaffReportsRoute =
-  AuthenticatedStaffReportsRouteImport.update({
-    id: '/staff/reports',
-    path: '/staff/reports',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
-const AuthenticatedStaffRecordsRoute =
-  AuthenticatedStaffRecordsRouteImport.update({
-    id: '/staff/records',
-    path: '/staff/records',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
-const AuthenticatedStaffNotificationsRoute =
-  AuthenticatedStaffNotificationsRouteImport.update({
-    id: '/staff/notifications',
-    path: '/staff/notifications',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
-const AuthenticatedStaffImportRoute =
-  AuthenticatedStaffImportRouteImport.update({
-    id: '/staff/import',
-    path: '/staff/import',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
-const AuthenticatedStaffCommentsRoute =
-  AuthenticatedStaffCommentsRouteImport.update({
-    id: '/staff/comments',
-    path: '/staff/comments',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
-const AuthenticatedStaffAuditRoute = AuthenticatedStaffAuditRouteImport.update({
-  id: '/staff/audit',
-  path: '/staff/audit',
+const LegislationItemIdRoute = LegislationItemIdRouteImport.update({
+  id: '/legislation/$itemId',
+  path: '/legislation/$itemId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MeetingsIndexRoute = MeetingsIndexRouteImport.update({
+  id: '/meetings/',
+  path: '/meetings/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MeetingsMeetingIdRoute = MeetingsMeetingIdRouteImport.update({
+  id: '/meetings/$meetingId',
+  path: '/meetings/$meetingId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedStaffAdminRoute = AuthenticatedStaffAdminRouteImport.update({
+  id: '/staff/admin',
+  path: '/staff/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedStaffApprovalsRoute =
@@ -206,21 +139,88 @@ const AuthenticatedStaffApprovalsRoute =
     path: '/staff/approvals',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
-const AuthenticatedStaffAdminRoute = AuthenticatedStaffAdminRouteImport.update({
-  id: '/staff/admin',
-  path: '/staff/admin',
+const AuthenticatedStaffAuditRoute = AuthenticatedStaffAuditRouteImport.update({
+  id: '/staff/audit',
+  path: '/staff/audit',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AuthenticatedStaffMeetingsIndexRoute =
-  AuthenticatedStaffMeetingsIndexRouteImport.update({
-    id: '/staff/meetings/',
-    path: '/staff/meetings/',
+const AuthenticatedStaffCommentsRoute =
+  AuthenticatedStaffCommentsRouteImport.update({
+    id: '/staff/comments',
+    path: '/staff/comments',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
-const AuthenticatedStaffLegislationIndexRoute =
-  AuthenticatedStaffLegislationIndexRouteImport.update({
-    id: '/staff/legislation/',
-    path: '/staff/legislation/',
+const AuthenticatedStaffImportRoute =
+  AuthenticatedStaffImportRouteImport.update({
+    id: '/staff/import',
+    path: '/staff/import',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedStaffNotificationsRoute =
+  AuthenticatedStaffNotificationsRouteImport.update({
+    id: '/staff/notifications',
+    path: '/staff/notifications',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedStaffRecordsRoute =
+  AuthenticatedStaffRecordsRouteImport.update({
+    id: '/staff/records',
+    path: '/staff/records',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedStaffReportsRoute =
+  AuthenticatedStaffReportsRouteImport.update({
+    id: '/staff/reports',
+    path: '/staff/reports',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedStaffSecurityRoute =
+  AuthenticatedStaffSecurityRouteImport.update({
+    id: '/staff/security',
+    path: '/staff/security',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedStaffSetupRoute = AuthenticatedStaffSetupRouteImport.update({
+  id: '/staff/setup',
+  path: '/staff/setup',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedStaffSubmitRoute =
+  AuthenticatedStaffSubmitRouteImport.update({
+    id: '/staff/submit',
+    path: '/staff/submit',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const ApiPublicCalendarDoticsRoute = ApiPublicCalendarDoticsRouteImport.update({
+  id: '/api/public/calendar.ics',
+  path: '/api/public/calendar.ics',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicRssDotxmlRoute = ApiPublicRssDotxmlRouteImport.update({
+  id: '/api/public/rss.xml',
+  path: '/api/public/rss.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EmbedAgendaMeetingIdRoute = EmbedAgendaMeetingIdRouteImport.update({
+  id: '/embed/agenda/$meetingId',
+  path: '/embed/agenda/$meetingId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MeetingsTextMeetingIdRoute = MeetingsTextMeetingIdRouteImport.update({
+  id: '/meetings/text/$meetingId',
+  path: '/meetings/text/$meetingId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedStaffBriefingsIndexRoute =
+  AuthenticatedStaffBriefingsIndexRouteImport.update({
+    id: '/staff/briefings/',
+    path: '/staff/briefings/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedStaffBriefingsMeetingIdRoute =
+  AuthenticatedStaffBriefingsMeetingIdRouteImport.update({
+    id: '/staff/briefings/$meetingId',
+    path: '/staff/briefings/$meetingId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedStaffConsoleIndexRoute =
@@ -229,16 +229,16 @@ const AuthenticatedStaffConsoleIndexRoute =
     path: '/staff/console/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
-const AuthenticatedStaffBriefingsIndexRoute =
-  AuthenticatedStaffBriefingsIndexRouteImport.update({
-    id: '/staff/briefings/',
-    path: '/staff/briefings/',
+const AuthenticatedStaffConsoleMeetingIdRoute =
+  AuthenticatedStaffConsoleMeetingIdRouteImport.update({
+    id: '/staff/console/$meetingId',
+    path: '/staff/console/$meetingId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
-const AuthenticatedStaffMeetingsMeetingIdRoute =
-  AuthenticatedStaffMeetingsMeetingIdRouteImport.update({
-    id: '/staff/meetings/$meetingId',
-    path: '/staff/meetings/$meetingId',
+const AuthenticatedStaffLegislationIndexRoute =
+  AuthenticatedStaffLegislationIndexRouteImport.update({
+    id: '/staff/legislation/',
+    path: '/staff/legislation/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedStaffLegislationItemIdRoute =
@@ -247,16 +247,16 @@ const AuthenticatedStaffLegislationItemIdRoute =
     path: '/staff/legislation/$itemId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
-const AuthenticatedStaffConsoleMeetingIdRoute =
-  AuthenticatedStaffConsoleMeetingIdRouteImport.update({
-    id: '/staff/console/$meetingId',
-    path: '/staff/console/$meetingId',
+const AuthenticatedStaffMeetingsIndexRoute =
+  AuthenticatedStaffMeetingsIndexRouteImport.update({
+    id: '/staff/meetings/',
+    path: '/staff/meetings/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
-const AuthenticatedStaffBriefingsMeetingIdRoute =
-  AuthenticatedStaffBriefingsMeetingIdRouteImport.update({
-    id: '/staff/briefings/$meetingId',
-    path: '/staff/briefings/$meetingId',
+const AuthenticatedStaffMeetingsMeetingIdRoute =
+  AuthenticatedStaffMeetingsMeetingIdRouteImport.update({
+    id: '/staff/meetings/$meetingId',
+    path: '/staff/meetings/$meetingId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 
@@ -530,39 +530,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/subscribe': {
-      id: '/subscribe'
-      path: '/subscribe'
-      fullPath: '/subscribe'
-      preLoaderRoute: typeof SubscribeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/records-requests': {
-      id: '/records-requests'
-      path: '/records-requests'
-      fullPath: '/records-requests'
-      preLoaderRoute: typeof RecordsRequestsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/manage-notices': {
-      id: '/manage-notices'
-      path: '/manage-notices'
-      fullPath: '/manage-notices'
-      preLoaderRoute: typeof ManageNoticesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/accessibility': {
-      id: '/accessibility'
-      path: '/accessibility'
-      fullPath: '/accessibility'
-      preLoaderRoute: typeof AccessibilityRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated': {
@@ -572,67 +544,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/accessibility': {
+      id: '/accessibility'
+      path: '/accessibility'
+      fullPath: '/accessibility'
+      preLoaderRoute: typeof AccessibilityRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/meetings/': {
-      id: '/meetings/'
-      path: '/meetings'
-      fullPath: '/meetings/'
-      preLoaderRoute: typeof MeetingsIndexRouteImport
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/legislation/': {
-      id: '/legislation/'
-      path: '/legislation'
-      fullPath: '/legislation/'
-      preLoaderRoute: typeof LegislationIndexRouteImport
+    '/manage-notices': {
+      id: '/manage-notices'
+      path: '/manage-notices'
+      fullPath: '/manage-notices'
+      preLoaderRoute: typeof ManageNoticesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/bodies/': {
-      id: '/bodies/'
-      path: '/bodies'
-      fullPath: '/bodies/'
-      preLoaderRoute: typeof BodiesIndexRouteImport
+    '/records-requests': {
+      id: '/records-requests'
+      path: '/records-requests'
+      fullPath: '/records-requests'
+      preLoaderRoute: typeof RecordsRequestsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/meetings/$meetingId': {
-      id: '/meetings/$meetingId'
-      path: '/meetings/$meetingId'
-      fullPath: '/meetings/$meetingId'
-      preLoaderRoute: typeof MeetingsMeetingIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/legislation/$itemId': {
-      id: '/legislation/$itemId'
-      path: '/legislation/$itemId'
-      fullPath: '/legislation/$itemId'
-      preLoaderRoute: typeof LegislationItemIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/embed/upcoming': {
-      id: '/embed/upcoming'
-      path: '/embed/upcoming'
-      fullPath: '/embed/upcoming'
-      preLoaderRoute: typeof EmbedUpcomingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/docs/self-hosting': {
-      id: '/docs/self-hosting'
-      path: '/docs/self-hosting'
-      fullPath: '/docs/self-hosting'
-      preLoaderRoute: typeof DocsSelfHostingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/docs/clerk-handbook': {
-      id: '/docs/clerk-handbook'
-      path: '/docs/clerk-handbook'
-      fullPath: '/docs/clerk-handbook'
-      preLoaderRoute: typeof DocsClerkHandbookRouteImport
+    '/subscribe': {
+      id: '/subscribe'
+      path: '/subscribe'
+      fullPath: '/subscribe'
+      preLoaderRoute: typeof SubscribeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/dashboard': {
@@ -642,95 +586,67 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/meetings/text/$meetingId': {
-      id: '/meetings/text/$meetingId'
-      path: '/meetings/text/$meetingId'
-      fullPath: '/meetings/text/$meetingId'
-      preLoaderRoute: typeof MeetingsTextMeetingIdRouteImport
+    '/bodies/': {
+      id: '/bodies/'
+      path: '/bodies'
+      fullPath: '/bodies/'
+      preLoaderRoute: typeof BodiesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/embed/agenda/$meetingId': {
-      id: '/embed/agenda/$meetingId'
-      path: '/embed/agenda/$meetingId'
-      fullPath: '/embed/agenda/$meetingId'
-      preLoaderRoute: typeof EmbedAgendaMeetingIdRouteImport
+    '/docs/clerk-handbook': {
+      id: '/docs/clerk-handbook'
+      path: '/docs/clerk-handbook'
+      fullPath: '/docs/clerk-handbook'
+      preLoaderRoute: typeof DocsClerkHandbookRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/rss.xml': {
-      id: '/api/public/rss.xml'
-      path: '/api/public/rss.xml'
-      fullPath: '/api/public/rss.xml'
-      preLoaderRoute: typeof ApiPublicRssDotxmlRouteImport
+    '/docs/self-hosting': {
+      id: '/docs/self-hosting'
+      path: '/docs/self-hosting'
+      fullPath: '/docs/self-hosting'
+      preLoaderRoute: typeof DocsSelfHostingRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/calendar.ics': {
-      id: '/api/public/calendar.ics'
-      path: '/api/public/calendar.ics'
-      fullPath: '/api/public/calendar.ics'
-      preLoaderRoute: typeof ApiPublicCalendarDoticsRouteImport
+    '/embed/upcoming': {
+      id: '/embed/upcoming'
+      path: '/embed/upcoming'
+      fullPath: '/embed/upcoming'
+      preLoaderRoute: typeof EmbedUpcomingRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/staff/submit': {
-      id: '/_authenticated/staff/submit'
-      path: '/staff/submit'
-      fullPath: '/staff/submit'
-      preLoaderRoute: typeof AuthenticatedStaffSubmitRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+    '/legislation/': {
+      id: '/legislation/'
+      path: '/legislation'
+      fullPath: '/legislation/'
+      preLoaderRoute: typeof LegislationIndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/staff/setup': {
-      id: '/_authenticated/staff/setup'
-      path: '/staff/setup'
-      fullPath: '/staff/setup'
-      preLoaderRoute: typeof AuthenticatedStaffSetupRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+    '/legislation/$itemId': {
+      id: '/legislation/$itemId'
+      path: '/legislation/$itemId'
+      fullPath: '/legislation/$itemId'
+      preLoaderRoute: typeof LegislationItemIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/staff/security': {
-      id: '/_authenticated/staff/security'
-      path: '/staff/security'
-      fullPath: '/staff/security'
-      preLoaderRoute: typeof AuthenticatedStaffSecurityRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+    '/meetings/': {
+      id: '/meetings/'
+      path: '/meetings'
+      fullPath: '/meetings/'
+      preLoaderRoute: typeof MeetingsIndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/staff/reports': {
-      id: '/_authenticated/staff/reports'
-      path: '/staff/reports'
-      fullPath: '/staff/reports'
-      preLoaderRoute: typeof AuthenticatedStaffReportsRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+    '/meetings/$meetingId': {
+      id: '/meetings/$meetingId'
+      path: '/meetings/$meetingId'
+      fullPath: '/meetings/$meetingId'
+      preLoaderRoute: typeof MeetingsMeetingIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/staff/records': {
-      id: '/_authenticated/staff/records'
-      path: '/staff/records'
-      fullPath: '/staff/records'
-      preLoaderRoute: typeof AuthenticatedStaffRecordsRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/staff/notifications': {
-      id: '/_authenticated/staff/notifications'
-      path: '/staff/notifications'
-      fullPath: '/staff/notifications'
-      preLoaderRoute: typeof AuthenticatedStaffNotificationsRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/staff/import': {
-      id: '/_authenticated/staff/import'
-      path: '/staff/import'
-      fullPath: '/staff/import'
-      preLoaderRoute: typeof AuthenticatedStaffImportRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/staff/comments': {
-      id: '/_authenticated/staff/comments'
-      path: '/staff/comments'
-      fullPath: '/staff/comments'
-      preLoaderRoute: typeof AuthenticatedStaffCommentsRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/staff/audit': {
-      id: '/_authenticated/staff/audit'
-      path: '/staff/audit'
-      fullPath: '/staff/audit'
-      preLoaderRoute: typeof AuthenticatedStaffAuditRouteImport
+    '/_authenticated/staff/admin': {
+      id: '/_authenticated/staff/admin'
+      path: '/staff/admin'
+      fullPath: '/staff/admin'
+      preLoaderRoute: typeof AuthenticatedStaffAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/staff/approvals': {
@@ -740,25 +656,109 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedStaffApprovalsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/staff/admin': {
-      id: '/_authenticated/staff/admin'
-      path: '/staff/admin'
-      fullPath: '/staff/admin'
-      preLoaderRoute: typeof AuthenticatedStaffAdminRouteImport
+    '/_authenticated/staff/audit': {
+      id: '/_authenticated/staff/audit'
+      path: '/staff/audit'
+      fullPath: '/staff/audit'
+      preLoaderRoute: typeof AuthenticatedStaffAuditRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/staff/meetings/': {
-      id: '/_authenticated/staff/meetings/'
-      path: '/staff/meetings'
-      fullPath: '/staff/meetings/'
-      preLoaderRoute: typeof AuthenticatedStaffMeetingsIndexRouteImport
+    '/_authenticated/staff/comments': {
+      id: '/_authenticated/staff/comments'
+      path: '/staff/comments'
+      fullPath: '/staff/comments'
+      preLoaderRoute: typeof AuthenticatedStaffCommentsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/staff/legislation/': {
-      id: '/_authenticated/staff/legislation/'
-      path: '/staff/legislation'
-      fullPath: '/staff/legislation/'
-      preLoaderRoute: typeof AuthenticatedStaffLegislationIndexRouteImport
+    '/_authenticated/staff/import': {
+      id: '/_authenticated/staff/import'
+      path: '/staff/import'
+      fullPath: '/staff/import'
+      preLoaderRoute: typeof AuthenticatedStaffImportRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/staff/notifications': {
+      id: '/_authenticated/staff/notifications'
+      path: '/staff/notifications'
+      fullPath: '/staff/notifications'
+      preLoaderRoute: typeof AuthenticatedStaffNotificationsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/staff/records': {
+      id: '/_authenticated/staff/records'
+      path: '/staff/records'
+      fullPath: '/staff/records'
+      preLoaderRoute: typeof AuthenticatedStaffRecordsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/staff/reports': {
+      id: '/_authenticated/staff/reports'
+      path: '/staff/reports'
+      fullPath: '/staff/reports'
+      preLoaderRoute: typeof AuthenticatedStaffReportsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/staff/security': {
+      id: '/_authenticated/staff/security'
+      path: '/staff/security'
+      fullPath: '/staff/security'
+      preLoaderRoute: typeof AuthenticatedStaffSecurityRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/staff/setup': {
+      id: '/_authenticated/staff/setup'
+      path: '/staff/setup'
+      fullPath: '/staff/setup'
+      preLoaderRoute: typeof AuthenticatedStaffSetupRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/staff/submit': {
+      id: '/_authenticated/staff/submit'
+      path: '/staff/submit'
+      fullPath: '/staff/submit'
+      preLoaderRoute: typeof AuthenticatedStaffSubmitRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/api/public/calendar.ics': {
+      id: '/api/public/calendar.ics'
+      path: '/api/public/calendar.ics'
+      fullPath: '/api/public/calendar.ics'
+      preLoaderRoute: typeof ApiPublicCalendarDoticsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/rss.xml': {
+      id: '/api/public/rss.xml'
+      path: '/api/public/rss.xml'
+      fullPath: '/api/public/rss.xml'
+      preLoaderRoute: typeof ApiPublicRssDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/embed/agenda/$meetingId': {
+      id: '/embed/agenda/$meetingId'
+      path: '/embed/agenda/$meetingId'
+      fullPath: '/embed/agenda/$meetingId'
+      preLoaderRoute: typeof EmbedAgendaMeetingIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/meetings/text/$meetingId': {
+      id: '/meetings/text/$meetingId'
+      path: '/meetings/text/$meetingId'
+      fullPath: '/meetings/text/$meetingId'
+      preLoaderRoute: typeof MeetingsTextMeetingIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/staff/briefings/': {
+      id: '/_authenticated/staff/briefings/'
+      path: '/staff/briefings'
+      fullPath: '/staff/briefings/'
+      preLoaderRoute: typeof AuthenticatedStaffBriefingsIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/staff/briefings/$meetingId': {
+      id: '/_authenticated/staff/briefings/$meetingId'
+      path: '/staff/briefings/$meetingId'
+      fullPath: '/staff/briefings/$meetingId'
+      preLoaderRoute: typeof AuthenticatedStaffBriefingsMeetingIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/staff/console/': {
@@ -768,18 +768,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedStaffConsoleIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/staff/briefings/': {
-      id: '/_authenticated/staff/briefings/'
-      path: '/staff/briefings'
-      fullPath: '/staff/briefings/'
-      preLoaderRoute: typeof AuthenticatedStaffBriefingsIndexRouteImport
+    '/_authenticated/staff/console/$meetingId': {
+      id: '/_authenticated/staff/console/$meetingId'
+      path: '/staff/console/$meetingId'
+      fullPath: '/staff/console/$meetingId'
+      preLoaderRoute: typeof AuthenticatedStaffConsoleMeetingIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/staff/meetings/$meetingId': {
-      id: '/_authenticated/staff/meetings/$meetingId'
-      path: '/staff/meetings/$meetingId'
-      fullPath: '/staff/meetings/$meetingId'
-      preLoaderRoute: typeof AuthenticatedStaffMeetingsMeetingIdRouteImport
+    '/_authenticated/staff/legislation/': {
+      id: '/_authenticated/staff/legislation/'
+      path: '/staff/legislation'
+      fullPath: '/staff/legislation/'
+      preLoaderRoute: typeof AuthenticatedStaffLegislationIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/staff/legislation/$itemId': {
@@ -789,18 +789,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedStaffLegislationItemIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/staff/console/$meetingId': {
-      id: '/_authenticated/staff/console/$meetingId'
-      path: '/staff/console/$meetingId'
-      fullPath: '/staff/console/$meetingId'
-      preLoaderRoute: typeof AuthenticatedStaffConsoleMeetingIdRouteImport
+    '/_authenticated/staff/meetings/': {
+      id: '/_authenticated/staff/meetings/'
+      path: '/staff/meetings'
+      fullPath: '/staff/meetings/'
+      preLoaderRoute: typeof AuthenticatedStaffMeetingsIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/staff/briefings/$meetingId': {
-      id: '/_authenticated/staff/briefings/$meetingId'
-      path: '/staff/briefings/$meetingId'
-      fullPath: '/staff/briefings/$meetingId'
-      preLoaderRoute: typeof AuthenticatedStaffBriefingsMeetingIdRouteImport
+    '/_authenticated/staff/meetings/$meetingId': {
+      id: '/_authenticated/staff/meetings/$meetingId'
+      path: '/staff/meetings/$meetingId'
+      fullPath: '/staff/meetings/$meetingId'
+      preLoaderRoute: typeof AuthenticatedStaffMeetingsMeetingIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
   }
